@@ -1,3 +1,211 @@
 # eslint-plugin-explicit-types
 
-ESLint and Oxlint rules that keep TypeScript types written out rather than derived.
+TypeScript style rules for [ESLint](https://eslint.org) and
+[Oxlint](https://oxc.rs/docs/guide/usage/linter). Types should get written out,
+not derived.
+
+## Setup
+
+Requires Node.js 24 or later.
+
+```sh
+npm install --save-dev @cunarist/eslint-plugin-explicit-types
+```
+
+One plugin, namespace `@cunarist/explicit-types`, so every rule id reads
+`@cunarist/explicit-types/<rule>`. The rules come in three presets, each
+exported as a flat config, plus `recommended` for all fifteen:
+
+| Preset     | Export              | Also at                      |
+| ---------- | ------------------- | ---------------------------- |
+| all three  | `recommendedConfig` | `plugin.configs.recommended` |
+| `concrete` | `concreteConfig`    | `plugin.configs.concrete`    |
+| `naming`   | `namingConfig`      | `plugin.configs.naming`      |
+| `absence`  | `absenceConfig`     | `plugin.configs.absence`     |
+
+### Oxlint, through Vite+
+
+Oxlint loads the plugin through `jsPlugins` and turns on only the rules you
+list, so spread a preset's `rules`:
+
+```ts
+// vite.config.ts
+import { concreteConfig, namingConfig } from "@cunarist/eslint-plugin-explicit-types";
+import { defineConfig } from "vite-plus";
+
+export default defineConfig({
+  lint: {
+    jsPlugins: ["@cunarist/eslint-plugin-explicit-types"],
+    rules: {
+      ...concreteConfig.rules,
+      ...namingConfig.rules,
+      // Later keys win, so turn one off by id.
+      "@cunarist/explicit-types/no-type-assertion": "off",
+    },
+  },
+});
+```
+
+The same works in a plain `oxlint.config.ts`.
+
+### ESLint
+
+ESLint 9 flat config, with `typescript-eslint`'s parser for TypeScript files:
+
+```js
+// eslint.config.js
+import explicitTypes from "@cunarist/eslint-plugin-explicit-types";
+import tseslint from "typescript-eslint";
+
+export default [
+  { files: ["**/*.ts"], languageOptions: { parser: tseslint.parser } },
+  explicitTypes.configs.recommended,
+  { rules: { "@cunarist/explicit-types/no-type-assertion": "off" } },
+];
+```
+
+### Upgrading from the Deno plugin
+
+This package replaces `jsr:@cunarist/deno-lint-plugin-explicit-types`. That was
+three plugins, so the rule ids change: `explicit-concrete/no-keyof`,
+`explicit-naming/no-enum`, and `explicit-absence/no-undefined-type` are now all
+`@cunarist/explicit-types/<rule>`. The rule names after the slash are unchanged.
+
+## `concrete` — write the type out
+
+A type is written, not computed. If a reader has to run the compiler in their
+head to know what a value is, that's a defect.
+
+```ts
+// BAD - go read TaskSnapshot and apply two transforms
+type Draft = Partial<Omit<TaskSnapshot, "id">>;
+
+// GOOD
+interface Draft {
+  label: string | null;
+  state: TaskState | null;
+}
+```
+
+| Rule                                                               | Catches                                       |
+| ------------------------------------------------------------------ | --------------------------------------------- |
+| [`no-utility-types`](src/concrete/no-utility-types.md)             | `Partial`, `Record`, `ReturnType`, 19 more    |
+| [`no-keyof`](src/concrete/no-keyof.md)                             | A union nobody wrote down                     |
+| [`no-typeof-type`](src/concrete/no-typeof-type.md)                 | A type read backwards out of a value          |
+| [`no-mapped-types`](src/concrete/no-mapped-types.md)               | `{ [K in Keys]: T }`                          |
+| [`no-index-signatures`](src/concrete/no-index-signatures.md)       | `{ [key: string]: T }`, where every read lies |
+| [`no-inline-object-types`](src/concrete/no-inline-object-types.md) | `{ a: string }` with no name                  |
+| [`no-conditional-types`](src/concrete/no-conditional-types.md)     | `T extends U ? A : B`, and `infer`            |
+| [`require-return-type`](src/concrete/require-return-type.md)       | A function whose contract is in its body      |
+| [`no-type-assertion`](src/concrete/no-type-assertion.md)           | `x as T`, overruling the compiler             |
+
+`as const` and `satisfies` are allowed — both narrow rather than overrule.
+Indexed access is too: `Options["retries"]` is how you name a type a library
+already wrote.
+
+## `naming` — names carry the contract
+
+```ts
+// BAD
+enum Status {
+  Pending,
+  Done,
+}
+
+// GOOD
+type Status = "PENDING" | "DONE";
+```
+
+| Rule                                                                     | Catches                            |
+| ------------------------------------------------------------------------ | ---------------------------------- |
+| [`pascal-case-types`](src/naming/pascal-case-types.md)                   | A type name that isn't PascalCase  |
+| [`upper-snake-string-unions`](src/naming/upper-snake-string-unions.md)   | `"pending"` where `"PENDING"` fits |
+| [`no-upper-snake-object-keys`](src/naming/no-upper-snake-object-keys.md) | A union used as object keys        |
+| [`no-enum`](src/naming/no-enum.md)                                       | `enum`, including `const enum`     |
+
+These interlock: `no-enum` removes the construct, `upper-snake-string-unions`
+governs the union that replaces it, and `no-upper-snake-object-keys` keeps those
+members out of object keys. So turning a `Status` into a value is a `switch`,
+not an object you index into — and a `switch` stops compiling the day someone
+adds a member.
+
+## `absence` — absence is authored
+
+`undefined` is what the language hands back when nobody said anything. `null` is
+what somebody wrote. Give absence one spelling per position, and never two at
+once. `?` is a good spelling — these rules keep it, they just stop it doubling
+up with the `undefined` keyword or with `| null`.
+
+```ts
+// BAD
+interface StoredSettings {
+  apiKey?: string | null; // no-optional-null - two ways to be empty
+  zoomLevel: number | undefined; // no-undefined-type
+}
+
+// GOOD - `?` on a member, `| null` where `?` cannot go
+interface StoredSettings {
+  apiKey?: string;
+  zoomLevel: number | null;
+}
+```
+
+| Rule                                                    | Catches                                |
+| ------------------------------------------------------- | -------------------------------------- |
+| [`no-undefined-type`](src/absence/no-undefined-type.md) | The `undefined` keyword in any type    |
+| [`no-optional-null`](src/absence/no-optional-null.md)   | `a?: T \| null`, two ways to say empty |
+
+`?` is the undefined type, so there is no reason to write the keyword as well.
+And a value that can be empty in two ways has no definite empty value. A member
+or parameter says absence with `?`; a return type or variable, which cannot take
+`?`, says it with `| null`; nothing says it twice:
+
+```ts
+interface Job {
+  cursor?: string;
+} // GOOD
+function render(host?: Element): void {} // GOOD
+function findNote(id: string): Note | null {} // GOOD
+
+function open(path?: string | null): void {} // BAD - pick one
+function open(path?: string | undefined): void {} // BAD - `?` already said it
+```
+
+One caveat before adopting: a key missing from JSON is `undefined` at runtime,
+not `null`, so returning `| null` means normalising where you parse data.
+
+## How opinionated is this?
+
+Mainstream: `pascal-case-types`, `no-enum`, `no-type-assertion`,
+`no-index-signatures`.
+
+Deliberately stronger than most TypeScript codebases: `no-utility-types`,
+`no-keyof`, `no-mapped-types`, `no-typeof-type`, `no-conditional-types`,
+`no-inline-object-types`. These push toward types that are declared rather than
+computed — closer to writing every struct out, as Go does. What you read is what
+the type is.
+
+Strongest of all: `absence`. It is the only preset that changes runtime code
+rather than annotations.
+
+## Pairs well with
+
+`no-explicit-any` and `no-non-null-assertion` — built into Oxlint under
+`typescript/`, and in `typescript-eslint` for ESLint. This plugin leaves them alone rather than
+duplicating them.
+
+## Known limits
+
+- **No rule options.** Every rule is on or off; none takes settings.
+- **One file at a time.** No cross-file resolution, so `no-utility-types` sees
+  `Partial<T>` where it is written but not through a local alias.
+- **Syntax, not types.** `no-type-assertion` sees `x as T`, not an assertion
+  laundered through a function signature.
+- **Names you didn't choose are left alone.** `no-upper-snake-object-keys` only
+  reports UPPER_SNAKE_CASE, so custom element tags, `data-*` attributes, HTTP
+  headers and library keymaps pass. Unquoted `snake_case` keys pass too; that
+  was Deno's built-in `camelcase` rule's job.
+
+## License
+
+MIT.
