@@ -1,0 +1,121 @@
+import { defineConfig } from "vite-plus";
+
+import { recommendedConfig } from "./src/index.ts";
+
+export default defineConfig({
+  lint: {
+    // Oxlint's defaults plus `import`, which a `plugins` list must name.
+    plugins: ["typescript", "unicorn", "oxc", "import"],
+    // The package lints itself from source, so a new rule applies to the code
+    // that implements it. Oxlint strips the types itself; no build needed.
+    jsPlugins: ["./src/index.ts"],
+    rules: {
+      ...recommendedConfig.rules,
+
+      // Parity with Deno's `recommended` and `jsr` tags and the old
+      // `deno.json` include list. See the parity table in the PR that ported
+      // this repo; rules with no line here are covered by the parser, by
+      // `typeCheck`, by tsconfig, or cannot apply outside Deno.
+      "constructor-super": "error",
+      eqeqeq: "error",
+      "for-direction": "error",
+      "getter-return": "error",
+      "guard-for-in": "error",
+      "no-array-constructor": "error",
+      "no-async-promise-executor": "error",
+      "no-case-declarations": "error",
+      "no-class-assign": "error",
+      "no-compare-neg-zero": "error",
+      "no-cond-assign": "error",
+      "no-console": "error",
+      "no-const-assign": "error",
+      "no-constant-condition": "error",
+      "no-control-regex": "error",
+      "no-debugger": "error",
+      "no-delete-var": "error",
+      "no-dupe-class-members": "error",
+      "no-dupe-else-if": "error",
+      "no-dupe-keys": "error",
+      "no-duplicate-case": "error",
+      "no-empty": "error",
+      "no-empty-character-class": "error",
+      "no-empty-pattern": "error",
+      "no-eval": "error",
+      "no-ex-assign": "error",
+      "no-extra-boolean-cast": "error",
+      "no-fallthrough": "error",
+      "no-func-assign": "error",
+      "no-global-assign": "error",
+      "no-import-assign": "error",
+      "no-inner-declarations": "error",
+      "no-invalid-regexp": "error",
+      "no-irregular-whitespace": "error",
+      "no-new-native-nonconstructor": "error",
+      "no-obj-calls": "error",
+      "no-prototype-builtins": "error",
+      "no-redeclare": "error",
+      "no-regex-spaces": "error",
+      "no-restricted-globals": ["error", "window"],
+      "no-self-assign": "error",
+      "no-setter-return": "error",
+      "no-shadow-restricted-names": "error",
+      "no-this-before-super": "error",
+      "no-throw-literal": "error",
+      "no-unreachable": "error",
+      "no-unsafe-finally": "error",
+      "no-unsafe-negation": "error",
+      "no-unused-labels": "error",
+      "no-unused-vars": "error",
+      "no-var": "error",
+      "no-with": "error",
+      "prefer-const": "error",
+      "require-await": "error",
+      "require-yield": "error",
+      "use-isnan": "error",
+      "valid-typeof": "error",
+      "typescript/adjacent-overload-signatures": "error",
+      "typescript/ban-ts-comment": "error",
+      "typescript/ban-types": "error",
+      "typescript/consistent-type-imports": "error",
+      "typescript/no-empty-interface": "error",
+      "typescript/no-explicit-any": "error",
+      "typescript/no-extra-non-null-assertion": "error",
+      "typescript/no-misused-new": "error",
+      "typescript/no-namespace": "error",
+      "typescript/no-non-null-asserted-optional-chain": "error",
+      "typescript/no-non-null-assertion": "error",
+      "typescript/no-this-alias": "error",
+      "typescript/prefer-as-const": "error",
+      "typescript/prefer-namespace-keyword": "error",
+      "typescript/triple-slash-reference": "error",
+      "unicorn/no-abusive-eslint-disable": "error",
+
+      // What Oxlint can express of `@cunarist/deno-import-check`'s lint rules,
+      // plus `no-cycle` for its CLI's cycle check.
+      "import/no-absolute-path": "error",
+      "import/no-cycle": "error",
+      "import/no-relative-parent-imports": "error",
+      "import/no-self-import": "error",
+
+      // Visitor parameters are annotated by hand; these catch one left `any`.
+      "typescript/no-unsafe-argument": "error",
+      "typescript/no-unsafe-assignment": "error",
+      "typescript/no-unsafe-call": "error",
+      "typescript/no-unsafe-member-access": "error",
+      "typescript/no-unsafe-return": "error",
+    },
+    options: {
+      typeAware: true,
+      typeCheck: true,
+      // Deno failed on every diagnostic; so does this.
+      maxWarnings: 0,
+      reportUnusedDisableDirectives: "error",
+    },
+  },
+  pack: {
+    entry: "src/index.ts",
+    dts: true,
+    deps: { onlyBundle: ["@eslint/core", "@types/json-schema"] },
+    fixedExtension: false,
+  },
+});
