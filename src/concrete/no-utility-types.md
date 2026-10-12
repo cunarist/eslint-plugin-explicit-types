@@ -47,4 +47,4 @@ type Titles = Map<string, string>;
   is a separate concern, and this package does not police it.
 - `InvalidTestCase["errors"]` from ESLint's `RuleTester` types is reached by
   indexed access, which is not a `TSTypeReference`, so it passes. That is deliberate — see the
-  note on derivation in `AGENTS.md`.
+  note on derivation in `.agents/memory/indexed-access-is-allowed.md`.
