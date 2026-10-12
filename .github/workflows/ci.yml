@@ -21,3 +21,5 @@ jobs:
       - name: Rule tests under Oxlint's RuleTester
         run: vp test -t " oxlint "
       - run: vp pack
+      # The tarball the publish workflow would upload, without uploading it.
+      - run: npm pack --dry-run
