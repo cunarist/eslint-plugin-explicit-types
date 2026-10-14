@@ -6,10 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow combining an optional `?` with `| null`. A binding marked `?` must not
-also be unioned with `null`.
+## Rule Details
 
-## Why
+A binding marked `?` must not also be unioned with `null`.
 
 If a value can be empty in two ways, what its empty value is stops being a
 definite thing. `?` and `| null` both mean absent, so the reader cannot tell
@@ -26,27 +25,6 @@ open(null); // same meaning, different call
 
 Pick one: `?` if the value can simply be left out, `| null` if the caller ought
 to say so.
-
-## Examples
-
-```ts
-// BAD
-function open(path?: string | null): void {}
-interface Job {
-  cursor?: string | null;
-}
-
-// GOOD - absence is omission
-function open(path?: string): void {}
-
-// GOOD - absence is a value the caller has to write
-function open(path: string | null): void {}
-interface Job {
-  cursor: string | null;
-}
-```
-
-## Notes
 
 - Fires on parameters and on members. `?` is only legal in those two places —
   `let v?: T` is a syntax error — so there is nothing else to cover.
@@ -65,3 +43,31 @@ interface Job {
 - The choice between the two fixes is a real one. `?` lets the caller forget the
   value; `| null` makes them write the absence. Take the second when they ought
   to decide.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+function open(path?: string | null): void {}
+interface Job {
+  cursor?: string | null;
+}
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+// absence is omission
+function open(path?: string): void {}
+
+// absence is a value the caller has to write
+function open(path: string | null): void {}
+interface Job {
+  cursor: string | null;
+}
+```
+
+## When Not To Use It
+
+This rule treats `?` and `| null` as two spellings of the same absence. If your
+code gives them different meanings — "left out" versus "explicitly cleared" —
+and a binding needs both, turn the rule off there.

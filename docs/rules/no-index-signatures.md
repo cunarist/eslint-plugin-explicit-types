@@ -6,9 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow index signatures. An index signature is `{ [key: string]: T }`.
+## Rule Details
 
-## Why
+An index signature is `{ [key: string]: T }`.
 
 An index signature declares that every key is legal and every read succeeds. A
 typo type-checks, a missing entry is typed as present, and the value comes back
@@ -17,25 +17,6 @@ has to handle absence. The failure surfaces later as a runtime `undefined` in a
 place the type said could not happen. Concrete fields make the legal keys
 reviewable; a `Map` keeps the dynamic keys but tells the truth about lookup,
 returning `undefined` and forcing the caller to handle it.
-
-## Examples
-
-```ts
-// BAD
-interface Config {
-  [key: string]: string;
-}
-
-// GOOD
-interface Config {
-  host: string;
-  token: string;
-}
-
-const extras = new Map<string, string>();
-```
-
-## Notes
 
 - Fires on index signatures in interfaces, type literals, and class bodies
   alike.
@@ -46,3 +27,28 @@ const extras = new Map<string, string>();
 - Mapped types look similar but are a separate node, covered by
   `no-mapped-types`.
 - The report highlights the signature member, not the enclosing type.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+interface Config {
+  [key: string]: string;
+}
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+interface Config {
+  host: string;
+  token: string;
+}
+
+const extras = new Map<string, string>();
+```
+
+## When Not To Use It
+
+If you need a plain object with dynamic keys rather than a `Map` — and you
+accept that every lookup is typed as present — this rule will reject the
+signature that describes it. Turn it off in that code.

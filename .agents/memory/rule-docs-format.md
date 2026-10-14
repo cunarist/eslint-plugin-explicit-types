@@ -1,28 +1,40 @@
 ---
-description: Every rule has a .md beside it with exactly Why, Examples, Notes; README links, never repeats
+description: Rule docs follow ESLint core layout (Rule Details, incorrect/correct, When Not To Use It); README links, never repeats
 ---
 
-Every rule gets a `docs/rules/<rule>.md` with exactly these sections, below the
-header that `npm run docs` generates ([[generated-docs]]):
+Every rule gets a `docs/rules/<rule>.md` in the layout ESLint core and
+typescript-eslint use, below the header that `npm run docs` generates
+([[generated-docs]]):
 
 ````markdown
-# rule-name
+<!-- generated header: title, 📝 description, 💼 configs -->
+<!-- end auto-generated rule header -->
 
-One or two sentences. Start with "Rejects …" or "Requires …".
+## Rule Details
 
-## Why
+Optional one or two sentences spelling out what the description abbreviates.
 
 Prose. Not a restatement of the rule — the concrete failure it prevents, then
 why the alternative removes that failure structurally.
 
-## Examples
-
-One ```ts block containing `// BAD` then `// GOOD`. Minimal code.
-
-## Notes
-
 Bullets covering the edges: what it deliberately does not fire on, what variants
 it does catch, what it cannot see. These double as the test list.
+
+Examples of **incorrect** code for this rule:
+
+One ```ts block. Minimal code.
+
+Examples of **correct** code for this rule:
+
+One ```ts block. Minimal code.
+
+## Options
+
+Only if the rule has options.
+
+## When Not To Use It
+
+Short and honest, derived from the edges above. No invented claims.
 ````
 
 `README.md` links to each of these and never repeats them; per preset it carries

@@ -56,9 +56,8 @@
       ]
     ],
     "ruleDocSectionInclude": [
-      "Why",
-      "Examples",
-      "Notes"
+      "Rule Details",
+      "When Not To Use It"
     ],
     "urlConfigs": "https://github.com/cunarist/eslint-plugin-explicit-types#setup"
   }

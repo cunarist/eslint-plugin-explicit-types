@@ -6,10 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow UPPER_SNAKE_CASE object keys and type members. This covers object
-literal keys and interface or type-literal members.
+## Rule Details
 
-## Why
+This covers object literal keys and interface or type-literal members.
 
 [`upper-snake-string-unions`](upper-snake-string-unions.md) makes every string
 union member UPPER_SNAKE_CASE, so an object wearing that casing is almost always
@@ -27,28 +26,6 @@ element tag, a DOM attribute, an HTTP header, a library's command names. Those
 are foreign vocabularies, not lookup tables, and forcing them to change would
 break the contract they belong to. Only the casing this package itself
 prescribes for union members is treated as a signal.
-
-## Examples
-
-```ts
-type TaskState = "PENDING" | "DONE";
-
-// BAD - add "CANCELLED" to TaskState and this still compiles
-const LABELS = { PENDING: "Waiting", DONE: "Finished" };
-const text = LABELS[state];
-
-// GOOD - add "CANCELLED" and this stops compiling
-function labelOf(state: TaskState): string {
-  switch (state) {
-    case "PENDING":
-      return "Waiting";
-    case "DONE":
-      return "Finished";
-  }
-}
-```
-
-## Notes
 
 - Names defined elsewhere pass, which is the reason for the narrow shape:
   `"cl-zip-dialog"` (HTML requires the hyphen), `"data-language"`,
@@ -74,6 +51,32 @@ function labelOf(state: TaskState): string {
   new member does not break `map.get(state)`. It at least returns
   `T | undefined`, forcing the caller to handle absence, which the object form
   does not.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+type TaskState = "PENDING" | "DONE";
+
+// add "CANCELLED" to TaskState and this still compiles
+const LABELS = { PENDING: "Waiting", DONE: "Finished" };
+const text = LABELS[state];
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+type TaskState = "PENDING" | "DONE";
+
+// add "CANCELLED" and this stops compiling
+function labelOf(state: TaskState): string {
+  switch (state) {
+    case "PENDING":
+      return "Waiting";
+    case "DONE":
+      return "Finished";
+  }
+}
+```
 
 ## Crossing the boundary
 
@@ -105,3 +108,11 @@ the boundary and every later reader has to carry it.
 `no-explicit-any` will flag that annotation. Ignore it on the one line, or drop
 it entirely — `JSON.parse` already returns `any`, so
 `const jsonParsed = JSON.parse(responseText)` behaves identically.
+
+## When Not To Use It
+
+If an UPPER_SNAKE_CASE key belongs to a vocabulary you do not control — an
+external API or format that spells its keys that way — and you need it as a key
+rather than a bracket access at the boundary, this rule will report it. Turn it
+off if you do not use [`upper-snake-string-unions`](upper-snake-string-unions.md),
+since the casing is only a signal of a lookup table when union members carry it.

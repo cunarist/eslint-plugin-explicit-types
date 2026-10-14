@@ -32,6 +32,7 @@ and follow it before reasoning or responding.
   `eslint-disable`; fix the source.
 - Lint coverage never drops below what Deno enforced. Check
   `lint-parity-with-deno` before removing anything from `vite.config.ts`.
-- Every rule has a `.md` beside it with exactly Why, Examples, and Notes.
+- Every rule has a `docs/rules/<rule>.md` in the ESLint core layout: Rule
+  Details, incorrect/correct examples, and When Not To Use It.
 - Only CI publishes, from a published GitHub release `vX.Y.Z` that matches
   `package.json`. Use the `release` skill and ask the user first.

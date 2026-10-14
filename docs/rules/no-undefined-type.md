@@ -6,35 +6,13 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow the `undefined` keyword in type positions.
-
-## Why
+## Rule Details
 
 `?` is the undefined type. Writing both says the same thing twice, and writing
 only `undefined` says it the long way, so a codebase that mixes them has two
 forms for one idea. This rule picks `?`.
 
 A return type or a variable cannot take `?`, so those say absence with `| null`.
-
-## Examples
-
-```ts
-// BAD
-interface Job {
-  cursor?: string | undefined;
-}
-function render(host: Element | undefined): void {}
-function findNote(id: string): Note | undefined {}
-
-// GOOD
-interface Job {
-  cursor?: string;
-}
-function render(host?: Element): void {}
-function findNote(id: string): Note | null {}
-```
-
-## Notes
 
 - Fires everywhere the keyword is legal: members, parameters, return types,
   variable annotations, type aliases, and generic arguments.
@@ -52,3 +30,29 @@ function findNote(id: string): Note | null {}
 - `accessor a: string | undefined` is reported. Oxlint walks an `accessor`
   field's type annotation like any other.
 - Syntax only. `let x;` has no annotation and is not this rule's business.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+interface Job {
+  cursor?: string | undefined;
+}
+function render(host: Element | undefined): void {}
+function findNote(id: string): Note | undefined {}
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+interface Job {
+  cursor?: string;
+}
+function render(host?: Element): void {}
+function findNote(id: string): Note | null {}
+```
+
+## When Not To Use It
+
+If your code uses `undefined` rather than `null` as its absent value for return
+types and variables, this rule moves those to `| null` and a `?? null` at the
+boundary. Turn it off if you would rather keep `undefined` as the one spelling.

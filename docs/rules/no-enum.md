@@ -6,9 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow `enum` declarations. This includes `const enum` and string enums.
+## Rule Details
 
-## Why
+This includes `const enum` and string enums.
 
 `enum` is the one TypeScript type construct that emits a runtime value. That has
 two costs. The declaration must be imported wherever a member is named, so a
@@ -26,22 +26,6 @@ Its companion rule [`upper-snake-string-unions`](upper-snake-string-unions.md)
 governs the replacement: this rule removes the construct, that one keeps the
 union's members cased like the enum members they stand in for.
 
-## Examples
-
-```ts
-// BAD
-enum Status {
-  Pending,
-  Done,
-}
-
-// GOOD
-type Status = "PENDING" | "DONE";
-const current: Status = "PENDING";
-```
-
-## Notes
-
 - Every enum form fires: numeric, string-valued, heterogeneous, `const enum`,
   and `declare enum`.
 - An exported enum fires. The declaration arrives wrapped in
@@ -55,3 +39,25 @@ const current: Status = "PENDING";
   is no cross-file resolution; only declarations in the linted file are seen.
 - `pascal-case-types` also checks enum names, for the case where this rule is
   excluded but the `naming` preset is on.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+enum Status {
+  Pending,
+  Done,
+}
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+type Status = "PENDING" | "DONE";
+const current: Status = "PENDING";
+```
+
+## When Not To Use It
+
+If you want to keep enums, turn this rule off. The `naming` preset still works
+without it: [`pascal-case-types`](pascal-case-types.md) keeps checking enum names
+so they stay PascalCase.

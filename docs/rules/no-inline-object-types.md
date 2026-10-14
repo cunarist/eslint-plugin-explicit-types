@@ -6,10 +6,10 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow inline object type literals. An object shape such as `{ a: string }` is
-reported wherever it appears in a type position, including inside a type alias.
+## Rule Details
 
-## Why
+An object shape such as `{ a: string }` is reported wherever it appears in a
+type position, including inside a type alias.
 
 A shape written inline has no name, and a type with no name cannot be imported,
 documented, or pointed at. The compiler prints it back to you in full every time
@@ -24,29 +24,6 @@ This is the naming half of the same idea the rest of `concrete` enforces:
 [`no-utility-types`](no-utility-types.md) and
 [`no-mapped-types`](no-mapped-types.md) say write the shape out rather than
 compute it; this one says give what you wrote a name.
-
-## Examples
-
-```ts
-// BAD
-function parseCell(
-  state: {
-    openNode: (type: NodeType) => void;
-    closeNode: () => void;
-  },
-  node: MarkdownNode,
-): void {}
-
-// GOOD
-interface CellWriter {
-  openNode: (type: NodeType) => void;
-  closeNode: () => void;
-}
-
-function parseCell(state: CellWriter, node: MarkdownNode): void {}
-```
-
-## Notes
 
 - Every position is checked: parameters, return types, variable annotations,
   type alias right-hand sides, generic constraints, and nested members.
@@ -66,3 +43,33 @@ function parseCell(state: CellWriter, node: MarkdownNode): void {}
   type.
 - The report highlights the whole `{ … }` span, since the fix replaces all of it
   with a name.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+function parseCell(
+  state: {
+    openNode: (type: NodeType) => void;
+    closeNode: () => void;
+  },
+  node: MarkdownNode,
+): void {}
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+interface CellWriter {
+  openNode: (type: NodeType) => void;
+  closeNode: () => void;
+}
+
+function parseCell(state: CellWriter, node: MarkdownNode): void {}
+```
+
+## When Not To Use It
+
+If your codebase prefers `type X = { … }` aliases to interfaces, this rule
+reports every one of them — the alias form is not exempt. It also reports each
+variant of a discriminated union written inline. Turn it off if you do not want
+every object shape to be a named `interface`.

@@ -6,10 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow the built-in TypeScript utility types. All 22 are reported: `Partial`,
-`Record`, `ReturnType`, `Omit`, and the rest.
+## Rule Details
 
-## Why
+All 22 are reported: `Partial`, `Record`, `ReturnType`, `Omit`, and the rest.
 
 A utility type names a transformation, not a shape. `Omit<User, "password">`
 tells the reader to go find `User`, hold its fields in their head, and subtract
@@ -18,24 +17,6 @@ one. The answer is invisible at the use site and it moves: adding a field to
 no diff anywhere near the code that depends on it. Writing the resulting type
 out makes the shape readable where it is used, and turns a change to the
 underlying type into a compile error at the places that actually care.
-
-## Examples
-
-```ts
-// BAD
-type Draft = Partial<Article>;
-type Titles = Record<string, string>;
-
-// GOOD
-interface Draft {
-  title: string | null;
-  body: string | null;
-}
-
-type Titles = Map<string, string>;
-```
-
-## Notes
 
 - All 22 built-ins are matched: `Awaited`, `Partial`, `Required`, `Readonly`,
   `Record`, `Pick`, `Omit`, `Exclude`, `Extract`, `NonNullable`, `Parameters`,
@@ -54,3 +35,28 @@ type Titles = Map<string, string>;
 - `InvalidTestCase["errors"]` from ESLint's `RuleTester` types is reached by
   indexed access, which is not a `TSTypeReference`, so it passes. That is deliberate — see the
   note on derivation in `.agents/memory/indexed-access-is-allowed.md`.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+type Draft = Partial<Article>;
+type Titles = Record<string, string>;
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+interface Draft {
+  title: string | null;
+  body: string | null;
+}
+
+type Titles = Map<string, string>;
+```
+
+## When Not To Use It
+
+If you want types like `Partial<User>` or `Omit<User, "password">` to follow
+`User` as it changes, this rule rejects them by design. Matching is by name, so
+it also reports a local type you happen to call `Record`; turn the rule off if
+your code declares its own types with these names.

@@ -6,10 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Require explicit return types on named functions. Callbacks passed inline are
-exempt.
+## Rule Details
 
-## Why
+Callbacks passed inline are exempt.
 
 Without an annotation, the only way to learn what a function gives back is to
 read its body to the end — every branch, every early return, every `throw`. The
@@ -25,29 +24,6 @@ which is where the decision was made.
 Callbacks are exempt because their type is already fixed by the signature they
 are handed to. `items.map((item) => item.id)` gets its return type from `map`,
 so writing it again adds noise without adding a contract.
-
-## Examples
-
-```ts
-// BAD - read to the end to find out it can be null
-function findTask(id: string) {
-  const found = tasks.get(id);
-  if (found === undefined) return null;
-  return found;
-}
-
-// GOOD
-function findTask(id: string): TaskSnapshot | null {
-  const found = tasks.get(id);
-  if (found === undefined) return null;
-  return found;
-}
-
-// fine either way - the callback's type comes from `map`
-const ids = tasks.map((task) => task.id);
-```
-
-## Notes
 
 - Constructors and `set` accessors are skipped. TypeScript rejects a return type
   annotation on both, so requiring one would demand code that cannot compile.
@@ -65,3 +41,33 @@ const ids = tasks.map((task) => task.id);
   function otherwise, so an anonymous assigned arrow points at the arrow.
 - `async` functions are checked like any other; the annotation is the
   `Promise<T>` the caller sees.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+// read to the end to find out it can be null
+function findTask(id: string) {
+  const found = tasks.get(id);
+  if (found === undefined) return null;
+  return found;
+}
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+function findTask(id: string): TaskSnapshot | null {
+  const found = tasks.get(id);
+  if (found === undefined) return null;
+  return found;
+}
+
+// fine either way - the callback's type comes from `map`
+const ids = tasks.map((task) => task.id);
+```
+
+## When Not To Use It
+
+If you are content to let TypeScript infer return types, including for arrows
+assigned to variables, this rule will report every unannotated one. Turn it off
+if the signature does not need to state the contract in your code.

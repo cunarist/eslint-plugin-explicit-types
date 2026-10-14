@@ -6,10 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow type assertions other than `as const`. Both `value as T` and the
-angle-bracket `<T>value` are reported.
+## Rule Details
 
-## Why
+Both `value as T` and the angle-bracket `<T>value` are reported.
 
 An assertion does not check anything; it instructs the compiler to stop
 checking. Every one is a claim about a value that the code cannot back up, and
@@ -20,21 +19,6 @@ proves the claim instead of asserting it, and annotating the declaration moves
 the type to where the compiler can verify it. `as const` is exempt because it
 does not claim anything the source does not already say: it narrows a literal to
 what is written right there.
-
-## Examples
-
-```ts
-// BAD
-const el = node as HTMLInputElement;
-const n = <number>input;
-
-// GOOD
-const el = node instanceof HTMLInputElement ? node : null;
-const n = typeof input === "number" ? input : 0;
-const MODES = ["READ", "WRITE"] as const;
-```
-
-## Notes
 
 - Both syntaxes fire: `value as T` and the angle-bracket form `<T>value`.
 - `as const` is allowed. That is specifically an `as` whose annotation is the
@@ -47,3 +31,24 @@ const MODES = ["READ", "WRITE"] as const;
   type without overruling the compiler, and unlike an assertion it keeps the
   narrow inferred type — which is more precise than an annotation, not less.
 - The report highlights the whole assertion expression, operand included.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+const el = node as HTMLInputElement;
+const n = <number>input;
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+const el = node instanceof HTMLInputElement ? node : null;
+const n = typeof input === "number" ? input : 0;
+const MODES = ["READ", "WRITE"] as const;
+```
+
+## When Not To Use It
+
+If you rely on assertions where narrowing or an annotation cannot express what
+you know about a value, this rule reports every one, with no exemption beyond
+`as const`. Turn it off in that code rather than working around it.

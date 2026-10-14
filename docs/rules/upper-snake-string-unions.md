@@ -6,10 +6,10 @@
 
 <!-- end auto-generated rule header -->
 
-Enforce UPPER_SNAKE_CASE for string literal union members. Every string literal
-member of a union must match `/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/`.
+## Rule Details
 
-## Why
+Every string literal member of a union must match
+`/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/`.
 
 A string union is an enumeration written in the type system, and its members are
 protocol tokens: they get compared, switched on, and stored. Written as
@@ -26,18 +26,6 @@ This rule is the other half of [`no-enum`](no-enum.md). That rule removes the
 `enum` construct; this one governs the string union that replaces it, so the
 replacement keeps the constant-like naming an enum member had.
 
-## Examples
-
-```ts
-// BAD
-type Status = "pending" | "in progress" | "Done";
-
-// GOOD
-type Status = "PENDING" | "IN_PROGRESS" | "DONE";
-```
-
-## Notes
-
 - Only union type aliases are checked. A single non-union literal alias like
   `type Mode = "fast";` is not reported.
 - Non-string union members are ignored: numeric literals, `null`, booleans, type
@@ -50,3 +38,21 @@ type Status = "PENDING" | "IN_PROGRESS" | "DONE";
 - Unions written inside an interface member, a function parameter, or a variable
   annotation are not checked. Only `TSTypeAliasDeclaration` is visited, which is
   where a named token set belongs.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+type Status = "pending" | "in progress" | "Done";
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+type Status = "PENDING" | "IN_PROGRESS" | "DONE";
+```
+
+## When Not To Use It
+
+If a union alias lists string values fixed by something outside your code — an
+external API or format whose tokens are not UPPER_SNAKE_CASE — this rule will
+report them. Turn it off where the union's members are not yours to name.

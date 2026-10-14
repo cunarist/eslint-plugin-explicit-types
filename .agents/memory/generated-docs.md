@@ -18,6 +18,6 @@ The README list is wrapped in `<!-- prettier-ignore-start/end -->`: oxfmt
 and the generator measure emoji widths differently, so without it `vp fmt` and
 `--check` fight over table padding forever.
 
-`ruleDocSectionInclude` enforces Why, Examples, Notes ([[rule-docs-format]]).
+`ruleDocSectionInclude` enforces Rule Details and When Not To Use It ([[rule-docs-format]]).
 The README cannot group the list by preset: `--rule-list-split` splits only by a
 rule property, and presets are configs, not rule properties.

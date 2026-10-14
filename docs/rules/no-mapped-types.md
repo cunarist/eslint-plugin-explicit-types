@@ -6,9 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow mapped types. A mapped type is `{ [K in Keys]: T }`.
+## Rule Details
 
-## Why
+A mapped type is `{ [K in Keys]: T }`.
 
 A mapped type generates its members from another type, so nothing in the source
 lists what the object actually has. To answer "does this have a `title`?" a
@@ -19,23 +19,6 @@ exactly the guarantee a dictionary cannot make. Concrete fields make the shape
 readable in place; a `Map` models a real dictionary honestly, with a lookup that
 returns `undefined` when the key is absent.
 
-## Examples
-
-```ts
-// BAD
-type Flags = { [K in FeatureName]: boolean };
-
-// GOOD
-interface Flags {
-  darkMode: boolean;
-  betaSearch: boolean;
-}
-
-const overrides = new Map<string, boolean>();
-```
-
-## Notes
-
 - Fires on every mapped type regardless of modifiers — `?`, `-?`, `readonly`,
   `-readonly`, and a renaming `as` clause are all still mapped types.
 - Fires once per mapped type, on the whole `{ … }` construct.
@@ -44,3 +27,26 @@ const overrides = new Map<string, boolean>();
   independent.
 - Index signatures are a different node and are handled by
   `no-index-signatures`, not here.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+type Flags = { [K in FeatureName]: boolean };
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+interface Flags {
+  darkMode: boolean;
+  betaSearch: boolean;
+}
+
+const overrides = new Map<string, boolean>();
+```
+
+## When Not To Use It
+
+If you generate object types from a key union and accept that readers have to
+evaluate the mapping to see the members, turn this rule off. Every mapped type
+fires, whatever its modifiers, so there is no partial setting.

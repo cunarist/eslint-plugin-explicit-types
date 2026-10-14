@@ -6,10 +6,9 @@
 
 <!-- end auto-generated rule header -->
 
-Disallow conditional types and the `infer` keyword. Conditional types are `T
-extends U ? A : B`.
+## Rule Details
 
-## Why
+Conditional types are `T extends U ? A : B`.
 
 A conditional type is a branch evaluated by the compiler, not by the reader. To
 know what `Unwrap<Response>` is, you have to hold `Response` in your head, match
@@ -24,19 +23,6 @@ conditional type does not describe a shape; it describes a computation that
 produces one. Writing the results out and naming them puts the answer where the
 reader already is.
 
-## Examples
-
-```ts
-// BAD
-type Unwrap<T> = T extends Array<infer E> ? E : never;
-type Items = Unwrap<TaskSnapshot[]>;
-
-// GOOD
-type Items = TaskSnapshot;
-```
-
-## Notes
-
 - Both halves of the pair fire independently. `T extends Array<infer E> ? E : X`
   reports twice — once for the conditional, once for the `infer`.
 - Nested conditionals report once each, so a chain of three reports three times.
@@ -49,3 +35,23 @@ type Items = TaskSnapshot;
 - A generic type alias without a condition is fine.
   `type Wrapper<T> = { value: T }` parameterises a shape rather than computing
   one.
+
+Examples of **incorrect** code for this rule:
+
+```ts
+type Unwrap<T> = T extends Array<infer E> ? E : never;
+type Items = Unwrap<TaskSnapshot[]>;
+```
+
+Examples of **correct** code for this rule:
+
+```ts
+type Items = TaskSnapshot;
+```
+
+## When Not To Use It
+
+If your types are meant to be computed from their arguments — a conditional or
+`infer` whose result changes with the input is the point of the type — this rule
+rejects that outright, with no exemption. Turn it off where you accept that
+readers have to evaluate the condition to know the result.
