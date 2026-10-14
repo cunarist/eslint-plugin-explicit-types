@@ -21,7 +21,7 @@ export const upperSnakeStringUnions: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Requires every string literal member of a union type to be UPPER_SNAKE_CASE.",
-      url: docsUrl("naming", "upper-snake-string-unions"),
+      url: docsUrl("upper-snake-string-unions"),
     },
     schema: [],
     messages: {

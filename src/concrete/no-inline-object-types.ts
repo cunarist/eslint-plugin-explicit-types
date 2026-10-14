@@ -15,7 +15,7 @@ export const noInlineObjectTypes: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects an object shape written inline in a type position.",
-      url: docsUrl("concrete", "no-inline-object-types"),
+      url: docsUrl("no-inline-object-types"),
     },
     schema: [],
     messages: {

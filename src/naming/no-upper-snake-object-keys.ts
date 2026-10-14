@@ -18,7 +18,7 @@ export const noUpperSnakeObjectKeys: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects UPPER_SNAKE_CASE object keys and type members.",
-      url: docsUrl("naming", "no-upper-snake-object-keys"),
+      url: docsUrl("no-upper-snake-object-keys"),
     },
     schema: [],
     messages: {

@@ -13,7 +13,7 @@ export const noTypeofType: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects `typeof value` used in a type position.",
-      url: docsUrl("concrete", "no-typeof-type"),
+      url: docsUrl("no-typeof-type"),
     },
     schema: [],
     messages: {

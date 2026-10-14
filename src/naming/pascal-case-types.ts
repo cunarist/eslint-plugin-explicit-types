@@ -19,7 +19,7 @@ export const pascalCaseTypes: ExplicitRule = {
     docs: {
       description:
         "Requires class, interface, type alias, and enum declaration names to be PascalCase.",
-      url: docsUrl("naming", "pascal-case-types"),
+      url: docsUrl("pascal-case-types"),
     },
     schema: [],
     messages: {

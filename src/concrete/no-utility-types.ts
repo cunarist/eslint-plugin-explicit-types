@@ -40,7 +40,7 @@ export const noUtilityTypes: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects the 22 built-in TypeScript utility types.",
-      url: docsUrl("concrete", "no-utility-types"),
+      url: docsUrl("no-utility-types"),
     },
     schema: [],
     messages: {

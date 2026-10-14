@@ -14,7 +14,7 @@ export const noMappedTypes: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects mapped types, `{ [K in Keys]: T }`.",
-      url: docsUrl("concrete", "no-mapped-types"),
+      url: docsUrl("no-mapped-types"),
     },
     schema: [],
     messages: {

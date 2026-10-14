@@ -30,7 +30,7 @@ export const noOptionalNull: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects a binding that is both marked `?` and unioned with `null`.",
-      url: docsUrl("absence", "no-optional-null"),
+      url: docsUrl("no-optional-null"),
     },
     schema: [],
     messages: {

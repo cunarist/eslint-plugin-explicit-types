@@ -3,15 +3,16 @@ description: Kebab-case files named after rule ids, index.ts entries, colocated 
 ---
 
 **Everything under `src/` is named in kebab-case**, so a file name is the rule
-id it implements — `no-utility-types` is in `no-utility-types.ts`, documented in
-`no-utility-types.md`, tested in `no-utility-types.test.ts`, and no translation
+id it implements — `no-utility-types` is in `no-utility-types.ts`, tested in
+`no-utility-types.test.ts`, and documented in `docs/rules/no-utility-types.md`
+(the ESLint plugin convention, which `meta.docs.url` links to). No translation
 step sits between the diagnostic a user sees and the file they open.
 
     src/index.ts                         the plugin and its configs
     src/concrete/index.ts                the preset's rule map
     src/concrete/no-utility-types.ts
-    src/concrete/no-utility-types.md
     src/concrete/no-utility-types.test.ts
+    docs/rules/no-utility-types.md       the rule's docs page
 
 Every directory's entry file is `index.ts`, the Node convention. `src/index.ts`
 is the only package entry; a preset's `index.ts` exports its rule `Map` and

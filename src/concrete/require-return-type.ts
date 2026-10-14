@@ -37,7 +37,7 @@ export const requireReturnType: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Requires a named function to declare its return type.",
-      url: docsUrl("concrete", "require-return-type"),
+      url: docsUrl("require-return-type"),
     },
     schema: [],
     messages: {

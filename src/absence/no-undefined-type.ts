@@ -14,7 +14,7 @@ export const noUndefinedType: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Rejects the `undefined` keyword in any type position.",
-      url: docsUrl("absence", "no-undefined-type"),
+      url: docsUrl("no-undefined-type"),
     },
     schema: [],
     messages: {
