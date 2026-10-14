@@ -1,7 +1,7 @@
 # no-utility-types
 
-Rejects the 22 built-in TypeScript utility types — `Partial`, `Record`,
-`ReturnType`, `Omit`, and the rest.
+Disallow the built-in TypeScript utility types. All 22 are reported: `Partial`,
+`Record`, `ReturnType`, `Omit`, and the rest.
 
 ## Why
 

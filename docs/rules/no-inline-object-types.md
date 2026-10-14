@@ -1,7 +1,7 @@
 # no-inline-object-types
 
-Rejects an object shape written inline in a type position — `{ a: string }` —
-wherever it appears, including inside a type alias.
+Disallow inline object type literals. An object shape such as `{ a: string }` is
+reported wherever it appears in a type position, including inside a type alias.
 
 ## Why
 

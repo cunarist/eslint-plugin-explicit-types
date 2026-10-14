@@ -24,7 +24,7 @@ export const noTypeAssertion: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects type assertions, `value as T` and `<T>value`. `as const` is allowed.",
+      description: "Disallow type assertions other than `as const`",
       url: docsUrl("no-type-assertion"),
     },
     schema: [],

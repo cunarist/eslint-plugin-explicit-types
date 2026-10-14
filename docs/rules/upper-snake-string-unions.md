@@ -1,7 +1,7 @@
 # upper-snake-string-unions
 
-Requires every string literal member of a union type alias to match
-`/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/` — UPPER_SNAKE_CASE.
+Enforce UPPER_SNAKE_CASE for string literal union members. Every string literal
+member of a union must match `/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/`.
 
 ## Why
 

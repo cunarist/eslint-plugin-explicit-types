@@ -13,7 +13,7 @@ export const noConditionalTypes: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects conditional types and the `infer` keyword.",
+      description: "Disallow conditional types and the `infer` keyword",
       url: docsUrl("no-conditional-types"),
     },
     schema: [],

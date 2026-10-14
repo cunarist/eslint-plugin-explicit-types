@@ -13,7 +13,7 @@ export const noUndefinedType: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects the `undefined` keyword in any type position.",
+      description: "Disallow the `undefined` keyword in type positions",
       url: docsUrl("no-undefined-type"),
     },
     schema: [],

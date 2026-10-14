@@ -1,6 +1,6 @@
 # no-enum
 
-Rejects every `enum` declaration, including `const enum` and string enums.
+Disallow `enum` declarations. This includes `const enum` and string enums.
 
 ## Why
 

@@ -1,6 +1,6 @@
 # no-mapped-types
 
-Rejects mapped types — `{ [K in Keys]: T }`.
+Disallow mapped types. A mapped type is `{ [K in Keys]: T }`.
 
 ## Why
 

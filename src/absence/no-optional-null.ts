@@ -29,7 +29,7 @@ export const noOptionalNull: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects a binding that is both marked `?` and unioned with `null`.",
+      description: "Disallow combining an optional `?` with `| null`",
       url: docsUrl("no-optional-null"),
     },
     schema: [],

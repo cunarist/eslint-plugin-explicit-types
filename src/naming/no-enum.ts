@@ -14,7 +14,7 @@ export const noEnum: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects every `enum` declaration, including `const enum` and string enums.",
+      description: "Disallow `enum` declarations",
       url: docsUrl("no-enum"),
     },
     schema: [],

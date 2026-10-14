@@ -1,7 +1,7 @@
 # no-upper-snake-object-keys
 
-Rejects UPPER_SNAKE_CASE object literal keys and interface or type-literal
-members.
+Disallow UPPER_SNAKE_CASE object keys and type members. This covers object
+literal keys and interface or type-literal members.
 
 ## Why
 

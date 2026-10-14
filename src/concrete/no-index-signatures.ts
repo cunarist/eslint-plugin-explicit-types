@@ -12,7 +12,7 @@ export const noIndexSignatures: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects index signatures, `{ [key: string]: T }`.",
+      description: "Disallow index signatures",
       url: docsUrl("no-index-signatures"),
     },
     schema: [],

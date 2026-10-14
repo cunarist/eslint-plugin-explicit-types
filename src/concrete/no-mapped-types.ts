@@ -13,7 +13,7 @@ export const noMappedTypes: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects mapped types, `{ [K in Keys]: T }`.",
+      description: "Disallow mapped types",
       url: docsUrl("no-mapped-types"),
     },
     schema: [],

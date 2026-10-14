@@ -1,7 +1,7 @@
 # no-type-assertion
 
-Rejects type assertions — `value as T` and the angle-bracket `<T>value`.
-`as const` is allowed.
+Disallow type assertions other than `as const`. Both `value as T` and the
+angle-bracket `<T>value` are reported.
 
 ## Why
 

@@ -1,6 +1,6 @@
 # no-index-signatures
 
-Rejects index signatures — `{ [key: string]: T }`.
+Disallow index signatures. An index signature is `{ [key: string]: T }`.
 
 ## Why
 

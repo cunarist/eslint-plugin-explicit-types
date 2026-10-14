@@ -1,6 +1,6 @@
 # no-typeof-type
 
-Rejects `typeof value` used in a type position.
+Disallow `typeof` in type positions.
 
 ## Why
 

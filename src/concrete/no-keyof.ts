@@ -12,7 +12,7 @@ export const noKeyof: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects the `keyof` type operator in any type position.",
+      description: "Disallow the `keyof` type operator",
       url: docsUrl("no-keyof"),
     },
     schema: [],

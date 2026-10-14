@@ -1,6 +1,7 @@
 # no-conditional-types
 
-Rejects conditional types — `T extends U ? A : B` — and the `infer` keyword.
+Disallow conditional types and the `infer` keyword. Conditional types are `T
+extends U ? A : B`.
 
 ## Why
 

@@ -1,6 +1,6 @@
 # no-keyof
 
-Rejects the `keyof` type operator in any type position.
+Disallow the `keyof` type operator.
 
 ## Why
 

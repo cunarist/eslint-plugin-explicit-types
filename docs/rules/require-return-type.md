@@ -1,7 +1,7 @@
 # require-return-type
 
-Requires every named function to declare its return type. Callbacks passed
-inline are exempt.
+Require explicit return types on named functions. Callbacks passed inline are
+exempt.
 
 ## Why
 

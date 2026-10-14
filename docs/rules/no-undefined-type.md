@@ -1,6 +1,6 @@
 # no-undefined-type
 
-Rejects the `undefined` keyword in any type position.
+Disallow the `undefined` keyword in type positions.
 
 ## Why
 

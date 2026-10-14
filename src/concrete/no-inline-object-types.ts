@@ -14,7 +14,7 @@ export const noInlineObjectTypes: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Rejects an object shape written inline in a type position.",
+      description: "Disallow inline object type literals",
       url: docsUrl("no-inline-object-types"),
     },
     schema: [],

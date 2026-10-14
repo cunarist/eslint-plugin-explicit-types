@@ -1,6 +1,7 @@
 # no-optional-null
 
-Rejects a binding that is both marked `?` and unioned with `null`.
+Disallow combining an optional `?` with `| null`. A binding marked `?` must not
+also be unioned with `null`.
 
 ## Why
 

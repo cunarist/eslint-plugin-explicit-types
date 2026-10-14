@@ -1,7 +1,8 @@
 # pascal-case-types
 
-Requires class, interface, type alias, and enum declaration names to match
-`/^[A-Z][A-Za-z0-9]*$/` — an uppercase first letter and no underscores.
+Enforce PascalCase names for classes, interfaces, type aliases, and enums. Names
+must match `/^[A-Z][A-Za-z0-9]*$/`: an uppercase first letter and no
+underscores.
 
 ## Why
 
