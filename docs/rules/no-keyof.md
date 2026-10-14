@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/no-keyof
 
-📝 Rejects the `keyof` type operator in any type position.
+📝 Disallow the `keyof` type operator.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
 

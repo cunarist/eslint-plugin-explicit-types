@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/no-upper-snake-object-keys
 
-📝 Rejects UPPER_SNAKE_CASE object keys and type members.
+📝 Disallow UPPER_SNAKE_CASE object keys and type members.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🔤 `naming`, ✅ `recommended`.
 

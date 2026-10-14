@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/require-return-type
 
-📝 Requires a named function to declare its return type.
+📝 Require explicit return types on named functions.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
 

@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/pascal-case-types
 
-📝 Requires class, interface, type alias, and enum declaration names to be PascalCase.
+📝 Enforce PascalCase names for classes, interfaces, type aliases, and enums.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🔤 `naming`, ✅ `recommended`.
 

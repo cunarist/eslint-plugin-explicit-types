@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/no-index-signatures
 
-📝 Rejects index signatures, `{ [key: string]: T }`.
+📝 Disallow index signatures.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
 

@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/no-optional-null
 
-📝 Rejects a binding that is both marked `?` and unioned with `null`.
+📝 Disallow combining an optional `?` with `| null`.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🫙 `absence`, ✅ `recommended`.
 

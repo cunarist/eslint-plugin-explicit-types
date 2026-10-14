@@ -1,6 +1,6 @@
 # @cunarist/explicit-types/no-mapped-types
 
-📝 Rejects mapped types, `{ [K in Keys]: T }`.
+📝 Disallow mapped types.
 
 💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
 
