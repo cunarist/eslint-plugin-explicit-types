@@ -2,6 +2,12 @@
   "name": "@cunarist/eslint-plugin-explicit-types",
   "version": "0.6.0",
   "description": "ESLint and Oxlint rules that keep TypeScript types written out rather than derived, and names carrying their contract.",
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "eslintplugin",
+    "oxlint"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
