@@ -1,4 +1,10 @@
-# no-inline-object-types
+# @cunarist/explicit-types/no-inline-object-types
+
+📝 Rejects an object shape written inline in a type position.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow inline object type literals. An object shape such as `{ a: string }` is
 reported wherever it appears in a type position, including inside a type alias.

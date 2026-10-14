@@ -1,4 +1,10 @@
-# no-utility-types
+# @cunarist/explicit-types/no-utility-types
+
+📝 Rejects the 22 built-in TypeScript utility types.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow the built-in TypeScript utility types. All 22 are reported: `Partial`,
 `Record`, `ReturnType`, `Omit`, and the rest.

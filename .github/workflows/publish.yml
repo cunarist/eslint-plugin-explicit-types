@@ -32,6 +32,7 @@ jobs:
       - run: vp test -t " eslint "
       - run: vp test -t " oxlint "
       - run: vp pack
+      - run: npm run docs -- --check
       # Only for the first release, before npm allows a trusted publisher on
       # the package. Delete the secret once trusted publishing is set up.
       - name: Use the bootstrap token, if one is set

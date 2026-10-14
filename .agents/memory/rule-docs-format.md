@@ -2,7 +2,8 @@
 description: Every rule has a .md beside it with exactly Why, Examples, Notes; README links, never repeats
 ---
 
-Every rule gets a `.md` beside it with exactly these sections:
+Every rule gets a `docs/rules/<rule>.md` with exactly these sections, below the
+header that `npm run docs` generates ([[generated-docs]]):
 
 ````markdown
 # rule-name
@@ -25,8 +26,8 @@ it does catch, what it cannot see. These double as the test list.
 ````
 
 `README.md` links to each of these and never repeats them; per preset it carries
-one paragraph of philosophy, one representative BAD/GOOD, and a table of
-`rule → what it catches`. No contributor-facing content — library users only.
+one paragraph of philosophy and one representative BAD/GOOD; the rule table is
+the single generated list under `## Rules`. No contributor-facing content — library users only.
 
 `vp fmt` reformats Markdown, tables included. Keep ` ```ts ` examples valid at
 top level; wrap a bare `readonly` or `private` modifier in a `class … { }` body.

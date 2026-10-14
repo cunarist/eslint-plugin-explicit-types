@@ -1,4 +1,10 @@
-# no-conditional-types
+# @cunarist/explicit-types/no-conditional-types
+
+📝 Rejects conditional types and the `infer` keyword.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow conditional types and the `infer` keyword. Conditional types are `T
 extends U ? A : B`.

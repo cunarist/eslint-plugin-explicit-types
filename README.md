@@ -94,18 +94,6 @@ interface Draft {
 }
 ```
 
-| Rule                                                             | Catches                                       |
-| ---------------------------------------------------------------- | --------------------------------------------- |
-| [`no-utility-types`](docs/rules/no-utility-types.md)             | `Partial`, `Record`, `ReturnType`, 19 more    |
-| [`no-keyof`](docs/rules/no-keyof.md)                             | A union nobody wrote down                     |
-| [`no-typeof-type`](docs/rules/no-typeof-type.md)                 | A type read backwards out of a value          |
-| [`no-mapped-types`](docs/rules/no-mapped-types.md)               | `{ [K in Keys]: T }`                          |
-| [`no-index-signatures`](docs/rules/no-index-signatures.md)       | `{ [key: string]: T }`, where every read lies |
-| [`no-inline-object-types`](docs/rules/no-inline-object-types.md) | `{ a: string }` with no name                  |
-| [`no-conditional-types`](docs/rules/no-conditional-types.md)     | `T extends U ? A : B`, and `infer`            |
-| [`require-return-type`](docs/rules/require-return-type.md)       | A function whose contract is in its body      |
-| [`no-type-assertion`](docs/rules/no-type-assertion.md)           | `x as T`, overruling the compiler             |
-
 `as const` and `satisfies` are allowed — both narrow rather than overrule.
 Indexed access is too: `Options["retries"]` is how you name a type a library
 already wrote.
@@ -122,13 +110,6 @@ enum Status {
 // GOOD
 type Status = "PENDING" | "DONE";
 ```
-
-| Rule                                                                     | Catches                            |
-| ------------------------------------------------------------------------ | ---------------------------------- |
-| [`pascal-case-types`](docs/rules/pascal-case-types.md)                   | A type name that isn't PascalCase  |
-| [`upper-snake-string-unions`](docs/rules/upper-snake-string-unions.md)   | `"pending"` where `"PENDING"` fits |
-| [`no-upper-snake-object-keys`](docs/rules/no-upper-snake-object-keys.md) | A union used as object keys        |
-| [`no-enum`](docs/rules/no-enum.md)                                       | `enum`, including `const enum`     |
 
 These interlock: `no-enum` removes the construct, `upper-snake-string-unions`
 governs the union that replaces it, and `no-upper-snake-object-keys` keeps those
@@ -157,11 +138,6 @@ interface StoredSettings {
 }
 ```
 
-| Rule                                                   | Catches                                |
-| ------------------------------------------------------ | -------------------------------------- |
-| [`no-undefined-type`](docs/rules/no-undefined-type.md) | The `undefined` keyword in any type    |
-| [`no-optional-null`](docs/rules/no-optional-null.md)   | `a?: T \| null`, two ways to say empty |
-
 `?` is the undefined type, so there is no reason to write the keyword as well.
 And a value that can be empty in two ways has no definite empty value. A member
 or parameter says absence with `?`; a return type or variable, which cannot take
@@ -180,6 +156,38 @@ function open(path?: string | undefined): void {} // BAD - `?` already said it
 
 One caveat before adopting: a key missing from JSON is `undefined` at runtime,
 not `null`, so returning `| null` means normalising where you parse data.
+
+## Rules
+
+<!-- prettier-ignore-start -->
+<!-- begin auto-generated rules list -->
+
+💼 [Configurations](https://github.com/cunarist/eslint-plugin-explicit-types#setup) enabled in.\
+🫙 Set in the `absence` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).\
+🧱 Set in the `concrete` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).\
+🔤 Set in the `naming` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).\
+✅ Set in the `recommended` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
+
+| Name                                                                   | Description                                                                         | 💼   |
+| :--------------------------------------------------------------------- | :---------------------------------------------------------------------------------- | :--- |
+| [no-conditional-types](docs/rules/no-conditional-types.md)             | Rejects conditional types and the `infer` keyword.                                  | 🧱 ✅ |
+| [no-enum](docs/rules/no-enum.md)                                       | Rejects every `enum` declaration, including `const enum` and string enums.          | 🔤 ✅ |
+| [no-index-signatures](docs/rules/no-index-signatures.md)               | Rejects index signatures, `{ [key: string]: T }`.                                   | 🧱 ✅ |
+| [no-inline-object-types](docs/rules/no-inline-object-types.md)         | Rejects an object shape written inline in a type position.                          | 🧱 ✅ |
+| [no-keyof](docs/rules/no-keyof.md)                                     | Rejects the `keyof` type operator in any type position.                             | 🧱 ✅ |
+| [no-mapped-types](docs/rules/no-mapped-types.md)                       | Rejects mapped types, `{ [K in Keys]: T }`.                                         | 🧱 ✅ |
+| [no-optional-null](docs/rules/no-optional-null.md)                     | Rejects a binding that is both marked `?` and unioned with `null`.                  | 🫙 ✅ |
+| [no-type-assertion](docs/rules/no-type-assertion.md)                   | Rejects type assertions, `value as T` and `<T>value`. `as const` is allowed.        | 🧱 ✅ |
+| [no-typeof-type](docs/rules/no-typeof-type.md)                         | Rejects `typeof value` used in a type position.                                     | 🧱 ✅ |
+| [no-undefined-type](docs/rules/no-undefined-type.md)                   | Rejects the `undefined` keyword in any type position.                               | 🫙 ✅ |
+| [no-upper-snake-object-keys](docs/rules/no-upper-snake-object-keys.md) | Rejects UPPER_SNAKE_CASE object keys and type members.                              | 🔤 ✅ |
+| [no-utility-types](docs/rules/no-utility-types.md)                     | Rejects the 22 built-in TypeScript utility types.                                   | 🧱 ✅ |
+| [pascal-case-types](docs/rules/pascal-case-types.md)                   | Requires class, interface, type alias, and enum declaration names to be PascalCase. | 🔤 ✅ |
+| [require-return-type](docs/rules/require-return-type.md)               | Requires a named function to declare its return type.                               | 🧱 ✅ |
+| [upper-snake-string-unions](docs/rules/upper-snake-string-unions.md)   | Requires every string literal member of a union type to be UPPER_SNAKE_CASE.        | 🔤 ✅ |
+
+<!-- end auto-generated rules list -->
+<!-- prettier-ignore-end -->
 
 ## How opinionated is this?
 

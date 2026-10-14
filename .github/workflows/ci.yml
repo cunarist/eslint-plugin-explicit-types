@@ -21,5 +21,9 @@ jobs:
       - name: Rule tests under Oxlint's RuleTester
         run: vp test -t " oxlint "
       - run: vp pack
+      # The rules list in README.md and each rule doc's header are generated
+      # from the built plugin; fail if they no longer match it.
+      - name: Generated docs are current
+        run: npm run docs -- --check
       # The tarball the publish workflow would upload, without uploading it.
       - run: npm pack --dry-run

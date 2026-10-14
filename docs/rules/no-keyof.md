@@ -1,4 +1,10 @@
-# no-keyof
+# @cunarist/explicit-types/no-keyof
+
+📝 Rejects the `keyof` type operator in any type position.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow the `keyof` type operator.
 

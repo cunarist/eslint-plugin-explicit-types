@@ -1,4 +1,10 @@
-# no-type-assertion
+# @cunarist/explicit-types/no-type-assertion
+
+📝 Rejects type assertions, `value as T` and `<T>value`. `as const` is allowed.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow type assertions other than `as const`. Both `value as T` and the
 angle-bracket `<T>value` are reported.

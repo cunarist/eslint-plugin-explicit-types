@@ -1,4 +1,10 @@
-# upper-snake-string-unions
+# @cunarist/explicit-types/upper-snake-string-unions
+
+📝 Requires every string literal member of a union type to be UPPER_SNAKE_CASE.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🔤 `naming`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Enforce UPPER_SNAKE_CASE for string literal union members. Every string literal
 member of a union must match `/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/`.

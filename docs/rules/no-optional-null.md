@@ -1,4 +1,10 @@
-# no-optional-null
+# @cunarist/explicit-types/no-optional-null
+
+📝 Rejects a binding that is both marked `?` and unioned with `null`.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🫙 `absence`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow combining an optional `?` with `| null`. A binding marked `?` must not
 also be unioned with `null`.

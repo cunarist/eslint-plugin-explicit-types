@@ -1,4 +1,10 @@
-# no-undefined-type
+# @cunarist/explicit-types/no-undefined-type
+
+📝 Rejects the `undefined` keyword in any type position.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🫙 `absence`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow the `undefined` keyword in type positions.
 

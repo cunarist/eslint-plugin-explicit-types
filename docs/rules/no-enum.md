@@ -1,4 +1,10 @@
-# no-enum
+# @cunarist/explicit-types/no-enum
+
+📝 Rejects every `enum` declaration, including `const enum` and string enums.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🔤 `naming`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow `enum` declarations. This includes `const enum` and string enums.
 

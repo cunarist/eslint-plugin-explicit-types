@@ -1,4 +1,10 @@
-# no-typeof-type
+# @cunarist/explicit-types/no-typeof-type
+
+📝 Rejects `typeof value` used in a type position.
+
+💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+
+<!-- end auto-generated rule header -->
 
 Disallow `typeof` in type positions.
 
