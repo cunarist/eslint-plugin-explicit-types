@@ -50,10 +50,11 @@ The same works in a plain `oxlint.config.ts`.
 
 ### ESLint
 
-ESLint 9 flat config, with `typescript-eslint`'s parser for TypeScript files:
+ESLint 9 flat config in TypeScript (needs `jiti` installed), with
+`typescript-eslint`'s parser for TypeScript files:
 
-```js
-// eslint.config.js
+```ts
+// eslint.config.ts
 import explicitTypes from "@cunarist/eslint-plugin-explicit-types";
 import tseslint from "typescript-eslint";
 
