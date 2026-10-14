@@ -4,8 +4,7 @@
  *
  * One plugin, namespace `@cunarist/explicit-types`, so a rule id reads
  * `@cunarist/explicit-types/no-keyof`. The rules come in three presets —
- * `concrete`, `naming`, and `absence` — each exported as an ESLint flat config,
- * plus `recommended` for all three.
+ * `concrete`, `naming`, and `absence` — each exported as an ESLint flat config.
  *
  * @module
  */
@@ -47,9 +46,6 @@ function presetConfig(preset: string, rules: Map<string, ExplicitRule>): ConfigO
   };
 }
 
-/** Every rule in the plugin, as an ESLint flat config. */
-export const recommendedConfig: ConfigObject = presetConfig("recommended", allRules);
-
 /** The `concrete` preset: write the type out instead of deriving it. */
 export const concreteConfig: ConfigObject = presetConfig("concrete", concreteRules);
 
@@ -60,7 +56,6 @@ export const namingConfig: ConfigObject = presetConfig("naming", namingRules);
 export const absenceConfig: ConfigObject = presetConfig("absence", absenceRules);
 
 plugin.configs = Object.fromEntries([
-  ["recommended", recommendedConfig],
   ["concrete", concreteConfig],
   ["naming", namingConfig],
   ["absence", absenceConfig],

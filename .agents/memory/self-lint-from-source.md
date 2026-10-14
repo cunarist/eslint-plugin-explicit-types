@@ -2,8 +2,8 @@
 description: The repo lints itself from src/index.ts as a jsPlugin, with nothing excluded
 ---
 
-`vite.config.ts` loads `./src/index.ts` as a `jsPlugins` entry and spreads
-`recommendedConfig.rules`, so a new rule applies at once to the code that
+`vite.config.ts` loads `./src/index.ts` as a `jsPlugins` entry and spreads the
+`rules` of all three configs, so a new rule applies at once to the code that
 implements it. Oxlint strips the types itself on Node 24, `#` imports and the
 JSON import of `package.json` included; no build runs first.
 

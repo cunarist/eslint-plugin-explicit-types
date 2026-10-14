@@ -9,8 +9,9 @@ ESLint's convention is one plugin per package, named from the package:
 
 The Deno package was three plugins — `explicit-concrete`, `explicit-naming`,
 `explicit-absence` — because Deno's plugin API had no presets. Those survive as
-flat configs: `concreteConfig`, `namingConfig`, `absenceConfig`, and
-`recommendedConfig` for all three, exported by name and on `plugin.configs`.
+flat configs: `concreteConfig`, `namingConfig` and `absenceConfig`, exported by
+name and on `plugin.configs`. There is no `recommended` all-rules config; a user
+who wants every rule lists all three.
 ESLint users list a config; Oxlint, whose plugins have no `configs` and turn no
 rule on by themselves, spreads a config's `rules` next to
 `jsPlugins: ["@cunarist/eslint-plugin-explicit-types"]`.

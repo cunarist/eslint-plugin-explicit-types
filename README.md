@@ -14,14 +14,13 @@ npm install --save-dev @cunarist/eslint-plugin-explicit-types
 
 One plugin, namespace `@cunarist/explicit-types`, so every rule id reads
 `@cunarist/explicit-types/<rule>`. The rules come in three presets, each
-exported as a flat config, plus `recommended` for all fifteen:
+exported as a flat config. Use the ones you want, or all three:
 
-| Preset     | Export              | Also at                      |
-| ---------- | ------------------- | ---------------------------- |
-| all three  | `recommendedConfig` | `plugin.configs.recommended` |
-| `concrete` | `concreteConfig`    | `plugin.configs.concrete`    |
-| `naming`   | `namingConfig`      | `plugin.configs.naming`      |
-| `absence`  | `absenceConfig`     | `plugin.configs.absence`     |
+| Preset     | Export           | Also at                   |
+| ---------- | ---------------- | ------------------------- |
+| `concrete` | `concreteConfig` | `plugin.configs.concrete` |
+| `naming`   | `namingConfig`   | `plugin.configs.naming`   |
+| `absence`  | `absenceConfig`  | `plugin.configs.absence`  |
 
 ### Oxlint, through Vite+
 
@@ -30,7 +29,11 @@ list, so spread a preset's `rules`:
 
 ```ts
 // vite.config.ts
-import { concreteConfig, namingConfig } from "@cunarist/eslint-plugin-explicit-types";
+import {
+  absenceConfig,
+  concreteConfig,
+  namingConfig,
+} from "@cunarist/eslint-plugin-explicit-types";
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
@@ -39,6 +42,7 @@ export default defineConfig({
     rules: {
       ...concreteConfig.rules,
       ...namingConfig.rules,
+      ...absenceConfig.rules,
       // Later keys win, so turn one off by id.
       "@cunarist/explicit-types/no-type-assertion": "off",
     },
@@ -60,7 +64,9 @@ import tseslint from "typescript-eslint";
 
 export default [
   { files: ["**/*.ts"], languageOptions: { parser: tseslint.parser } },
-  explicitTypes.configs.recommended,
+  explicitTypes.configs.concrete,
+  explicitTypes.configs.naming,
+  explicitTypes.configs.absence,
   { rules: { "@cunarist/explicit-types/no-type-assertion": "off" } },
 ];
 ```
