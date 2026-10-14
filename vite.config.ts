@@ -97,6 +97,10 @@ export default defineConfig({
       "import/no-relative-parent-imports": "error",
       "import/no-self-import": "error",
 
+      // Org-wide strictness, set per repo rather than from a shared config.
+      // `eqeqeq` and `typescript/no-explicit-any` are already on above.
+      curly: "error",
+
       // Visitor parameters are annotated by hand; these catch one left `any`.
       "typescript/no-unsafe-argument": "error",
       "typescript/no-unsafe-assignment": "error",

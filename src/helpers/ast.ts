@@ -29,7 +29,9 @@ export function typeName(node: TypeNameNode): string | null {
       return "this";
     case "TSQualifiedName": {
       const left = typeName(node.left);
-      if (left === null) return null;
+      if (left === null) {
+        return null;
+      }
       return `${left}.${node.right.name}`;
     }
     default:
@@ -40,7 +42,9 @@ export function typeName(node: TypeNameNode): string | null {
 /** The last segment of a qualified type name, e.g. `A.B.Partial` -> `Partial`. */
 export function typeNameTail(node: TypeNameNode): string | null {
   const name = typeName(node);
-  if (name === null) return null;
+  if (name === null) {
+    return null;
+  }
   const segments = name.split(".");
   return segments[segments.length - 1] ?? null;
 }
@@ -50,12 +54,16 @@ export function typeNameTail(node: TypeNameNode): string | null {
  * be read from syntax alone — a computed key such as `[token]`.
  */
 export function keyText(key: TSESTree.Node): string | null {
-  if (key.type === "Identifier") return key.name;
+  if (key.type === "Identifier") {
+    return key.name;
+  }
   return literalString(key);
 }
 
 /** The string value of a literal node, or `null` if it is not a string. */
 export function literalString(node: TSESTree.Node): string | null {
-  if (node.type !== "Literal") return null;
+  if (node.type !== "Literal") {
+    return null;
+  }
   return typeof node.value === "string" ? node.value : null;
 }

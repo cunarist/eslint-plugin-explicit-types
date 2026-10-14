@@ -46,9 +46,13 @@ export const noOptionalNull: ExplicitRule = {
         const parent = node.parent;
         // Step past a union so `T | null` reads as the annotation itself.
         const annotation = parent.type === "TSUnionType" ? parent.parent : parent;
-        if (annotation.type !== "TSTypeAnnotation") return;
+        if (annotation.type !== "TSTypeAnnotation") {
+          return;
+        }
         const binding = optionalBinding(annotation);
-        if (binding === null) return;
+        if (binding === null) {
+          return;
+        }
         const name = binding.type === "Identifier" ? binding.name : keyText(binding);
         if (name === null) {
           context.report({ node, messageId: "unnamed" });

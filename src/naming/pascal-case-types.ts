@@ -30,8 +30,12 @@ export const pascalCaseTypes: ExplicitRule = {
   create(context) {
     /** Report an identifier whose name is not PascalCase. */
     function check(identifier: TSESTree.Identifier | null, kind: string): void {
-      if (identifier === null) return;
-      if (PASCAL_CASE_PATTERN.test(identifier.name)) return;
+      if (identifier === null) {
+        return;
+      }
+      if (PASCAL_CASE_PATTERN.test(identifier.name)) {
+        return;
+      }
       context.report({
         node: identifier,
         messageId: "notPascalCase",

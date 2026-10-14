@@ -29,9 +29,13 @@ export const noUpperSnakeObjectKeys: ExplicitRule = {
   create(context) {
     function check(key: TSESTree.Node, computed: boolean): void {
       // A computed key cannot be judged from syntax alone.
-      if (computed) return;
+      if (computed) {
+        return;
+      }
       const text = keyText(key);
-      if (text === null || !UPPER_SNAKE_CASE_PATTERN.test(text)) return;
+      if (text === null || !UPPER_SNAKE_CASE_PATTERN.test(text)) {
+        return;
+      }
       context.report({ node: key, messageId: "upperSnakeKey", data: { text } });
     }
 
@@ -39,7 +43,9 @@ export const noUpperSnakeObjectKeys: ExplicitRule = {
       Property(node: TSESTree.Property): void {
         // `Property` also covers destructuring patterns, which bind names
         // rather than declare keys.
-        if (node.parent.type !== "ObjectExpression") return;
+        if (node.parent.type !== "ObjectExpression") {
+          return;
+        }
         check(node.key, node.computed);
       },
       TSPropertySignature(node: TSESTree.TSPropertySignature): void {

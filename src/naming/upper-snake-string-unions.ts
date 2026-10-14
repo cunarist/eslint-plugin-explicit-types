@@ -33,10 +33,16 @@ export const upperSnakeStringUnions: ExplicitRule = {
     return {
       TSUnionType(node: TSESTree.TSUnionType): void {
         for (const member of node.types) {
-          if (member.type !== "TSLiteralType") continue;
+          if (member.type !== "TSLiteralType") {
+            continue;
+          }
           const value = literalString(member.literal);
-          if (value === null) continue;
-          if (UPPER_SNAKE_CASE_PATTERN.test(value)) continue;
+          if (value === null) {
+            continue;
+          }
+          if (UPPER_SNAKE_CASE_PATTERN.test(value)) {
+            continue;
+          }
           context.report({
             node: member,
             messageId: "notUpperSnake",

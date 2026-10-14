@@ -15,7 +15,9 @@ type FunctionNode = TSESTree.FunctionLike;
  */
 function isNamed(node: FunctionNode): boolean {
   const parent = node.parent;
-  if (parent.type === "VariableDeclarator") return true;
+  if (parent.type === "VariableDeclarator") {
+    return true;
+  }
   if (parent.type === "MethodDefinition" || parent.type === "TSAbstractMethodDefinition") {
     return !UNANNOTATABLE_METHOD_KINDS.includes(parent.kind);
   }
@@ -47,8 +49,12 @@ export const requireReturnType: ExplicitRule = {
   },
   create(context) {
     function check(node: FunctionNode, always: boolean): void {
-      if (!always && !isNamed(node)) return;
-      if (node.returnType) return;
+      if (!always && !isNamed(node)) {
+        return;
+      }
+      if (node.returnType) {
+        return;
+      }
       context.report({ node: node.id ?? node, messageId: "function" });
     }
 
@@ -69,7 +75,9 @@ export const requireReturnType: ExplicitRule = {
         check(node, false);
       },
       TSMethodSignature(node: TSESTree.TSMethodSignature): void {
-        if (node.returnType) return;
+        if (node.returnType) {
+          return;
+        }
         context.report({ node: node.key, messageId: "methodSignature" });
       },
     };

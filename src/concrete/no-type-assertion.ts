@@ -5,7 +5,9 @@ import { docsUrl, type ExplicitRule } from "#helpers";
 /** Whether a `TSAsExpression`'s annotation is the `const` of `as const`. */
 function isConstAssertion(node: TSESTree.TSAsExpression): boolean {
   const annotation = node.typeAnnotation;
-  if (annotation.type !== "TSTypeReference") return false;
+  if (annotation.type !== "TSTypeReference") {
+    return false;
+  }
   const name = annotation.typeName;
   return name.type === "Identifier" && name.name === "const";
 }
@@ -36,7 +38,9 @@ export const noTypeAssertion: ExplicitRule = {
   create(context) {
     return {
       TSAsExpression(node: TSESTree.TSAsExpression): void {
-        if (isConstAssertion(node)) return;
+        if (isConstAssertion(node)) {
+          return;
+        }
         context.report({ node, messageId: "asAssertion" });
       },
       TSTypeAssertion(node: TSESTree.TSTypeAssertion): void {

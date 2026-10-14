@@ -24,7 +24,9 @@ export const noKeyof: ExplicitRule = {
   create(context) {
     return {
       TSTypeOperator(node: TSESTree.TSTypeOperator): void {
-        if (node.operator !== "keyof") return;
+        if (node.operator !== "keyof") {
+          return;
+        }
         context.report({ node, messageId: "keyof" });
       },
     };

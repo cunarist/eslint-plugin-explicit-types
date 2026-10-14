@@ -52,7 +52,9 @@ export const noUtilityTypes: ExplicitRule = {
     return {
       TSTypeReference(node: TSESTree.TSTypeReference): void {
         const name = typeNameTail(node.typeName);
-        if (name === null || !UTILITY_TYPE_NAMES.includes(name)) return;
+        if (name === null || !UTILITY_TYPE_NAMES.includes(name)) {
+          return;
+        }
         context.report({ node, messageId: "utilityType", data: { name } });
       },
     };

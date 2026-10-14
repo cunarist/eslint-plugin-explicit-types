@@ -67,7 +67,9 @@ export interface ReportedSpan {
  */
 export function spanOf(code: string, text: string): ReportedSpan {
   const start = code.indexOf(text);
-  if (start === -1) throw new Error(`${JSON.stringify(text)} is not in the code`);
+  if (start === -1) {
+    throw new Error(`${JSON.stringify(text)} is not in the code`);
+  }
   const begin = position(code, start);
   const end = position(code, start + text.length);
   return {
@@ -116,14 +118,26 @@ export function testRule(name: string, rule: ExplicitRule, cases: RuleCases): vo
 function oxlintErrors(
   errors: EslintRuleTester.InvalidTestCase["errors"],
 ): OxlintRuleTester.InvalidTestCase["errors"] {
-  if (typeof errors === "number") return errors;
+  if (typeof errors === "number") {
+    return errors;
+  }
   return errors.map((error) => {
-    if (typeof error === "string") return error;
+    if (typeof error === "string") {
+      return error;
+    }
     const shifted: OxlintRuleTester.Error = { ...oxlintMessage(error) };
-    if (error.line !== undefined) shifted.line = error.line;
-    if (error.endLine !== undefined) shifted.endLine = error.endLine;
-    if (error.column !== undefined) shifted.column = error.column - 1;
-    if (error.endColumn !== undefined) shifted.endColumn = error.endColumn - 1;
+    if (error.line !== undefined) {
+      shifted.line = error.line;
+    }
+    if (error.endLine !== undefined) {
+      shifted.endLine = error.endLine;
+    }
+    if (error.column !== undefined) {
+      shifted.column = error.column - 1;
+    }
+    if (error.endColumn !== undefined) {
+      shifted.endColumn = error.endColumn - 1;
+    }
     return shifted;
   });
 }
@@ -135,7 +149,9 @@ function oxlintMessage(error: EslintRuleTester.TestCaseError): OxlintRuleTester.
       ? { messageId: error.messageId }
       : { messageId: error.messageId, data: Object.fromEntries(stringEntries(error.data)) };
   }
-  if (error.message !== undefined) return { message: error.message };
+  if (error.message !== undefined) {
+    return { message: error.message };
+  }
   throw new Error("an expected error needs a messageId or a message");
 }
 
@@ -144,9 +160,13 @@ function oxlintMessage(error: EslintRuleTester.TestCaseError): OxlintRuleTester.
  * placeholder in this package is a string, so anything else is a test bug.
  */
 function stringEntries(data: unknown): [string, string][] {
-  if (typeof data !== "object" || data === null) throw new Error("data is not an object");
+  if (typeof data !== "object" || data === null) {
+    throw new Error("data is not an object");
+  }
   return Object.entries(data).map(([key, value]) => {
-    if (typeof value !== "string") throw new Error(`placeholder ${key} is not a string`);
+    if (typeof value !== "string") {
+      throw new Error(`placeholder ${key} is not a string`);
+    }
     return [key, value];
   });
 }
