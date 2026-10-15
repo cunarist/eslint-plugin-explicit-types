@@ -63,6 +63,12 @@ export interface RuleCases {
   invalid: EslintRuleTester.InvalidTestCase[];
 }
 
+/** An expected error, in ESLint's shape. */
+export type ExpectedError = EslintRuleTester.TestCaseError;
+
+/** An expected suggestion and the code it leaves, in ESLint's shape. */
+export type ExpectedSuggestion = EslintRuleTester.SuggestionOutput;
+
 /**
  * Where a diagnostic should land, counted the way ESLint counts: lines and
  * columns both from 1. The Oxlint run shifts columns to its 0-based count.

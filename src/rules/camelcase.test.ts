@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { type ReportedSpan, type RuleCases, testRule } from "#testing";
+import { type ExpectedSuggestion, type ReportedSpan, type RuleCases, testRule } from "#testing";
 
 import { camelcaseRule, isUnderscored, toCamelCase } from "./camelcase.ts";
 
@@ -10,6 +10,7 @@ interface DenoError {
   name: string;
   messageId: string;
   suggestion: string;
+  suggestions: ExpectedSuggestion[];
 }
 
 /** The span of `name` at Deno's 0-based column on a one-line snippet. */
@@ -17,19 +18,29 @@ function at(col: number, name: string): ReportedSpan {
   return { line: 1, column: col + 1, endLine: 1, endColumn: col + 1 + name.length };
 }
 
-/** A `rename` report, Deno's `Consider renaming` hint. */
-function rename(col: number, name: string, suggestion: string): DenoError {
-  return { col, name, messageId: "rename", suggestion };
+/**
+ * A `rename` report, Deno's `Consider renaming` hint, with the code renaming
+ * the name throughout the file leaves, if that is offered.
+ */
+function rename(col: number, name: string, suggestion: string, output?: string): DenoError {
+  const suggestions =
+    output === undefined ? [] : [{ messageId: "renameTo", data: { name, suggestion }, output }];
+  return { col, name, messageId: "rename", suggestion, suggestions };
+}
+
+/** The suggestion to quote key `name`, leaving `output`, if that is offered. */
+function quoteKey(name: string, output?: string): ExpectedSuggestion[] {
+  return output === undefined ? [] : [{ messageId: "quoteKey", data: { name }, output }];
 }
 
 /** A `renameKey` report, Deno's hint to rename or quote a key. */
-function renameKey(col: number, name: string, suggestion: string): DenoError {
-  return { col, name, messageId: "renameKey", suggestion };
+function renameKey(col: number, name: string, suggestion: string, output?: string): DenoError {
+  return { col, name, messageId: "renameKey", suggestion, suggestions: quoteKey(name, output) };
 }
 
 /** A `shorthandKey` report, Deno's hint to expand a shorthand key. */
-function shorthandKey(col: number, name: string, suggestion: string): DenoError {
-  return { col, name, messageId: "shorthandKey", suggestion };
+function shorthandKey(col: number, name: string, suggestion: string, output: string): DenoError {
+  return { col, name, messageId: "shorthandKey", suggestion, suggestions: quoteKey(name, output) };
 }
 
 /** An invalid case in `RuleTester` form. */
@@ -40,6 +51,7 @@ function invalid(code: string, ...errors: DenoError[]): RuleCase {
       messageId: error.messageId,
       data: { name: error.name, suggestion: error.suggestion },
       ...at(error.col, error.name),
+      suggestions: error.suggestions,
     })),
   };
 }
@@ -219,101 +231,263 @@ testRule("camelcase", camelcaseRule, {
   ],
   invalid: [
     // Deno's invalid cases
-    invalid("function foo_bar(){}", rename(9, "foo_bar", "fooBar")),
-    invalid("var foo = { bar_baz: boom.bam_pow }", renameKey(12, "bar_baz", "barBaz")),
-    invalid("var o = { bar_baz: 1 }", renameKey(10, "bar_baz", "barBaz")),
-    invalid("var o = { bar_baz }", shorthandKey(10, "bar_baz", "barBaz")),
+    invalid("function foo_bar(){}", rename(9, "foo_bar", "fooBar", "function fooBar(){}")),
+    invalid(
+      "var foo = { bar_baz: boom.bam_pow }",
+      renameKey(12, "bar_baz", "barBaz", 'var foo = { "bar_baz": boom.bam_pow }'),
+    ),
+    invalid(
+      "var o = { bar_baz: 1 }",
+      renameKey(10, "bar_baz", "barBaz", 'var o = { "bar_baz": 1 }'),
+    ),
+    invalid(
+      "var o = { bar_baz }",
+      shorthandKey(10, "bar_baz", "barBaz", 'var o = { "bar_baz": bar_baz }'),
+    ),
     invalid(
       "var { category_id: category_alias } = query;",
-      rename(19, "category_alias", "categoryAlias"),
+      rename(19, "category_alias", "categoryAlias", "var { category_id: categoryAlias } = query;"),
     ),
-    invalid("var { category_id: category_id } = query;", rename(19, "category_id", "categoryId")),
+    invalid(
+      "var { category_id: category_id } = query;",
+      rename(19, "category_id", "categoryId", "var { category_id: categoryId } = query;"),
+    ),
     invalid(
       'import * as no_camelcased from "external-module";',
-      rename(12, "no_camelcased", "noCamelcased"),
+      rename(
+        12,
+        "no_camelcased",
+        "noCamelcased",
+        'import * as noCamelcased from "external-module";',
+      ),
     ),
     invalid(
       'import { no_camelcased as no_camel_cased } from "external module";',
-      rename(26, "no_camel_cased", "noCamelCased"),
+      rename(
+        26,
+        "no_camel_cased",
+        "noCamelCased",
+        'import { no_camelcased as noCamelCased } from "external module";',
+      ),
     ),
     invalid(
       'import { camelCased as no_camel_cased } from "external module";',
-      rename(23, "no_camel_cased", "noCamelCased"),
+      rename(
+        23,
+        "no_camel_cased",
+        "noCamelCased",
+        'import { camelCased as noCamelCased } from "external module";',
+      ),
     ),
     invalid(
       'import no_camelcased, { another_no_camelcased as camelCased } from "external-module";',
-      rename(7, "no_camelcased", "noCamelcased"),
+      rename(
+        7,
+        "no_camelcased",
+        "noCamelcased",
+        'import noCamelcased, { another_no_camelcased as camelCased } from "external-module";',
+      ),
     ),
-    invalid("import snake_cased from 'mod'", rename(7, "snake_cased", "snakeCased")),
-    invalid("import * as snake_cased from 'mod'", rename(12, "snake_cased", "snakeCased")),
+    invalid(
+      "import snake_cased from 'mod'",
+      rename(7, "snake_cased", "snakeCased", "import snakeCased from 'mod'"),
+    ),
+    invalid(
+      "import * as snake_cased from 'mod'",
+      rename(12, "snake_cased", "snakeCased", "import * as snakeCased from 'mod'"),
+    ),
     invalid("export * as snake_cased from 'mod'", rename(12, "snake_cased", "snakeCased")),
-    invalid("function foo({ no_camelcased }) {};", rename(15, "no_camelcased", "noCamelcased")),
+    invalid(
+      "function foo({ no_camelcased }) {};",
+      rename(
+        15,
+        "no_camelcased",
+        "noCamelcased",
+        "function foo({ no_camelcased: noCamelcased }) {};",
+      ),
+    ),
     invalid(
       "function foo({ no_camelcased = 'default value' }) {};",
-      rename(15, "no_camelcased", "noCamelcased"),
+      rename(
+        15,
+        "no_camelcased",
+        "noCamelcased",
+        "function foo({ no_camelcased: noCamelcased = 'default value' }) {};",
+      ),
     ),
     invalid(
       "const no_camelcased = 0; function foo({ camelcased_value = no_camelcased }) {}",
-      rename(6, "no_camelcased", "noCamelcased"),
-      rename(40, "camelcased_value", "camelcasedValue"),
+      rename(
+        6,
+        "no_camelcased",
+        "noCamelcased",
+        "const noCamelcased = 0; function foo({ camelcased_value = noCamelcased }) {}",
+      ),
+      rename(
+        40,
+        "camelcased_value",
+        "camelcasedValue",
+        "const no_camelcased = 0; function foo({ camelcased_value: camelcasedValue = no_camelcased }) {}",
+      ),
     ),
-    invalid("const { bar: no_camelcased } = foo;", rename(13, "no_camelcased", "noCamelcased")),
-    invalid("function foo({ value_1: my_default }) {}", rename(24, "my_default", "myDefault")),
+    invalid(
+      "const { bar: no_camelcased } = foo;",
+      rename(13, "no_camelcased", "noCamelcased", "const { bar: noCamelcased } = foo;"),
+    ),
+    invalid(
+      "function foo({ value_1: my_default }) {}",
+      rename(24, "my_default", "myDefault", "function foo({ value_1: myDefault }) {}"),
+    ),
     invalid(
       "function foo({ isCamelcased: no_camelcased }) {};",
-      rename(29, "no_camelcased", "noCamelcased"),
+      rename(
+        29,
+        "no_camelcased",
+        "noCamelcased",
+        "function foo({ isCamelcased: noCamelcased }) {};",
+      ),
     ),
     invalid(
       "function foo({ isCamelcased: { no_camelcased } }) {};",
-      rename(31, "no_camelcased", "noCamelcased"),
+      rename(
+        31,
+        "no_camelcased",
+        "noCamelcased",
+        "function foo({ isCamelcased: { no_camelcased: noCamelcased } }) {};",
+      ),
     ),
-    invalid("var { foo: bar_baz = 1 } = quz;", rename(11, "bar_baz", "barBaz")),
-    invalid("const f = function no_camelcased() {};", rename(19, "no_camelcased", "noCamelcased")),
-    invalid("const c = class no_camelcased {};", rename(16, "no_camelcased", "NoCamelcased")),
-    invalid("class no_camelcased {}", rename(6, "no_camelcased", "NoCamelcased")),
-    invalid("type foo_bar = string;", rename(5, "foo_bar", "FooBar")),
-    invalid("type Foo = { snake_case: number; };", renameKey(13, "snake_case", "snakeCase")),
-    invalid("interface foo_bar { ok: string; };", rename(10, "foo_bar", "FooBar")),
-    invalid("interface Foo { snake_case: number; };", renameKey(16, "snake_case", "snakeCase")),
-    invalid("namespace foo_bar {}", rename(10, "foo_bar", "FooBar")),
-    invalid("namespace FooBar { const snake_case = 42; }", rename(25, "snake_case", "snakeCase")),
-    invalid("enum foo_bar { VariantOne }", rename(5, "foo_bar", "FooBar")),
+    invalid(
+      "var { foo: bar_baz = 1 } = quz;",
+      rename(11, "bar_baz", "barBaz", "var { foo: barBaz = 1 } = quz;"),
+    ),
+    invalid(
+      "const f = function no_camelcased() {};",
+      rename(19, "no_camelcased", "noCamelcased", "const f = function noCamelcased() {};"),
+    ),
+    invalid(
+      "const c = class no_camelcased {};",
+      rename(16, "no_camelcased", "NoCamelcased", "const c = class NoCamelcased {};"),
+    ),
+    invalid(
+      "class no_camelcased {}",
+      rename(6, "no_camelcased", "NoCamelcased", "class NoCamelcased {}"),
+    ),
+    invalid("type foo_bar = string;", rename(5, "foo_bar", "FooBar", "type FooBar = string;")),
+    invalid(
+      "type Foo = { snake_case: number; };",
+      renameKey(13, "snake_case", "snakeCase", 'type Foo = { "snake_case": number; };'),
+    ),
+    invalid(
+      "interface foo_bar { ok: string; };",
+      rename(10, "foo_bar", "FooBar", "interface FooBar { ok: string; };"),
+    ),
+    invalid(
+      "interface Foo { snake_case: number; };",
+      renameKey(16, "snake_case", "snakeCase", 'interface Foo { "snake_case": number; };'),
+    ),
+    invalid("namespace foo_bar {}", rename(10, "foo_bar", "FooBar", "namespace FooBar {}")),
+    invalid(
+      "namespace FooBar { const snake_case = 42; }",
+      rename(25, "snake_case", "snakeCase", "namespace FooBar { const snakeCase = 42; }"),
+    ),
+    invalid(
+      "enum foo_bar { VariantOne }",
+      rename(5, "foo_bar", "FooBar", "enum FooBar { VariantOne }"),
+    ),
     invalid("enum FooBar { variant_one }", rename(14, "variant_one", "VariantOne")),
 
     // matches Deno where its AST differs from ESTree
-    invalid("export default function foo_bar(c_d) {}", rename(32, "c_d", "cD")),
+    invalid(
+      "export default function foo_bar(c_d) {}",
+      rename(32, "c_d", "cD", "export default function foo_bar(cD) {}"),
+    ),
     invalid("interface X { [foo_bar]: string }", renameKey(15, "foo_bar", "fooBar")),
-    invalid('import { a_b as a_b } from "m";', rename(16, "a_b", "aB")),
+    invalid(
+      'import { a_b as a_b } from "m";',
+      rename(16, "a_b", "aB", 'import { a_b as aB } from "m";'),
+    ),
     invalid(
       "class A { constructor(private a_b: number, c_d: number) {} }",
-      rename(43, "c_d", "cD"),
+      rename(43, "c_d", "cD", "class A { constructor(private a_b: number, cD: number) {} }"),
     ),
-    invalid("class A { set v(a_b) {} }", rename(16, "a_b", "aB")),
-    invalid("const o = { m(a_b) {} };", rename(14, "a_b", "aB")),
-    invalid("function f(a_b: string): void;", rename(11, "a_b", "aB")),
+    invalid("class A { set v(a_b) {} }", rename(16, "a_b", "aB", "class A { set v(aB) {} }")),
+    invalid("const o = { m(a_b) {} };", rename(14, "a_b", "aB", "const o = { m(aB) {} };")),
+    invalid(
+      "function f(a_b: string): void;",
+      rename(11, "a_b", "aB", "function f(aB: string): void;"),
+    ),
     invalid(
       "class A { m(a_b): void; m(c_d) {} }",
-      rename(12, "a_b", "aB"),
-      rename(26, "c_d", "cD"),
+      rename(12, "a_b", "aB", "class A { m(aB): void; m(c_d) {} }"),
+      rename(26, "c_d", "cD", "class A { m(a_b): void; m(cD) {} }"),
     ),
-    invalid("abstract class A { abstract m(a_b): void; }", rename(30, "a_b", "aB")),
+    invalid(
+      "abstract class A { abstract m(a_b): void; }",
+      rename(30, "a_b", "aB", "abstract class A { abstract m(aB): void; }"),
+    ),
     invalid("namespace a_b.c_d {}", rename(10, "a_b", "AB"), rename(14, "c_d", "CD")),
-    invalid("module a_b {}", rename(7, "a_b", "AB")),
-    invalid("for (const a_b of []) {}", rename(11, "a_b", "aB")),
+    invalid("module a_b {}", rename(7, "a_b", "AB", "module AB {}")),
+    invalid("for (const a_b of []) {}", rename(11, "a_b", "aB", "for (const aB of []) {}")),
     invalid(
       "type T = { m(): { a_b: string }; get g(): { c_d: number }; set s(v_w) };",
-      renameKey(18, "a_b", "aB"),
-      renameKey(44, "c_d", "cD"),
+      renameKey(
+        18,
+        "a_b",
+        "aB",
+        'type T = { m(): { "a_b": string }; get g(): { c_d: number }; set s(v_w) };',
+      ),
+      renameKey(
+        44,
+        "c_d",
+        "cD",
+        'type T = { m(): { a_b: string }; get g(): { "c_d": number }; set s(v_w) };',
+      ),
     ),
     invalid(
       'const o = { "a_b": 1, [c_d]: 2, e_f() {}, get g_h() { return 1 } };',
-      renameKey(32, "e_f", "eF"),
-      renameKey(46, "g_h", "gH"),
+      renameKey(
+        32,
+        "e_f",
+        "eF",
+        'const o = { "a_b": 1, [c_d]: 2, "e_f"() {}, get g_h() { return 1 } };',
+      ),
+      renameKey(
+        46,
+        "g_h",
+        "gH",
+        'const o = { "a_b": 1, [c_d]: 2, e_f() {}, get "g_h"() { return 1 } };',
+      ),
     ),
-    invalid("let a = 1, b_c = { d_e: 1 };", rename(11, "b_c", "bC"), renameKey(19, "d_e", "dE")),
+    invalid(
+      "let a = 1, b_c = { d_e: 1 };",
+      rename(11, "b_c", "bC", "let a = 1, bC = { d_e: 1 };"),
+      renameKey(19, "d_e", "dE", 'let a = 1, b_c = { "d_e": 1 };'),
+    ),
     invalid('enum E { "a_b" = 1, c_d = 2 }', rename(20, "c_d", "CD")),
-    invalid("const Sha3_224 = 2;", rename(6, "Sha3_224", "SHA3_224")),
-    invalid("const x = /* ( */ { a_b: 1 };", renameKey(20, "a_b", "aB")),
-    invalid("export function foo_bar() {}", rename(16, "foo_bar", "fooBar")),
+    invalid("const Sha3_224 = 2;", rename(6, "Sha3_224", "SHA3_224", "const SHA3_224 = 2;")),
+    invalid(
+      "const x = /* ( */ { a_b: 1 };",
+      renameKey(20, "a_b", "aB", 'const x = /* ( */ { "a_b": 1 };'),
+    ),
+    invalid(
+      "export function foo_bar() {}",
+      rename(16, "foo_bar", "fooBar", "export function fooBar() {}"),
+    ),
+
+    // renames every use, keeping the exported name
+    invalid(
+      "const a_b = 1; export { a_b }; f(a_b);",
+      rename(6, "a_b", "aB", "const aB = 1; export { aB as a_b }; f(aB);"),
+    ),
+    invalid(
+      "function foo_bar() { return foo_bar; }",
+      rename(9, "foo_bar", "fooBar", "function fooBar() { return fooBar; }"),
+    ),
+
+    // offers no rename onto a name the file already has
+    invalid("const fooBar = 1; const foo_bar = 2;", rename(24, "foo_bar", "fooBar")),
+
+    // offers no rename of a type that pascal-case-types would still reject
+    invalid("class Sha3_224 {}", rename(6, "Sha3_224", "SHA3_224")),
   ],
 });

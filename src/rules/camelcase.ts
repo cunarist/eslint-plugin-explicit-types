@@ -1,12 +1,16 @@
+import type { RuleTextEdit, SuggestedEdit } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { docsUrl, type ExplicitRule } from "#helpers";
+import { docsUrl, type ExplicitRule, renameFix } from "#helpers";
 
 /** Lowercase ASCII letter after a non-underscore and one underscore. */
 const UNDERSCORE_CHAR_PATTERN = /([^_])_([a-z])/gu;
 
 /** A lowercase ASCII first letter. */
 const FIRST_CHAR_LOWERCASE_PATTERN = /^[a-z]/u;
+
+/** A name `pascal-case-types` accepts for a type. */
+const PASCAL_CASE_PATTERN = /^[A-Z][A-Za-z0-9]*$/u;
 
 /** Leading and trailing underscores. */
 const EDGE_UNDERSCORES_PATTERN = /^_+|_+$/gu;
@@ -91,12 +95,27 @@ function isDefaultExport(node: TSESTree.Node): boolean {
   return node.parent?.type === "ExportDefaultDeclaration";
 }
 
+/** The suggestion to quote a key as `replacement`, which leaves the object's shape alone. */
+function quoteSuggestions(identifier: TSESTree.Identifier, replacement: string): SuggestedEdit[] {
+  return [
+    {
+      messageId: "quoteKey",
+      data: { name: identifier.name },
+      fix: (fixer): RuleTextEdit => fixer.replaceText(identifier, replacement),
+    },
+  ];
+}
+
 /**
  * `camelcase` — Deno's built-in `camelcase` rule: names this code declares are
  * camelCase, PascalCase, or UPPER_SNAKE_CASE, never snake_case.
  *
  * A port of `deno_lint`'s `src/rules/camelcase.rs`, reporting the same
  * identifiers with the same message and hint.
+ *
+ * A declared name gets a suggestion renaming it and its uses in this file.
+ * An object or type key gets one quoting it, which keeps the shape. Neither is
+ * a fix: other files may import the name or read the key.
  */
 export const camelcaseRule: ExplicitRule = {
   meta: {
@@ -105,6 +124,7 @@ export const camelcaseRule: ExplicitRule = {
       description: "Enforce camelCase, PascalCase, or UPPER_SNAKE_CASE for declared names",
       url: docsUrl("camelcase"),
     },
+    hasSuggestions: true,
     schema: [],
     messages: {
       rename:
@@ -113,17 +133,37 @@ export const camelcaseRule: ExplicitRule = {
         "Identifier '{{name}}' is not in camel case. Consider renaming `{{name}}` to `{{suggestion}}`, or wrapping it in quotation mark like `\"{{name}}\"`.",
       shorthandKey:
         "Identifier '{{name}}' is not in camel case. Consider writing `{{suggestion}}: {{name}}` or `\"{{name}}\": {{name}}`.",
+      renameTo: "Rename `{{name}}` to `{{suggestion}}` throughout this file.",
+      quoteKey: 'Quote the key as `"{{name}}"`.',
     },
   },
   create(context) {
     /** Identifiers already judged, keyed by range, as Deno dedupes them. */
     const visited = new Set<string>();
 
+    /** The suggestion to rename a declared name and its uses, if one is safe. */
+    function renameSuggestions(
+      identifier: TSESTree.Identifier,
+      suggestion: string,
+    ): SuggestedEdit[] {
+      const fix = renameFix(context.sourceCode, identifier, suggestion);
+      if (fix === null) {
+        return [];
+      }
+      return [{ messageId: "renameTo", data: { name: identifier.name, suggestion }, fix }];
+    }
+
     /**
      * Report an identifier once, unless it is ambient or acceptably cased.
-     * `messageId` picks which of Deno's hints the report carries.
+     * `messageId` picks which of Deno's hints the report carries, and
+     * `suggest` builds the report's suggestions.
      */
-    function check(identifier: TSESTree.Identifier, messageId: string, suggestion: string): void {
+    function check(
+      identifier: TSESTree.Identifier,
+      messageId: string,
+      suggestion: string,
+      suggest: (identifier: TSESTree.Identifier, suggestion: string) => SuggestedEdit[],
+    ): void {
       const key = `${identifier.range[0]}:${identifier.name}`;
       if (visited.has(key)) {
         return;
@@ -141,22 +181,38 @@ export const camelcaseRule: ExplicitRule = {
         },
         messageId,
         data: { name: identifier.name, suggestion },
+        suggest: suggest(identifier, suggestion),
       });
     }
 
     /** A value or function name, suggested in camelCase. */
     function checkValue(identifier: TSESTree.Identifier): void {
-      check(identifier, "rename", toCamelCase(identifier.name));
+      check(identifier, "rename", toCamelCase(identifier.name), renameSuggestions);
     }
 
-    /** A type-like name, suggested in PascalCase. */
+    /**
+     * A type-like name, suggested in PascalCase. The rename is offered only
+     * when `pascal-case-types` would accept it.
+     */
     function checkTypeLike(identifier: TSESTree.Identifier): void {
-      check(identifier, "rename", toPascalCase(identifier.name));
+      check(identifier, "rename", toPascalCase(identifier.name), (target, suggestion) =>
+        PASCAL_CASE_PATTERN.test(suggestion) ? renameSuggestions(target, suggestion) : [],
+      );
     }
 
-    /** An unquoted object or type member key. */
-    function checkKey(identifier: TSESTree.Identifier): void {
-      check(identifier, "renameKey", toCamelCase(identifier.name));
+    /** An enum member, which a rename cannot follow through `Enum.member` uses. */
+    function checkEnumMember(identifier: TSESTree.Identifier): void {
+      check(identifier, "rename", toPascalCase(identifier.name), () => []);
+    }
+
+    /**
+     * An unquoted object or type member key. Quoting a computed key, `[a_b]`,
+     * would turn a reference into a string, so that gets no suggestion.
+     */
+    function checkKey(identifier: TSESTree.Identifier, computed: boolean): void {
+      check(identifier, "renameKey", toCamelCase(identifier.name), (target) =>
+        computed ? [] : quoteSuggestions(target, `"${target.name}"`),
+      );
     }
 
     /** Every name a binding pattern declares. */
@@ -228,7 +284,7 @@ export const camelcaseRule: ExplicitRule = {
     function checkTypeElement(element: TSESTree.TypeElement): void {
       if (element.type === "TSPropertySignature") {
         if (element.key.type === "Identifier") {
-          checkKey(element.key);
+          checkKey(element.key, element.computed);
         }
         checkType(element.typeAnnotation?.typeAnnotation ?? null);
         return;
@@ -272,9 +328,11 @@ export const camelcaseRule: ExplicitRule = {
           continue;
         }
         if (property.shorthand) {
-          check(property.key, "shorthandKey", toCamelCase(property.key.name));
+          check(property.key, "shorthandKey", toCamelCase(property.key.name), (target) =>
+            quoteSuggestions(target, `"${target.name}": ${target.name}`),
+          );
         } else {
-          checkKey(property.key);
+          checkKey(property.key, false);
         }
       }
     }
@@ -389,7 +447,7 @@ export const camelcaseRule: ExplicitRule = {
         checkTypeLike(node.id);
         for (const member of node.body.members) {
           if (member.id.type === "Identifier") {
-            checkTypeLike(member.id);
+            checkEnumMember(member.id);
           }
         }
       },

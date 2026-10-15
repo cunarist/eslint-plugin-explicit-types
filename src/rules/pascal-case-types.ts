@@ -1,9 +1,20 @@
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { docsUrl, type ExplicitRule } from "#helpers";
+import { docsUrl, type ExplicitRule, renameFix } from "#helpers";
 
 /** A name that starts uppercase and carries no underscores. */
 const PASCAL_CASE_PATTERN = /^[A-Z][A-Za-z0-9]*$/u;
+
+/** Runs of characters between underscores. */
+const UNDERSCORE_PATTERN = /_+/u;
+
+/** `user_profile` -> `UserProfile`: each underscore-separated segment capitalized. */
+function toPascalCase(name: string): string {
+  return name
+    .split(UNDERSCORE_PATTERN)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join("");
+}
 
 /**
  * `pascal-case-types` — requires class, interface, type alias, and enum
@@ -20,10 +31,12 @@ export const pascalCaseTypesRule: ExplicitRule = {
       description: "Enforce PascalCase names for classes, interfaces, type aliases, and enums",
       url: docsUrl("pascal-case-types"),
     },
+    hasSuggestions: true,
     schema: [],
     messages: {
       notPascalCase:
         "{{kind}} name `{{name}}` is not PascalCase. Start the name with an uppercase letter and drop underscores, e.g. `UserProfile`.",
+      rename: "Rename `{{name}}` to `{{suggestion}}` throughout this file.",
     },
   },
   create(context) {
@@ -35,10 +48,18 @@ export const pascalCaseTypesRule: ExplicitRule = {
       if (PASCAL_CASE_PATTERN.test(identifier.name)) {
         return;
       }
+      const suggestion = toPascalCase(identifier.name);
+      const fix = PASCAL_CASE_PATTERN.test(suggestion)
+        ? renameFix(context.sourceCode, identifier, suggestion)
+        : null;
       context.report({
         node: identifier,
         messageId: "notPascalCase",
         data: { kind, name: identifier.name },
+        suggest:
+          fix === null
+            ? []
+            : [{ messageId: "rename", data: { name: identifier.name, suggestion }, fix }],
       });
     }
 

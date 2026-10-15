@@ -1,5 +1,25 @@
-import type { LanguageOptions, RuleDefinition, RuleVisitor, SourceCode } from "@eslint/core";
+import type { LanguageOptions, RuleDefinition, RuleVisitor, TextSourceCode } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
+
+/** One use of a variable, as both hosts' scope managers record it. */
+export interface ScopeReference {
+  identifier: TSESTree.Node;
+}
+
+/** A declared name with every place it is declared and used. */
+export interface ScopeVariable {
+  name: string;
+  identifiers: TSESTree.Identifier[];
+  references: ScopeReference[];
+}
+
+/**
+ * The source code both hosts hand a TypeScript rule: its text, plus the scope
+ * lookup ESLint and Oxlint each implement on it.
+ */
+export interface ExplicitSourceCode extends TextSourceCode {
+  getDeclaredVariables(node: TSESTree.Node): ScopeVariable[];
+}
 
 /**
  * The type parameters of every rule in this package: ESLint's defaults, except
@@ -11,7 +31,7 @@ import type { TSESTree } from "@typescript-eslint/types";
  */
 export interface ExplicitRuleTypes {
   LangOptions: LanguageOptions;
-  Code: SourceCode;
+  Code: ExplicitSourceCode;
   RuleOptions: [];
   Visitor: RuleVisitor;
   Node: TSESTree.Node;
