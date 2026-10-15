@@ -25,7 +25,6 @@ export default defineConfig({
   pack: {
     entry: "src/index.ts",
     dts: true,
-    deps: { onlyBundle: ["@eslint/core", "@types/json-schema"] },
     fixedExtension: false,
   },
 });
