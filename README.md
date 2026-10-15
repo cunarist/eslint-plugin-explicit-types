@@ -6,7 +6,7 @@ not derived.
 
 ## Setup
 
-Requires Node.js 22+ or Bun 1.3.13+.
+Requires Node.js 22+.
 
 ```sh
 npm install --save-dev @cunarist/eslint-plugin-explicit-types

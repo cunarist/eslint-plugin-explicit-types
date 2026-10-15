@@ -4,8 +4,8 @@ description: npm publishing happens only in CI, from a published GitHub release 
 
 Never publish by hand. A published GitHub release `vX.Y.Z` triggers
 `.github/workflows/publish.yml`, which checks that the tag equals
-`v` + `package.json` `version`, runs the whole CI workflow (every runtime in
-its matrix) as a reusable workflow, then `vp pack` and `npm publish`. A release marked pre-release publishes under the
+`v` + `package.json` `version`, runs the whole CI workflow (every Node.js
+version in its matrix) as a reusable workflow, then `vp pack` and `npm publish`. A release marked pre-release publishes under the
 `next` dist-tag.
 
 Auth is npm trusted publishing (OIDC, `id-token: write`), which also attaches

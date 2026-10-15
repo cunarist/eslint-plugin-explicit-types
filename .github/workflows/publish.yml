@@ -11,7 +11,7 @@ permissions:
   id-token: write # npm trusted publishing (OIDC) and provenance
 
 jobs:
-  # The full CI run, every runtime included, against the release commit.
+  # The full CI run, every Node.js version included, against the release commit.
   ci:
     uses: ./.github/workflows/ci.yml
     permissions:

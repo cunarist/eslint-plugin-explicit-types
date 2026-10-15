@@ -14,8 +14,8 @@ and follow it before reasoning or responding.
 - The package's only export is the default one, the plugin. Configs live at
   `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,
   built from the rule registry). No `recommended`, no named exports.
-- Runs on Node.js 22+ or Bun 1.3.13+; `engines` names only `node`. Built with
-  Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
+- Runs on Node.js 22+; Bun is not a supported target. Built with Vite+ (`vp`):
+  Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
   The published plugin mirrors exactly its 15 rules, nothing added or removed.
 
@@ -59,8 +59,8 @@ and follow it before reasoning or responding.
   `lint-parity-with-deno` before removing anything from `configs.project`.
 - Every rule has a `docs/rules/<rule>.md` in the ESLint core layout: Rule
   Details, incorrect/correct examples, and When Not To Use It.
-- CI runs the rule tests on node@22, node@latest, bun@1.3.13, and bun@latest.
-  Bun legs run only the ESLint half; Oxlint's `RuleTester` refuses Bun.
+- CI runs every rule test, ESLint and Oxlint halves alike, on node@22 and
+  node@latest. Bun is not tested and not supported.
 - `package.json` keys stay in hand-written order (metadata, then `scripts`,
   `exports`, `imports`, dependencies); `fmt.sortPackageJson` is off. There is
   no `packageManager` field; npm is detected from `package-lock.json`.
