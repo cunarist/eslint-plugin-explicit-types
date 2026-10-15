@@ -12,21 +12,54 @@
 
 import type { ConfigObject, Plugin } from "@eslint/core";
 
-import { absenceRules } from "./absence/index.ts";
-import { concreteRules } from "./concrete/index.ts";
-import type { ExplicitRule } from "#helpers";
-import { namingRules } from "./naming/index.ts";
 import packageJson from "#package" with { type: "json" };
+import { rules } from "./rules/index.ts";
 
 /** The prefix of every rule id, as ESLint derives it from the package name. */
 const NAMESPACE = "@cunarist/explicit-types";
 
-/** Every rule in the plugin, keyed by rule id. */
-const allRules: Map<string, ExplicitRule> = new Map([
-  ...concreteRules,
-  ...namingRules,
-  ...absenceRules,
-]);
+/**
+ * The `concrete` preset — write the type out instead of deriving it.
+ *
+ * Bans every way of leaving a type implicit: utility types, `keyof`, `typeof`,
+ * mapped types, index signatures, conditional types, and assertions. Named
+ * functions must declare a return type.
+ */
+const CONCRETE: string[] = [
+  "no-utility-types",
+  "no-keyof",
+  "no-typeof-type",
+  "no-mapped-types",
+  "no-index-signatures",
+  "no-inline-object-types",
+  "no-conditional-types",
+  "require-return-type",
+  "no-type-assertion",
+];
+
+/**
+ * The `naming` preset — names carry the contract.
+ *
+ * Requires PascalCase type names and UPPER_SNAKE_CASE string union members,
+ * keeps that casing out of object keys, bans `enum`, and rejects `snake_case`
+ * declared names.
+ */
+const NAMING: string[] = [
+  "pascal-case-types",
+  "upper-snake-string-unions",
+  "no-upper-snake-object-keys",
+  "no-enum",
+  "camelcase",
+];
+
+/**
+ * The `absence` preset — one spelling for an absent value.
+ *
+ * A member or parameter says absence with `?`; a return type or variable, which
+ * cannot take `?`, says it with `| null`. Never both, and never the `undefined`
+ * keyword.
+ */
+const ABSENCE: string[] = ["no-undefined-type", "no-optional-null"];
 
 /** The flat configs at `plugin.configs`, one per preset plus `all`. */
 interface ExplicitTypesConfigs {
@@ -50,15 +83,18 @@ const basePlugin: Plugin = {
     version: packageJson.version,
     namespace: NAMESPACE,
   },
-  rules: Object.fromEntries(allRules),
+  rules: Object.fromEntries(rules),
 };
 
-/** A flat config that loads the plugin and turns every given rule on. */
-function presetConfig(preset: string, rules: Map<string, ExplicitRule>): ConfigObject {
+/**
+ * A flat config that loads the plugin and turns every given rule on. A config
+ * is only a list of rule ids, so one rule can sit in several configs.
+ */
+function presetConfig(preset: string, ruleIds: string[]): ConfigObject {
   return {
     name: `${NAMESPACE}/${preset}`,
     plugins: Object.fromEntries([[NAMESPACE, basePlugin]]),
-    rules: Object.fromEntries([...rules.keys()].map((id) => [`${NAMESPACE}/${id}`, "error"])),
+    rules: Object.fromEntries(ruleIds.map((id) => [`${NAMESPACE}/${id}`, "error"])),
   };
 }
 
@@ -70,10 +106,10 @@ function presetConfig(preset: string, rules: Map<string, ExplicitRule>): ConfigO
  */
 const plugin: ExplicitTypesPlugin = Object.assign(basePlugin, {
   configs: {
-    concrete: presetConfig("concrete", concreteRules),
-    naming: presetConfig("naming", namingRules),
-    absence: presetConfig("absence", absenceRules),
-    all: presetConfig("all", allRules),
+    concrete: presetConfig("concrete", CONCRETE),
+    naming: presetConfig("naming", NAMING),
+    absence: presetConfig("absence", ABSENCE),
+    all: presetConfig("all", [...rules.keys()]),
   },
 });
 
