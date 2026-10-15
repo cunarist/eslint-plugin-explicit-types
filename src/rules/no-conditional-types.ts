@@ -18,10 +18,8 @@ export const noConditionalTypesRule: ExplicitRule = {
     },
     schema: [],
     messages: {
-      conditional:
-        "Conditional type. Write each resulting type out and name it, so the reader does not have to evaluate the branch.",
-      infer:
-        "`infer` in a type position. Name the type you are extracting and write it out, rather than having the compiler recover it.",
+      conditional: "Unexpected conditional type.",
+      infer: "Unexpected `infer` in a type position.",
     },
   },
   create(context) {

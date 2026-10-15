@@ -112,7 +112,7 @@ testRule("no-utility-types", noUtilityTypesRule, {
     // names the utility in the message
     {
       code: "type A = ReturnType<B>;",
-      errors: [{ message: /`ReturnType`/u }],
+      errors: [{ message: /'ReturnType'/u }],
     },
   ],
 });

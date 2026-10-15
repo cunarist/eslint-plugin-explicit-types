@@ -17,8 +17,7 @@ export const noIndexSignaturesRule: ExplicitRule = {
     },
     schema: [],
     messages: {
-      indexSignature:
-        "Index signature. Write concrete fields, or use a `Map` if the keys are genuinely dynamic.",
+      indexSignature: "Unexpected index signature.",
     },
   },
   create(context) {

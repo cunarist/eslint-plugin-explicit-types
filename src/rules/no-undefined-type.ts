@@ -156,8 +156,7 @@ export const noUndefinedTypeRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      undefinedType:
-        "`undefined` in a type position. Mark it `?` instead, or write `null` and normalise at the boundary.",
+      undefinedType: "Unexpected `undefined` in a type position.",
       dropUndefined: "Drop the `| undefined` that `?` already implies.",
       markOptional: "Mark the binding `?` in place of `| undefined`.",
     },

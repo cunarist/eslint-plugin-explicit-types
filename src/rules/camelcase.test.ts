@@ -8,8 +8,6 @@ import { camelcaseRule, isUnderscored, toCamelCase } from "./camelcase.ts";
 interface DenoError {
   col: number;
   name: string;
-  messageId: string;
-  suggestion: string;
   suggestions: ExpectedSuggestion[];
 }
 
@@ -19,28 +17,20 @@ function at(col: number, name: string): ReportedSpan {
 }
 
 /**
- * A `rename` report, Deno's `Consider renaming` hint, with the code renaming
- * the name throughout the file leaves, if that is offered.
+ * A report on a declared name, with the code renaming it to `suggestion`
+ * throughout the file leaves, if that is offered.
  */
 function rename(col: number, name: string, suggestion: string, output?: string): DenoError {
   const suggestions =
     output === undefined ? [] : [{ messageId: "renameTo", data: { name, suggestion }, output }];
-  return { col, name, messageId: "rename", suggestion, suggestions };
+  return { col, name, suggestions };
 }
 
-/** The suggestion to quote key `name`, leaving `output`, if that is offered. */
-function quoteKey(name: string, output?: string): ExpectedSuggestion[] {
-  return output === undefined ? [] : [{ messageId: "quoteKey", data: { name }, output }];
-}
-
-/** A `renameKey` report, Deno's hint to rename or quote a key. */
-function renameKey(col: number, name: string, suggestion: string, output?: string): DenoError {
-  return { col, name, messageId: "renameKey", suggestion, suggestions: quoteKey(name, output) };
-}
-
-/** A `shorthandKey` report, Deno's hint to expand a shorthand key. */
-function shorthandKey(col: number, name: string, suggestion: string, output: string): DenoError {
-  return { col, name, messageId: "shorthandKey", suggestion, suggestions: quoteKey(name, output) };
+/** A report on a key, with the code quoting it leaves, if that is offered. */
+function key(col: number, name: string, output?: string): DenoError {
+  const suggestions =
+    output === undefined ? [] : [{ messageId: "quoteKey", data: { name }, output }];
+  return { col, name, suggestions };
 }
 
 /** An invalid case in `RuleTester` form. */
@@ -48,8 +38,8 @@ function invalid(code: string, ...errors: DenoError[]): RuleCase {
   return {
     code,
     errors: errors.map((error) => ({
-      messageId: error.messageId,
-      data: { name: error.name, suggestion: error.suggestion },
+      messageId: "notCamelCase",
+      data: { name: error.name },
       ...at(error.col, error.name),
       suggestions: error.suggestions,
     })),
@@ -234,16 +224,10 @@ testRule("camelcase", camelcaseRule, {
     invalid("function foo_bar(){}", rename(9, "foo_bar", "fooBar", "function fooBar(){}")),
     invalid(
       "var foo = { bar_baz: boom.bam_pow }",
-      renameKey(12, "bar_baz", "barBaz", 'var foo = { "bar_baz": boom.bam_pow }'),
+      key(12, "bar_baz", 'var foo = { "bar_baz": boom.bam_pow }'),
     ),
-    invalid(
-      "var o = { bar_baz: 1 }",
-      renameKey(10, "bar_baz", "barBaz", 'var o = { "bar_baz": 1 }'),
-    ),
-    invalid(
-      "var o = { bar_baz }",
-      shorthandKey(10, "bar_baz", "barBaz", 'var o = { "bar_baz": bar_baz }'),
-    ),
+    invalid("var o = { bar_baz: 1 }", key(10, "bar_baz", 'var o = { "bar_baz": 1 }')),
+    invalid("var o = { bar_baz }", key(10, "bar_baz", 'var o = { "bar_baz": bar_baz }')),
     invalid(
       "var { category_id: category_alias } = query;",
       rename(19, "category_alias", "categoryAlias", "var { category_id: categoryAlias } = query;"),
@@ -375,7 +359,7 @@ testRule("camelcase", camelcaseRule, {
     invalid("type foo_bar = string;", rename(5, "foo_bar", "FooBar", "type FooBar = string;")),
     invalid(
       "type Foo = { snake_case: number; };",
-      renameKey(13, "snake_case", "snakeCase", 'type Foo = { "snake_case": number; };'),
+      key(13, "snake_case", 'type Foo = { "snake_case": number; };'),
     ),
     invalid(
       "interface foo_bar { ok: string; };",
@@ -383,7 +367,7 @@ testRule("camelcase", camelcaseRule, {
     ),
     invalid(
       "interface Foo { snake_case: number; };",
-      renameKey(16, "snake_case", "snakeCase", 'interface Foo { "snake_case": number; };'),
+      key(16, "snake_case", 'interface Foo { "snake_case": number; };'),
     ),
     invalid("namespace foo_bar {}", rename(10, "foo_bar", "FooBar", "namespace FooBar {}")),
     invalid(
@@ -401,7 +385,7 @@ testRule("camelcase", camelcaseRule, {
       "export default function foo_bar(c_d) {}",
       rename(32, "c_d", "cD", "export default function foo_bar(cD) {}"),
     ),
-    invalid("interface X { [foo_bar]: string }", renameKey(15, "foo_bar", "fooBar")),
+    invalid("interface X { [foo_bar]: string }", key(15, "foo_bar")),
     invalid(
       'import { a_b as a_b } from "m";',
       rename(16, "a_b", "aB", 'import { a_b as aB } from "m";'),
@@ -430,45 +414,22 @@ testRule("camelcase", camelcaseRule, {
     invalid("for (const a_b of []) {}", rename(11, "a_b", "aB", "for (const aB of []) {}")),
     invalid(
       "type T = { m(): { a_b: string }; get g(): { c_d: number }; set s(v_w) };",
-      renameKey(
-        18,
-        "a_b",
-        "aB",
-        'type T = { m(): { "a_b": string }; get g(): { c_d: number }; set s(v_w) };',
-      ),
-      renameKey(
-        44,
-        "c_d",
-        "cD",
-        'type T = { m(): { a_b: string }; get g(): { "c_d": number }; set s(v_w) };',
-      ),
+      key(18, "a_b", 'type T = { m(): { "a_b": string }; get g(): { c_d: number }; set s(v_w) };'),
+      key(44, "c_d", 'type T = { m(): { a_b: string }; get g(): { "c_d": number }; set s(v_w) };'),
     ),
     invalid(
       'const o = { "a_b": 1, [c_d]: 2, e_f() {}, get g_h() { return 1 } };',
-      renameKey(
-        32,
-        "e_f",
-        "eF",
-        'const o = { "a_b": 1, [c_d]: 2, "e_f"() {}, get g_h() { return 1 } };',
-      ),
-      renameKey(
-        46,
-        "g_h",
-        "gH",
-        'const o = { "a_b": 1, [c_d]: 2, e_f() {}, get "g_h"() { return 1 } };',
-      ),
+      key(32, "e_f", 'const o = { "a_b": 1, [c_d]: 2, "e_f"() {}, get g_h() { return 1 } };'),
+      key(46, "g_h", 'const o = { "a_b": 1, [c_d]: 2, e_f() {}, get "g_h"() { return 1 } };'),
     ),
     invalid(
       "let a = 1, b_c = { d_e: 1 };",
       rename(11, "b_c", "bC", "let a = 1, bC = { d_e: 1 };"),
-      renameKey(19, "d_e", "dE", 'let a = 1, b_c = { "d_e": 1 };'),
+      key(19, "d_e", 'let a = 1, b_c = { "d_e": 1 };'),
     ),
     invalid('enum E { "a_b" = 1, c_d = 2 }', rename(20, "c_d", "CD")),
     invalid("const Sha3_224 = 2;", rename(6, "Sha3_224", "SHA3_224", "const SHA3_224 = 2;")),
-    invalid(
-      "const x = /* ( */ { a_b: 1 };",
-      renameKey(20, "a_b", "aB", 'const x = /* ( */ { "a_b": 1 };'),
-    ),
+    invalid("const x = /* ( */ { a_b: 1 };", key(20, "a_b", 'const x = /* ( */ { "a_b": 1 };')),
     invalid(
       "export function foo_bar() {}",
       rename(16, "foo_bar", "fooBar", "export function fooBar() {}"),

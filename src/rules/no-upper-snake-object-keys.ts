@@ -22,8 +22,7 @@ export const noUpperSnakeObjectKeysRule: ExplicitRule = {
     },
     schema: [],
     messages: {
-      upperSnakeKey:
-        "Object key `{{text}}` is UPPER_SNAKE_CASE. That is a string union member, so this object is a lookup keyed by the union. Write a function that switches on it instead, and a new member becomes a compile error.",
+      upperSnakeKey: "Unexpected UPPER_SNAKE_CASE object key '{{text}}'.",
     },
   },
   create(context) {

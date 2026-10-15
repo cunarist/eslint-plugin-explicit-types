@@ -89,8 +89,7 @@ export const noMappedTypesRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      mappedType:
-        "Mapped type. Write the fields out, or use a `Map` if the keys are genuinely dynamic.",
+      mappedType: "Unexpected mapped type.",
       writeInterface: "Write the fields out as an `interface`.",
     },
   },

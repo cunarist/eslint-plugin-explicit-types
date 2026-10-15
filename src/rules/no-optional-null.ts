@@ -93,10 +93,8 @@ export const noOptionalNullRule: ExplicitRule = {
     messages: {
       dropNull: "Drop the `| null`, so absence is spelled `?`.",
       dropOptional: "Drop the `?`, so absence is spelled `null`.",
-      named:
-        "Optional `{{name}}` also admits `null`. Drop the `| null`, or drop the `?` so absence has to be written on purpose.",
-      unnamed:
-        "Optional binding also admits `null`. Drop the `| null`, or drop the `?` so absence has to be written on purpose.",
+      named: "Optional '{{name}}' also admits `null`.",
+      unnamed: "Optional binding also admits `null`.",
     },
   },
   create(context) {

@@ -34,8 +34,7 @@ export const pascalCaseTypesRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      notPascalCase:
-        "{{kind}} name `{{name}}` is not PascalCase. Start the name with an uppercase letter and drop underscores, e.g. `UserProfile`.",
+      notPascalCase: "{{kind}} name '{{name}}' is not in PascalCase.",
       rename: "Rename `{{name}}` to `{{suggestion}}` throughout this file.",
     },
   },

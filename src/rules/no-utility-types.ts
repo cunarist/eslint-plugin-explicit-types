@@ -99,8 +99,7 @@ export const noUtilityTypesRule: ExplicitRule = {
     fixable: "code",
     schema: [],
     messages: {
-      utilityType:
-        "Utility type `{{name}}`. Write the resulting type out, so the shape is readable without applying the transformation.",
+      utilityType: "Unexpected utility type '{{name}}'.",
     },
   },
   create(context) {

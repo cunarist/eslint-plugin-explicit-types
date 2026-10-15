@@ -63,10 +63,8 @@ export const requireReturnTypeRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      function:
-        "Function has no return type. Write the return type out, so the contract is readable without reading the body.",
-      methodSignature:
-        "Method signature has no return type. Write the return type out, so the contract is readable without reading the body.",
+      function: "Missing return type on function.",
+      methodSignature: "Missing return type on method signature.",
       addVoid: "Declare the return type `void`.",
       addPromiseVoid: "Declare the return type `Promise<void>`.",
     },

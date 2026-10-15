@@ -17,8 +17,7 @@ export const noTypeofTypeRule: ExplicitRule = {
     },
     schema: [],
     messages: {
-      typeofType:
-        "`typeof` in a type position. Declare the type on its own and annotate the value with it, rather than deriving one from the other.",
+      typeofType: "Unexpected `typeof` in a type position.",
     },
   },
   create(context) {

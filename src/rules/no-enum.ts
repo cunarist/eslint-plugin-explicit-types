@@ -72,7 +72,7 @@ export const noEnumRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      enum: 'Enum `{{name}}` declares a runtime value. Use an UPPER_SNAKE_CASE string union type instead, e.g. `type Status = "OPEN" | "CLOSED";`.',
+      enum: "Unexpected enum '{{name}}'.",
       toUnion: "Replace enum `{{name}}` with a union of its string values.",
     },
   },

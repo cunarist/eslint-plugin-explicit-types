@@ -17,8 +17,7 @@ export const noKeyofRule: ExplicitRule = {
     },
     schema: [],
     messages: {
-      keyof:
-        "`keyof` in a type position. Write the union of key names out, so adding a field cannot silently widen it.",
+      keyof: "Unexpected `keyof` in a type position.",
     },
   },
   create(context) {

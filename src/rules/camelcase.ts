@@ -111,7 +111,7 @@ function quoteSuggestions(identifier: TSESTree.Identifier, replacement: string):
  * camelCase, PascalCase, or UPPER_SNAKE_CASE, never snake_case.
  *
  * A port of `deno_lint`'s `src/rules/camelcase.rs`, reporting the same
- * identifiers with the same message and hint.
+ * identifiers with ESLint's `camelcase` message.
  *
  * A declared name gets a suggestion renaming it and its uses in this file.
  * An object or type key gets one quoting it, which keeps the shape. Neither is
@@ -127,12 +127,7 @@ export const camelcaseRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      rename:
-        "Identifier '{{name}}' is not in camel case. Consider renaming `{{name}}` to `{{suggestion}}`.",
-      renameKey:
-        "Identifier '{{name}}' is not in camel case. Consider renaming `{{name}}` to `{{suggestion}}`, or wrapping it in quotation mark like `\"{{name}}\"`.",
-      shorthandKey:
-        "Identifier '{{name}}' is not in camel case. Consider writing `{{suggestion}}: {{name}}` or `\"{{name}}\": {{name}}`.",
+      notCamelCase: "Identifier '{{name}}' is not in camel case.",
       renameTo: "Rename `{{name}}` to `{{suggestion}}` throughout this file.",
       quoteKey: 'Quote the key as `"{{name}}"`.',
     },
@@ -155,12 +150,11 @@ export const camelcaseRule: ExplicitRule = {
 
     /**
      * Report an identifier once, unless it is ambient or acceptably cased.
-     * `messageId` picks which of Deno's hints the report carries, and
-     * `suggest` builds the report's suggestions.
+     * `suggest` builds the report's suggestions from the camelCase or
+     * PascalCase `suggestion`.
      */
     function check(
       identifier: TSESTree.Identifier,
-      messageId: string,
       suggestion: string,
       suggest: (identifier: TSESTree.Identifier, suggestion: string) => SuggestedEdit[],
     ): void {
@@ -172,6 +166,8 @@ export const camelcaseRule: ExplicitRule = {
       if (!isUnderscored(identifier.name) || isAmbient(identifier)) {
         return;
       }
+      // typescript-eslint's identifier spans its `?` and type annotation, so
+      // the report is trimmed to the name, as ESLint's own parser reports it.
       const start = identifier.loc.start;
       context.report({
         node: identifier,
@@ -179,15 +175,15 @@ export const camelcaseRule: ExplicitRule = {
           start,
           end: { line: start.line, column: start.column + identifier.name.length },
         },
-        messageId,
-        data: { name: identifier.name, suggestion },
+        messageId: "notCamelCase",
+        data: { name: identifier.name },
         suggest: suggest(identifier, suggestion),
       });
     }
 
     /** A value or function name, suggested in camelCase. */
     function checkValue(identifier: TSESTree.Identifier): void {
-      check(identifier, "rename", toCamelCase(identifier.name), renameSuggestions);
+      check(identifier, toCamelCase(identifier.name), renameSuggestions);
     }
 
     /**
@@ -195,14 +191,14 @@ export const camelcaseRule: ExplicitRule = {
      * when `pascal-case-types` would accept it.
      */
     function checkTypeLike(identifier: TSESTree.Identifier): void {
-      check(identifier, "rename", toPascalCase(identifier.name), (target, suggestion) =>
+      check(identifier, toPascalCase(identifier.name), (target, suggestion) =>
         PASCAL_CASE_PATTERN.test(suggestion) ? renameSuggestions(target, suggestion) : [],
       );
     }
 
     /** An enum member, which a rename cannot follow through `Enum.member` uses. */
     function checkEnumMember(identifier: TSESTree.Identifier): void {
-      check(identifier, "rename", toPascalCase(identifier.name), () => []);
+      check(identifier, toPascalCase(identifier.name), () => []);
     }
 
     /**
@@ -210,7 +206,7 @@ export const camelcaseRule: ExplicitRule = {
      * would turn a reference into a string, so that gets no suggestion.
      */
     function checkKey(identifier: TSESTree.Identifier, computed: boolean): void {
-      check(identifier, "renameKey", toCamelCase(identifier.name), (target) =>
+      check(identifier, toCamelCase(identifier.name), (target) =>
         computed ? [] : quoteSuggestions(target, `"${target.name}"`),
       );
     }
@@ -328,7 +324,7 @@ export const camelcaseRule: ExplicitRule = {
           continue;
         }
         if (property.shorthand) {
-          check(property.key, "shorthandKey", toCamelCase(property.key.name), (target) =>
+          check(property.key, toCamelCase(property.key.name), (target) =>
             quoteSuggestions(target, `"${target.name}": ${target.name}`),
           );
         } else {

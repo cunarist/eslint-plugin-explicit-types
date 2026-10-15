@@ -47,8 +47,7 @@ export const upperSnakeStringUnionsRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      notUpperSnake:
-        'String union member "{{value}}" is not UPPER_SNAKE_CASE. Rewrite the member as an uppercase token, e.g. "IN_PROGRESS".',
+      notUpperSnake: 'String union member "{{value}}" is not in UPPER_SNAKE_CASE.',
       rewrite: 'Rewrite "{{value}}" as "{{suggestion}}".',
     },
   },

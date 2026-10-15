@@ -33,8 +33,7 @@ export const noInlineObjectTypesRule: ExplicitRule = {
     hasSuggestions: true,
     schema: [],
     messages: {
-      inlineObjectType:
-        "Inline object type. Declare an `interface` and use its name here, so the shape can be referenced and documented.",
+      inlineObjectType: "Unexpected inline object type.",
       convertToInterface: "Declare this alias as an `interface`.",
     },
   },

@@ -29,10 +29,8 @@ export const noTypeAssertionRule: ExplicitRule = {
     },
     schema: [],
     messages: {
-      asAssertion:
-        "Type assertion with `as`. Annotate the declaration, or narrow with `typeof`/`instanceof`. Only `as const` is allowed.",
-      angleBracketAssertion:
-        "Angle-bracket type assertion. Annotate the declaration, or narrow with `typeof`/`instanceof`. Only `as const` is allowed.",
+      asAssertion: "Unexpected type assertion with `as`.",
+      angleBracketAssertion: "Unexpected angle-bracket type assertion.",
     },
   },
   create(context) {

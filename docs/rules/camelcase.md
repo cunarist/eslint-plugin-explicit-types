@@ -12,7 +12,7 @@
 
 A `snake_case` name the code declares is reported. This ports Deno's built-in
 [`camelcase`](https://docs.deno.com/lint/rules/camelcase), with the same
-identifiers, message, and hint.
+identifiers, and reports them with ESLint's `camelcase` message.
 
 One casing per kind of name is what lets the other `naming` rules mean
 something: PascalCase says type, UPPER_SNAKE_CASE says constant or union member,
@@ -45,9 +45,11 @@ makes that explicit: `{ "created_at": now }`.
   and an initializer wrapped in parentheses or `as`, such as
   `const x = ({ a_b: 1 })`. A computed interface key like `[foo_bar]: string`
   is checked.
-- The hint is part of the message, since ESLint has no separate hint field. Its
-  suggestion is PascalCase for classes, types, namespaces, enums, and enum
-  members, and camelCase otherwise.
+- Deno's renaming hint becomes an editor suggestion instead: renaming a
+  declared name throughout the file, PascalCase for classes, types, namespaces,
+  and enums and camelCase otherwise, or quoting a key. Enum members get no
+  rename suggestion. The report covers only the name, never a `?` or type
+  annotation after it.
 - [`pascal-case-types`](pascal-case-types.md) overlaps on type names but is
   stricter: it rejects `_Internal` and `HTTP_STATUS`, which this rule lets through
   as leading-underscore and all-uppercase names.
