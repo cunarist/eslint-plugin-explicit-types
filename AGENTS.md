@@ -34,7 +34,10 @@ and follow it before reasoning or responding.
 - Configs are lists of rule ids in `src/index.ts`, since a rule can belong to
   several. `all` is built from the registry.
 - Shared code comes through `#helpers` and `#testing`, never a relative path
-  out of a directory. Source imports only `.ts` files, never JSON.
+  out of a directory. Source imports only `.ts` files, never JSON;
+  `project/no-non-ts-imports` fails any other extension in the last path
+  segment, a query suffix like `?raw`, or import attributes. Bare package
+  names, `#` aliases, and `node:` builtins pass.
 - `meta.name` and `meta.version` are written out in `src/index.ts`; a release
   bumps them with `package.json`, and `tests/package-meta.test.ts` checks both.
 - Rules use ESLint's standard `create` API, typed `ExplicitRule`, with every
@@ -46,8 +49,9 @@ and follow it before reasoning or responding.
   and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
 - Rules this repo enforces on itself but does not publish live in
   `scripts/project-lint.ts`, a repo-local plugin named `project` loaded by
-  `vite.config.ts`. Its one custom rule is `no-disable-comments`. Deno's
-  `camelcase` is Oxlint's built-in `id-match`, set in its `configs.project`.
+  `vite.config.ts`. Its custom rules are `no-disable-comments` and
+  `no-non-ts-imports`. Deno's `camelcase` is Oxlint's built-in `id-match`, set
+  in its `configs.project`.
   `scripts/` is never packed or published.
 - `scripts/` is repo tooling, not production code: no tests.
 - The repo lints itself with its own rules. Lint disable and enable comments

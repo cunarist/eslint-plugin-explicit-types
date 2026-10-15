@@ -1,5 +1,5 @@
 ---
-description: Published plugin = the Deno plugin's 15 rules exactly; repo-only rules live in scripts/project-lint.ts (no-disable-comments; camelcase is id-match)
+description: Published plugin = the Deno plugin's 15 rules exactly; repo-only rules live in scripts/project-lint.ts (no-disable-comments, no-non-ts-imports; camelcase is id-match)
 ---
 
 The user decided the published plugin contains exactly the 15 rules of
@@ -12,14 +12,22 @@ A rule this repo needs only for its own lint parity goes in
 `configs.project` is the repo's whole rule list beyond `configs.all`: Deno
 parity, extras, pedantic opt-outs and per-rule options, built-in Oxlint ids
 included. `vite.config.ts` spreads it and names no rule itself; only the
-`overrides` entry, a file glob, stays there. Its one custom rule
-is `no-disable-comments` (see [[self-lint-from-source]]). It may import `#helpers`. `scripts/` is
+`overrides` entry, a file glob, stays there. Its custom rules are
+`no-disable-comments` (see [[self-lint-from-source]]) and `no-non-ts-imports`.
+It may import `#helpers`. `scripts/` is
 repo tooling, not production code: no tests.
 
 It once held `camelcase`, a ~400-line port of `deno_lint`'s `camelcase.rs`. The
 user replaced it with Oxlint's built-in `id-match` (see [[lint-parity-with-deno]]),
-accepting no autofix. Keep rule and plugin in one file until a second rule
-lands, rather than adding `scripts/rules/` and its `index.ts`.
+accepting no autofix. Rules and plugin stay in this one file; the user put
+`no-non-ts-imports` here rather than adding `scripts/rules/` and its `index.ts`.
+
+`no-non-ts-imports` (user decision) flags import/export sources and dynamic
+`import("...")` literals whose last segment has a non-`.ts` extension (`.css`,
+`.json`, `.svg`, `.js`, `.mjs`, `.tsx`), any `?query` suffix, and any import
+attributes. Extensions count only for relative, absolute, `#` and package
+subpath specifiers, so `@fortawesome/x/svgs/a.svg` fails while
+`@types/json-schema`, `lodash.debounce`, `lit`, `node:fs` pass.
 
 `scripts/` never ships: `files` is `["dist"]` and `vp pack` builds only
 `src/index.ts`, which never imports from `scripts/`.

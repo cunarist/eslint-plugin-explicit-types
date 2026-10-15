@@ -3,8 +3,8 @@
  * part of the published plugin. The published plugin mirrors the rules of the
  * Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types` and nothing
  * else; a rule kept here only for this repo's lint parity lives in this file.
- * Its one rule of its own is `no-disable-comments`; Deno's `camelcase` is
- * Oxlint's built-in `id-match`.
+ * Its rules of its own are `no-disable-comments` and `no-non-ts-imports`;
+ * Deno's `camelcase` is Oxlint's built-in `id-match`.
  *
  * Loaded by `vite.config.ts` as an Oxlint `jsPlugins` entry, never packed:
  * `vp pack` builds `src/index.ts` alone and the tarball holds only `dist/`.
@@ -68,6 +68,86 @@ const noDisableCommentsRule: ProjectRule = {
   },
 };
 
+/** A module specifier read as a path: relative, absolute, or a `#` alias. */
+const PATH_SPECIFIER_PATTERN: RegExp = /^[./#]/u;
+
+/**
+ * Whether `source` names something other than a `.ts` module: a query string
+ * such as `?raw`, or a final path segment with any other extension. Bare
+ * package names are left alone, dots and all, as are extensionless paths.
+ */
+function isNonTsSource(source: string): boolean {
+  if (source.includes("?")) {
+    return true;
+  }
+  const segments: string[] = source.split("/");
+  if (!PATH_SPECIFIER_PATTERN.test(source)) {
+    const nameLength: number = source.startsWith("@") ? 2 : 1;
+    if (segments.length <= nameLength) {
+      return false;
+    }
+  }
+  const lastSegment: string = segments.at(-1) ?? "";
+  if (lastSegment === "." || lastSegment === ".." || !lastSegment.includes(".")) {
+    return false;
+  }
+  return !lastSegment.endsWith(".ts");
+}
+
+/**
+ * `no-non-ts-imports` — rejects importing anything but a `.ts` module: a
+ * source path, static or a dynamic `import()` with a string literal, ending in
+ * another extension (`.css`, `.json`, `.svg`, `.js`, `.tsx`) or carrying a
+ * query string (`?raw`, `?url`), and any import or export with import
+ * attributes. Bare package names, `#` aliases, and `node:` builtins without an
+ * extension pass; package subpaths are checked like paths.
+ */
+const noNonTsImportsRule: ProjectRule = {
+  meta: {
+    type: "problem",
+    docs: { description: "Disallow importing modules other than .ts files" },
+    schema: [],
+    messages: {
+      extension: "Only .ts modules may be imported.",
+      attributes: "Import attributes are not allowed.",
+    },
+  },
+  create(context) {
+    function checkSource(source: TSESTree.StringLiteral): void {
+      if (isNonTsSource(source.value)) {
+        context.report({ node: source, messageId: "extension" });
+      }
+    }
+    function checkDeclaration(
+      node:
+        | TSESTree.ImportDeclaration
+        | TSESTree.ExportNamedDeclaration
+        | TSESTree.ExportAllDeclaration,
+    ): void {
+      if (node.source === null) {
+        return;
+      }
+      checkSource(node.source);
+      if (node.attributes.length > 0) {
+        context.report({ node, messageId: "attributes" });
+      }
+    }
+    return {
+      ImportDeclaration: checkDeclaration,
+      ExportNamedDeclaration: checkDeclaration,
+      ExportAllDeclaration: checkDeclaration,
+      ImportExpression(node: TSESTree.ImportExpression): void {
+        if (node.source.type === "Literal" && typeof node.source.value === "string") {
+          checkSource(node.source);
+        }
+        if (node.options !== null) {
+          context.report({ node, messageId: "attributes" });
+        }
+      },
+    };
+  },
+};
+
 /**
  * This repository's own rule list, spread by `vite.config.ts` after the
  * published `all` config: Deno lint parity beyond the Oxlint categories, plus a
@@ -107,6 +187,7 @@ const rules: DummyRuleMap = {
   "typescript/no-namespace": "error",
   "typescript/no-non-null-assertion": "error",
   "project/no-disable-comments": "error",
+  "project/no-non-ts-imports": "error",
   "unicorn/no-abusive-eslint-disable": "error",
   // Pedantic rules that fight the AST types: nodes are mutable, `type` is
   // an enum imported only as a type, and visitors are long by nature.
@@ -123,7 +204,10 @@ const rules: DummyRuleMap = {
  */
 const plugin = {
   meta: { name: "project" },
-  rules: { "no-disable-comments": noDisableCommentsRule },
+  rules: {
+    "no-disable-comments": noDisableCommentsRule,
+    "no-non-ts-imports": noNonTsImportsRule,
+  },
   configs: { project: { rules } },
 };
 
