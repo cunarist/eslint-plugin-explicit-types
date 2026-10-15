@@ -24,16 +24,25 @@ and follow it before reasoning or responding.
 - The only config files are `package.json`, `tsconfig.json`, and
   `vite.config.ts`, plus `package-lock.json`. Only `.ts` source files, configs
   included; there are no `.js`, `.mjs`, `.cjs`, `.jsx`, or `.tsx` files.
-- Every directory's entry file is `index.ts`. Files under `src/` are kebab-case,
-  named after the rule id: `no-keyof.ts`, `no-keyof.md`, `no-keyof.test.ts`.
-- Shared code comes through `#helpers`, `#testing`, and `#package`, never a
-  relative path out of a directory.
+- Every directory's entry file is `index.ts`. Every rule lives flat in
+  `src/rules/<rule-id>.ts`, tested in `src/rules/<rule-id>.test.ts` and
+  registered in `src/rules/index.ts`. There are no per-preset folders.
+- Each rule file has one named export with a `Rule` suffix, e.g.
+  `export const noKeyofRule`. The package's only default export is the plugin
+  in `src/index.ts`.
+- Configs are lists of rule ids in `src/index.ts`, since a rule can belong to
+  several. `all` is built from the registry.
+- Shared code comes through `#helpers` and `#testing`, never a relative path
+  out of a directory. Source imports only `.ts` files, never JSON.
+- `meta.name` and `meta.version` are written out in `src/index.ts`; a release
+  bumps them with `package.json`, and `tests/package-meta.test.ts` checks both.
 - Rules use ESLint's standard `create` API, typed `ExplicitRule`, with every
   visitor's node parameter annotated. No runtime dependencies.
 - Unit tests sit next to the code as `*.test.ts`. Regression and integration
   tests go in `tests/` and use only the public entry, `#plugin`.
 - Every rule test runs under both ESLint's and Oxlint's `RuleTester` through
-  `testRule`. Write cases once, in ESLint's shape and 1-based columns.
+  `testRule`, called exactly once per rule file with every case in its `valid`
+  and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
 - The repo lints itself with its own rules. Never add an `oxlint-disable` or
   `eslint-disable`; fix the source.
 - Lint coverage never drops below what Deno enforced. Check

@@ -2,7 +2,13 @@
 description: Every rule test runs under both ESLint's and Oxlint's RuleTester, written once in ESLint's shape
 ---
 
-`testRule` in `#testing` runs each case twice, in Vitest: under ESLint's
+Each rule's test file calls `testRule` from `#testing` exactly once, with every
+case in one `valid` and one `invalid` list (the typescript-eslint and unicorn
+style); a `//` comment heads each group of cases. Both testers reject a repeated
+`code` within one run, so a span check goes on the same case as the other
+assertions for that snippet, not on a copy of it.
+
+`testRule` runs each case twice, in Vitest: under ESLint's
 `RuleTester` with `@typescript-eslint/parser` and a `.ts` filename, and under
 Oxlint's (`vite-plus/lint/plugins-dev`). No ESLint config file is involved.
 
@@ -18,4 +24,6 @@ differ), though Oxlint runs ESLint rules unchanged. The harness widens Oxlint's
 every test proves the runtime agrees.
 
 CI runs `vp test -t " eslint "` and `vp test -t " oxlint "` as separate steps,
-280 cases each, so a failure names its host. See [[rule-typing-explicitrule]].
+434 cases each, so a failure names its host. That filter is why `testRule`
+nests its suites as `<rule> > eslint|oxlint`: a name that starts with the host
+has no leading space and would match neither step. See [[rule-typing-explicitrule]].

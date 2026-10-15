@@ -10,9 +10,11 @@ ESLint's convention is one plugin per package, named from the package:
 The Deno package was three plugins — `explicit-concrete`, `explicit-naming`,
 `explicit-absence` — because Deno's plugin API had no presets. Those survive as
 flat configs at `plugin.configs.concrete`, `.naming` and `.absence`, plus
-`.all` with every rule. `all` is built from the full rule map, so a new rule
-joins it without an edit; `tests/configs.test.ts` checks it equals the union of
-the three. There is no `recommended` and no `meta.docs.recommended`.
+`.all` with every rule. Each config is a list of rule ids in `src/index.ts`,
+so a rule can sit in several; `all` is built from the rule registry in
+`src/rules/index.ts`, so a new rule joins it without an edit;
+`tests/configs.test.ts` checks it equals the union of the three. There is no
+`recommended` and no `meta.docs.recommended`.
 The package has only a default export, the plugin, as ESLint plugins do; no
 named config exports. ESLint users list `plugin.configs.<name>`; Oxlint, whose
 plugins have no `configs` and turn no rule on by themselves, spreads

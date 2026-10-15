@@ -4,8 +4,8 @@ description: The repo lints itself from src/index.ts as a jsPlugin, with nothing
 
 `vite.config.ts` loads `./src/index.ts` as a `jsPlugins` entry and spreads
 `plugin.configs.all.rules`, so a new rule applies at once to the code that
-implements it. Oxlint strips the types itself on Node 24, `#` imports and the
-JSON import of `package.json` included; no build runs first.
+implements it. Oxlint strips the types itself on Node 24, `#` imports
+included; no build runs first.
 
 When a rule fires here, fix the source. No file carries an `oxlint-disable` or
 `eslint-disable`: rule records are `Map`s keyed by rule id, because a record is

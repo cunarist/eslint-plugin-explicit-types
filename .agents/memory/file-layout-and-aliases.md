@@ -1,5 +1,5 @@
 ---
-description: Kebab-case files named after rule ids, index.ts entries, colocated unit tests, regression tests in tests/, # subpath imports
+description: Flat src/rules/<rule-id>.ts with colocated tests and one registry, configs as rule-id lists, regression tests in tests/, # subpath imports
 ---
 
 **Everything under `src/` is named in kebab-case**, so a file name is the rule
@@ -8,15 +8,22 @@ id it implements — `no-utility-types` is in `no-utility-types.ts`, tested in
 (the ESLint plugin convention, which `meta.docs.url` links to). No translation
 step sits between the diagnostic a user sees and the file they open.
 
-    src/index.ts                         the plugin and its configs
-    src/concrete/index.ts                the preset's rule map
-    src/concrete/no-utility-types.ts
-    src/concrete/no-utility-types.test.ts
+    src/index.ts                         the plugin, its meta, and its configs
+    src/rules/index.ts                   the registry: every rule by id
+    src/rules/no-utility-types.ts        exports noUtilityTypesRule
+    src/rules/no-utility-types.test.ts   one testRule call
     docs/rules/no-utility-types.md       the rule's docs page
     tests/configs.test.ts                a regression test
 
+**Rules sit flat in `src/rules/`**, with no folder per preset, because a rule
+can belong to more than one config. A config is only a list of rule ids, kept
+in `src/index.ts`; `all` is built from the registry, so a new rule joins it by
+itself. Each rule file has one named export with a `Rule` suffix
+(`noUtilityTypesRule`); the only default export in the package is the plugin.
+This layout is the template for every cunarist plugin repo.
+
 Every directory's entry file is `index.ts`, the Node convention. `src/index.ts`
-is the only package entry; a preset's `index.ts` exports its rule `Map` and
+is the only package entry; `src/rules/index.ts` exports the rule `Map` and
 nothing else. Tests sit beside the rule: the package publishes only `dist/`, so
 colocation costs nothing in the tarball, and Vitest's default include finds
 `*.test.ts` without config.
@@ -38,6 +45,7 @@ The aliases are `package.json` `imports`, which Node, TypeScript, Vite, and
 Oxlint's plugin loader all resolve natively, so the source runs unbuilt. They
 point at `.ts` files and never reach consumers: `vp pack` inlines them.
 `#testing` is kept apart from `#helpers` so neither tester lands in a bundle.
-`#package` is `package.json`, so the plugin reads its own name and version
-without a parent-relative import, which `import/no-relative-parent-imports`
-rejects.
+There is no `#package` alias: source imports only `.ts` files, so `meta.name`
+and `meta.version` are written out in `src/index.ts`. A release bumps them with
+`package.json`; `tests/package-meta.test.ts` reads `package.json` with
+`node:fs` and fails if they drift.
