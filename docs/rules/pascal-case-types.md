@@ -2,7 +2,7 @@
 
 📝 Enforce PascalCase names for classes, interfaces, type aliases, and enums.
 
-💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🔤 `naming`, ✅ `recommended`.
+💼 This rule is enabled in the 🔤 `naming` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
 
 <!-- end auto-generated rule header -->
 

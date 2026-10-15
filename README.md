@@ -165,26 +165,25 @@ not `null`, so returning `| null` means normalising where you parse data.
 💼 [Configurations](https://github.com/cunarist/eslint-plugin-explicit-types#setup) enabled in.\
 🫙 Set in the `absence` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).\
 🧱 Set in the `concrete` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).\
-🔤 Set in the `naming` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).\
-✅ Set in the `recommended` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
+🔤 Set in the `naming` [configuration](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
 
-| Name                                                                   | Description                                                               | 💼   |
-| :--------------------------------------------------------------------- | :------------------------------------------------------------------------ | :--- |
-| [no-conditional-types](docs/rules/no-conditional-types.md)             | Disallow conditional types and the `infer` keyword                        | 🧱 ✅ |
-| [no-enum](docs/rules/no-enum.md)                                       | Disallow `enum` declarations                                              | 🔤 ✅ |
-| [no-index-signatures](docs/rules/no-index-signatures.md)               | Disallow index signatures                                                 | 🧱 ✅ |
-| [no-inline-object-types](docs/rules/no-inline-object-types.md)         | Disallow inline object type literals                                      | 🧱 ✅ |
-| [no-keyof](docs/rules/no-keyof.md)                                     | Disallow the `keyof` type operator                                        | 🧱 ✅ |
-| [no-mapped-types](docs/rules/no-mapped-types.md)                       | Disallow mapped types                                                     | 🧱 ✅ |
-| [no-optional-null](docs/rules/no-optional-null.md)                     | Disallow combining an optional `?` with `\| null`                         | 🫙 ✅ |
-| [no-type-assertion](docs/rules/no-type-assertion.md)                   | Disallow type assertions other than `as const`                            | 🧱 ✅ |
-| [no-typeof-type](docs/rules/no-typeof-type.md)                         | Disallow `typeof` in type positions                                       | 🧱 ✅ |
-| [no-undefined-type](docs/rules/no-undefined-type.md)                   | Disallow the `undefined` keyword in type positions                        | 🫙 ✅ |
-| [no-upper-snake-object-keys](docs/rules/no-upper-snake-object-keys.md) | Disallow UPPER_SNAKE_CASE object keys and type members                    | 🔤 ✅ |
-| [no-utility-types](docs/rules/no-utility-types.md)                     | Disallow the built-in TypeScript utility types                            | 🧱 ✅ |
-| [pascal-case-types](docs/rules/pascal-case-types.md)                   | Enforce PascalCase names for classes, interfaces, type aliases, and enums | 🔤 ✅ |
-| [require-return-type](docs/rules/require-return-type.md)               | Require explicit return types on named functions                          | 🧱 ✅ |
-| [upper-snake-string-unions](docs/rules/upper-snake-string-unions.md)   | Enforce UPPER_SNAKE_CASE for string literal union members                 | 🔤 ✅ |
+| Name                                                                   | Description                                                               | 💼 |
+| :--------------------------------------------------------------------- | :------------------------------------------------------------------------ | :- |
+| [no-conditional-types](docs/rules/no-conditional-types.md)             | Disallow conditional types and the `infer` keyword                        | 🧱 |
+| [no-enum](docs/rules/no-enum.md)                                       | Disallow `enum` declarations                                              | 🔤 |
+| [no-index-signatures](docs/rules/no-index-signatures.md)               | Disallow index signatures                                                 | 🧱 |
+| [no-inline-object-types](docs/rules/no-inline-object-types.md)         | Disallow inline object type literals                                      | 🧱 |
+| [no-keyof](docs/rules/no-keyof.md)                                     | Disallow the `keyof` type operator                                        | 🧱 |
+| [no-mapped-types](docs/rules/no-mapped-types.md)                       | Disallow mapped types                                                     | 🧱 |
+| [no-optional-null](docs/rules/no-optional-null.md)                     | Disallow combining an optional `?` with `\| null`                         | 🫙 |
+| [no-type-assertion](docs/rules/no-type-assertion.md)                   | Disallow type assertions other than `as const`                            | 🧱 |
+| [no-typeof-type](docs/rules/no-typeof-type.md)                         | Disallow `typeof` in type positions                                       | 🧱 |
+| [no-undefined-type](docs/rules/no-undefined-type.md)                   | Disallow the `undefined` keyword in type positions                        | 🫙 |
+| [no-upper-snake-object-keys](docs/rules/no-upper-snake-object-keys.md) | Disallow UPPER_SNAKE_CASE object keys and type members                    | 🔤 |
+| [no-utility-types](docs/rules/no-utility-types.md)                     | Disallow the built-in TypeScript utility types                            | 🧱 |
+| [pascal-case-types](docs/rules/pascal-case-types.md)                   | Enforce PascalCase names for classes, interfaces, type aliases, and enums | 🔤 |
+| [require-return-type](docs/rules/require-return-type.md)               | Require explicit return types on named functions                          | 🧱 |
+| [upper-snake-string-unions](docs/rules/upper-snake-string-unions.md)   | Enforce UPPER_SNAKE_CASE for string literal union members                 | 🔤 |
 
 <!-- end auto-generated rules list -->
 <!-- prettier-ignore-end -->

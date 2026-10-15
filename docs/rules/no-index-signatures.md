@@ -2,7 +2,7 @@
 
 📝 Disallow index signatures.
 
-💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🧱 `concrete`, ✅ `recommended`.
+💼 This rule is enabled in the 🧱 `concrete` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
 
 <!-- end auto-generated rule header -->
 

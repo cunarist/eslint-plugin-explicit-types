@@ -2,7 +2,7 @@
 
 📝 Disallow the `undefined` keyword in type positions.
 
-💼 This rule is enabled in the following [configs](https://github.com/cunarist/eslint-plugin-explicit-types#setup): 🫙 `absence`, ✅ `recommended`.
+💼 This rule is enabled in the 🫙 `absence` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
 
 <!-- end auto-generated rule header -->
 

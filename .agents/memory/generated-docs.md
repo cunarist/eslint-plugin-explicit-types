@@ -10,7 +10,7 @@ rewrites the README rules list and the header of every `docs/rules/*.md` (title
 
 Its options live in the `eslint-doc-generator` key of `package.json`, since
 the only config files allowed are `package.json`, `tsconfig.json`, and
-`vite.config.ts`. Config emojis: ✅ recommended, 🧱 concrete, 🔤 naming,
+`vite.config.ts`. Config emojis: 🧱 concrete, 🔤 naming,
 🫙 absence. Emojis carrying a U+FE0F variation selector (🏷️, 🕳️) were
 avoided because table padding then never settles.
 
