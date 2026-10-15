@@ -18,7 +18,8 @@ one of:
 - a renamed equivalent (`no-new-symbol` → `no-new-native-nonconstructor`,
   `no-window` → `no-restricted-globals: window`, `ban-untagged-ignore` →
   `unicorn/no-abusive-eslint-disable`, `ban-unused-ignore` and
-  `ban-unknown-rule-code` → `options.reportUnusedDisableDirectives`);
+  `ban-unknown-rule-code` → `options.reportUnusedDisableDirectives`; beyond
+  Deno, `project/no-disable-comments` bans every directive);
 - caught by the parser or `typeCheck` (`no-dupe-args`, `no-octal`,
   `no-await-in-sync-fn`, `no-import-assertions` TS2880, `no-sloppy-imports`
   TS2835, `verbatim-module-syntax` TS1484);

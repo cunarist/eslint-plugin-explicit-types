@@ -46,12 +46,16 @@ and follow it before reasoning or responding.
   and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
 - Rules this repo enforces on itself but does not publish live in
   `scripts/project-lint.ts`, a repo-local plugin named `project` loaded by
-  `vite.config.ts`; it has no custom rule today (`rules: {}`). Deno's
+  `vite.config.ts`. Its one custom rule is `no-disable-comments`. Deno's
   `camelcase` is Oxlint's built-in `id-match`, set in its `configs.project`.
   `scripts/` is never packed or published.
 - `scripts/` is repo tooling, not production code: no tests.
-- The repo lints itself with its own rules. Never add an `oxlint-disable` or
-  `eslint-disable`; fix the source.
+- The repo lints itself with its own rules. Lint disable and enable comments
+  (`eslint-*` or `oxlint-*`, any form) fail `vp check`; fix the source. Three
+  checks enforce it together: `project/no-disable-comments`,
+  `unicorn/no-abusive-eslint-disable` (a directive naming no rule), and
+  `reportUnusedDisableDirectives` (a directive naming
+  `project/no-disable-comments`, which that rule skips). Keep all three.
 - `vite.config.ts` lists no rule by name: its `rules` spreads
   `configs.all.rules` from `src/index.ts` and `configs.project.rules` from
   `scripts/project-lint.ts`, which holds the repo's own rule list (Deno parity,
