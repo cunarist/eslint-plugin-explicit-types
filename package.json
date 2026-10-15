@@ -52,12 +52,12 @@
   },
   "imports": {
     "#helpers": "./src/helpers/index.ts",
-    "#package": "./package.json",
     "#plugin": "./src/index.ts",
     "#testing": "./src/testing/index.ts"
   },
   "devDependencies": {
     "@eslint/core": "^0.17.0",
+    "@types/node": "^22.20.5",
     "@typescript-eslint/parser": "^8.71.1",
     "@typescript-eslint/types": "^8.71.1",
     "eslint": "^9.39.5",

@@ -6,8 +6,11 @@ description: Cut a release; bump the version, merge, then publish a GitHub relea
 Ask the user before any step that publishes. Never run `npm publish` yourself
 and never push a bare `v*` tag; see [[publish-from-github-release]].
 
-1. On a branch, set `version` in `package.json` and refresh the lockfile with
-   `npm install --package-lock-only`. Run `vp check`, `vp test`, and `vp pack`.
+1. On a branch, bump the version in both places that hold it: `version` in
+   `package.json` and `meta.version` in `src/index.ts`, which is written out
+   rather than imported from JSON. `tests/package-meta.test.ts` fails if the
+   two differ. Refresh the lockfile with `npm install --package-lock-only`.
+   Run `vp check`, `vp test`, and `vp pack`.
    Commit as `Version X.Y.Z`, then merge through a PR. Before 1.0, a change
    that breaks users (a renamed rule id, a rule that fires on more code) is a
    minor bump.

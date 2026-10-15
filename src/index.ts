@@ -12,7 +12,6 @@
 
 import type { ConfigObject, Plugin } from "@eslint/core";
 
-import packageJson from "#package" with { type: "json" };
 import { rules } from "./rules/index.ts";
 
 /** The prefix of every rule id, as ESLint derives it from the package name. */
@@ -79,8 +78,11 @@ interface ExplicitTypesPlugin {
 /** The plugin before its configs exist, which each config refers back to. */
 const basePlugin: Plugin = {
   meta: {
-    name: packageJson.name,
-    version: packageJson.version,
+    // Written out rather than imported from `package.json`, so the source has
+    // only `.ts` imports. A release bumps both; `tests/package-meta.test.ts`
+    // fails if they drift apart.
+    name: "@cunarist/eslint-plugin-explicit-types",
+    version: "0.6.0",
     namespace: NAMESPACE,
   },
   rules: Object.fromEntries(rules),
