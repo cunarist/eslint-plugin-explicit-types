@@ -2,7 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 
 import { type ExpectedSuggestion, type ReportedSpan, type RuleCases, testRule } from "#testing";
 
-import { camelcaseRule, isUnderscored, toCamelCase } from "./camelcase.ts";
+import { camelcaseRule, isUnderscored, toCamelCase } from "./project-lint.ts";
 
 /** One expected report, written as Deno's tests write it: a 0-based column. */
 interface DenoError {

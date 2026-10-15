@@ -11,11 +11,13 @@ export default defineConfig({
   lint: {
     plugins: ["typescript", "unicorn", "oxc", "import"],
     // Lints itself from source, so a new rule applies to its own code.
-    jsPlugins: ["./src/index.ts"],
+    // `scripts/project-lint.ts` holds repo-only rules, never published.
+    jsPlugins: ["./src/index.ts", "./scripts/project-lint.ts"],
     categories: { correctness: "error", suspicious: "error", pedantic: "error" },
     rules: {
       ...plugin.configs.all.rules,
       // Deno lint parity beyond the categories above.
+      "project/camelcase": "error",
       curly: "error",
       "guard-for-in": "error",
       "no-console": "error",

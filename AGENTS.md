@@ -9,7 +9,7 @@ and follow it before reasoning or responding.
 
 - **@cunarist/eslint-plugin-explicit-types**: TypeScript style rules that keep
   types written out rather than derived. One ESLint plugin that also runs under
-  Oxlint. Namespace `@cunarist/explicit-types`, 16 rules in three presets
+  Oxlint. Namespace `@cunarist/explicit-types`, 15 rules in three presets
   (`concrete`, `naming`, `absence`).
 - The package's only export is the default one, the plugin. Configs live at
   `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,
@@ -17,6 +17,7 @@ and follow it before reasoning or responding.
 - Runs on Node.js 22+ or Bun 1.3.13+; `engines` names only `node`. Built with
   Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
+  The published plugin mirrors exactly its 15 rules, nothing added or removed.
 
 ## Rules
 
@@ -29,7 +30,7 @@ and follow it before reasoning or responding.
   registered in `src/rules/index.ts`. There are no per-preset folders.
 - Each rule file has one named export with a `Rule` suffix, e.g.
   `export const noKeyofRule`. The package's only default export is the plugin
-  in `src/index.ts`.
+  in `src/index.ts`; `scripts/project-lint.ts` default-exports its own.
 - Configs are lists of rule ids in `src/index.ts`, since a rule can belong to
   several. `all` is built from the registry.
 - Shared code comes through `#helpers` and `#testing`, never a relative path
@@ -43,6 +44,10 @@ and follow it before reasoning or responding.
 - Every rule test runs under both ESLint's and Oxlint's `RuleTester` through
   `testRule`, called exactly once per rule file with every case in its `valid`
   and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
+- Rules this repo enforces on itself but does not publish (e.g. `camelcase`
+  for Deno lint parity) live in `scripts/project-lint.ts`, a repo-local plugin
+  named `project` loaded by `vite.config.ts` and tested in
+  `scripts/project-lint.test.ts`. `scripts/` is never packed or published.
 - The repo lints itself with its own rules. Never add an `oxlint-disable` or
   `eslint-disable`; fix the source.
 - Lint coverage never drops below what Deno enforced. Check

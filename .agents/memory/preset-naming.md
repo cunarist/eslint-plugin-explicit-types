@@ -1,5 +1,5 @@
 ---
-description: naming preset: PascalCase types, UPPER_SNAKE unions, no union-shaped keys, no enum, Deno's camelcase
+description: naming preset: PascalCase types, UPPER_SNAKE unions, no union-shaped keys, no enum; camelcase is repo-only
 ---
 
 | Rule                         | Src | Enforces                                                    |
@@ -8,7 +8,6 @@ description: naming preset: PascalCase types, UPPER_SNAKE unions, no union-shape
 | `upper-snake-string-unions`  | mem | String literals in any union type are UPPER_SNAKE_CASE      |
 | `no-upper-snake-object-keys` | new | No UPPER_SNAKE_CASE object keys or type members             |
 | `no-enum`                    | new | No `enum` — use an UPPER_SNAKE_CASE string union            |
-| `camelcase`                  | new | Deno's built-in `camelcase`, ported: no declared snake_case |
 
 These three interlock. `no-enum` removes the construct;
 `upper-snake-string-unions` governs the string union that replaces it; and
@@ -27,10 +26,12 @@ keeps the intended target and clears every one of those, and it let the
 `deno-lint-ignore-file` lines come out of this repo's own rule files.
 
 Under Deno the rule divided cleanly with the built-in `camelcase`, which
-reported unquoted `snake_case` keys. Oxlint ships no `camelcase` rule, so
-`camelcase` here ports `deno_lint`'s `camelcase.rs` exactly (same reports, same
-message and hint) rather than widening this rule, which would reopen the
-foreign-vocabulary problem above.
+reported unquoted `snake_case` keys. Oxlint ships no `camelcase` rule, so a port
+of `deno_lint`'s `camelcase.rs` (same reports, same message, plus fixes and
+suggestions) lives in `scripts/project-lint.ts` as `project/camelcase`, rather
+than widening this rule, which would reopen the foreign-vocabulary problem
+above. It is repo-only and never published: the plugin carries exactly the 15
+rules of the Deno plugin.
 
 `upper-snake-string-unions` visits `TSUnionType` rather than
 `TSTypeAliasDeclaration`, so a union written inline on an interface member

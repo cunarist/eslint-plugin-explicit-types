@@ -1,5 +1,5 @@
 ---
-description: vite.config.ts must keep every lint check Deno ran; camelcase and three import-check rules are open gaps
+description: vite.config.ts must keep every lint check Deno ran; camelcase is project/camelcase; three import-check rules are open gaps
 ---
 
 The user requires lint coverage never to shrink below the Deno setup:
@@ -27,8 +27,10 @@ one of:
 
 `maxWarnings: 0` keeps Deno's every-diagnostic-fails behaviour.
 
-Open gaps, not decisions: `camelcase` (Oxlint has none; another agent is
-choosing the org-wide replacement) and `import-check`'s `prefer-alias-import`,
+`camelcase`, which Oxlint lacks, is `project/camelcase` from the repo-only
+plugin `scripts/project-lint.ts` (see [[repo-only-rules]]).
+
+Open gaps, not decisions: `import-check`'s `prefer-alias-import`,
 `no-barrel-bypass`, and `no-relative-bypass`. Its `no-self-import`,
 `no-absolute-import`, and `no-parent-import` map to `import/*` rules, and
 `import/no-cycle` stands in for its CLI's cycle check.

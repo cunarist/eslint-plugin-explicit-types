@@ -1,7 +1,19 @@
-import type { RuleFixer, RuleTextEdit, SuggestedEdit } from "@eslint/core";
+/**
+ * `project` — lint rules this repository holds its own source to that are not
+ * part of the published plugin. The published plugin mirrors the rules of the
+ * Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types` and nothing
+ * else; a rule kept here only for this repo's lint parity lives in this file.
+ *
+ * Loaded by `vite.config.ts` as an Oxlint `jsPlugins` entry, never packed:
+ * `vp pack` builds `src/index.ts` alone and the tarball holds only `dist/`.
+ *
+ * @module
+ */
+
+import type { Plugin, RuleFixer, RuleTextEdit, SuggestedEdit } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { docsUrl, type ExplicitRule, renameFix } from "#helpers";
+import { type ExplicitRule, renameFix } from "#helpers";
 
 /** Lowercase ASCII letter after a non-underscore and one underscore. */
 const UNDERSCORE_CHAR_PATTERN = /([^_])_([a-z])/gu;
@@ -134,7 +146,7 @@ export const camelcaseRule: ExplicitRule = {
     type: "suggestion",
     docs: {
       description: "Enforce camelCase, PascalCase, or UPPER_SNAKE_CASE for declared names",
-      url: docsUrl("camelcase"),
+      url: "https://docs.deno.com/lint/rules/camelcase",
     },
     fixable: "code",
     hasSuggestions: true,
@@ -472,3 +484,11 @@ export const camelcaseRule: ExplicitRule = {
     };
   },
 };
+
+/** The repo-local plugin, namespace `project`, e.g. `project/camelcase`. */
+const plugin: Plugin = {
+  meta: { name: "project" },
+  rules: Object.fromEntries([["camelcase", camelcaseRule]]),
+};
+
+export default plugin;

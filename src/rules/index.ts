@@ -6,7 +6,6 @@
 
 import type { ExplicitRule } from "#helpers";
 
-import { camelcaseRule } from "./camelcase.ts";
 import { noConditionalTypesRule } from "./no-conditional-types.ts";
 import { noEnumRule } from "./no-enum.ts";
 import { noIndexSignaturesRule } from "./no-index-signatures.ts";
@@ -31,7 +30,6 @@ import { upperSnakeStringUnionsRule } from "./upper-snake-string-unions.ts";
  * `no-upper-snake-object-keys` applied to itself.
  */
 export const rules: Map<string, ExplicitRule> = new Map([
-  ["camelcase", camelcaseRule],
   ["no-conditional-types", noConditionalTypesRule],
   ["no-enum", noEnumRule],
   ["no-index-signatures", noIndexSignaturesRule],
