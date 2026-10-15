@@ -56,13 +56,13 @@ function asciiUpper(text: string): string {
 }
 
 /** Whether a name has an underscore, ignoring leading and trailing ones, and is not ALL_UPPER. */
-export function isUnderscored(name: string): boolean {
+function isUnderscored(name: string): boolean {
   const trimmed = name.replace(EDGE_UNDERSCORES_PATTERN, "");
   return trimmed.includes("_") && trimmed !== asciiUpper(trimmed);
 }
 
 /** Deno's suggested camelCase spelling; an UPPER_SNAKE spelling if no letter follows `_`. */
-export function toCamelCase(name: string): string {
+function toCamelCase(name: string): string {
   if (!isUnderscored(name)) {
     return name;
   }
@@ -141,7 +141,7 @@ function quoteSuggestions(identifier: TSESTree.Identifier, replacement: string):
  * suggestion. An object or type key gets a suggestion quoting it, which keeps
  * the shape: other files may read the key.
  */
-export const camelcaseRule: ExplicitRule = {
+const camelcaseRule: ExplicitRule = {
   meta: {
     type: "suggestion",
     docs: {

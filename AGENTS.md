@@ -46,8 +46,9 @@ and follow it before reasoning or responding.
   and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
 - Rules this repo enforces on itself but does not publish (e.g. `camelcase`
   for Deno lint parity) live in `scripts/project-lint.ts`, a repo-local plugin
-  named `project` loaded by `vite.config.ts` and tested in
-  `scripts/project-lint.test.ts`. `scripts/` is never packed or published.
+  named `project` loaded by `vite.config.ts`. `scripts/` is never packed or
+  published.
+- `scripts/` is repo tooling, not production code: no tests.
 - The repo lints itself with its own rules. Never add an `oxlint-disable` or
   `eslint-disable`; fix the source.
 - `vite.config.ts` lists no rule by name: its `rules` spreads

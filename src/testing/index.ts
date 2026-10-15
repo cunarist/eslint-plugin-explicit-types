@@ -47,7 +47,7 @@ const oxlintTester: OxlintRunner = new OxlintRuleTester({
 });
 
 /** The cases one rule is tested against, written in ESLint's shape. */
-export interface RuleCases {
+interface RuleCases {
   valid: string[];
   invalid: EslintRuleTester.InvalidTestCase[];
 }
@@ -62,7 +62,7 @@ export type ExpectedSuggestion = EslintRuleTester.SuggestionOutput;
  * Where a diagnostic should land, counted the way ESLint counts: lines and
  * columns both from 1. The Oxlint run shifts columns to its 0-based count.
  */
-export interface ReportedSpan {
+interface ReportedSpan {
   line: number;
   column: number;
   endLine: number;

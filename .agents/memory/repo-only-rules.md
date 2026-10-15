@@ -14,8 +14,7 @@ parity, extras, pedantic opt-outs and per-rule options, built-in Oxlint ids
 included. `vite.config.ts` spreads it and names no rule itself; only the
 `overrides` entry, a file glob, stays there. Today it holds
 `camelcase`, a port of Deno's built-in rule (Oxlint has none). It may import
-`#helpers`; its test, `scripts/project-lint.test.ts`, runs under both testers
-through `#testing`.
+`#helpers`. `scripts/` is repo tooling, not production code: no tests.
 
 One file holds rule and plugin, rather than `scripts/rules/camelcase.ts`, because
 there is one rule and the repo's every-directory-has-`index.ts` convention
