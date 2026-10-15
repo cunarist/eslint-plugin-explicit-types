@@ -12,7 +12,9 @@ Its options live in the `eslint-doc-generator` key of `package.json`, since
 the only config files allowed are `package.json`, `tsconfig.json`, and
 `vite.config.ts`. Config emojis: 🧱 concrete, 🔤 naming, 🫙 absence.
 `ignoreConfig: ["all"]` keeps `all` out of the tables, since it would mark
-every rule. `urlConfigs` links the configs to the README setup section. Emojis
+every rule. `urlConfigs` links the configs to the README "Configs and rules" section.
+`ruleListColumns` keeps only name, description, and 💼, so the README stays
+under 60 lines. Emojis
 carrying a U+FE0F variation selector (🏷️, 🕳️) were avoided because table
 padding then never settles.
 

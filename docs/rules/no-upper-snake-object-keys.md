@@ -2,7 +2,7 @@
 
 📝 Disallow UPPER_SNAKE_CASE object keys and type members.
 
-💼 This rule is enabled in the 🔤 `naming` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
+💼 This rule is enabled in the 🔤 `naming` [config](https://github.com/cunarist/eslint-plugin-explicit-types#configs-and-rules).
 
 <!-- end auto-generated rule header -->
 

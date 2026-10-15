@@ -2,7 +2,7 @@
 
 📝 Disallow the `undefined` keyword in type positions.
 
-💼 This rule is enabled in the 🫙 `absence` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
+💼 This rule is enabled in the 🫙 `absence` [config](https://github.com/cunarist/eslint-plugin-explicit-types#configs-and-rules).
 
 🔧💡 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix) and manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
 
@@ -58,3 +58,7 @@ function findNote(id: string): Note | null {}
 If your code uses `undefined` rather than `null` as its absent value for return
 types and variables, this rule moves those to `| null` and a `?? null` at the
 boundary. Turn it off if you would rather keep `undefined` as the one spelling.
+
+The `absence` preset is the only one that changes runtime code, not just
+annotations: a key missing from JSON is `undefined` at runtime, not `null`, so
+returning `| null` means normalising where you parse data.

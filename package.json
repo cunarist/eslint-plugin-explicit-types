@@ -38,11 +38,16 @@
     "ignoreConfig": [
       "all"
     ],
+    "ruleListColumns": [
+      "name",
+      "description",
+      "configsError"
+    ],
     "ruleDocSectionInclude": [
       "Rule Details",
       "When Not To Use It"
     ],
-    "urlConfigs": "https://github.com/cunarist/eslint-plugin-explicit-types#setup"
+    "urlConfigs": "https://github.com/cunarist/eslint-plugin-explicit-types#configs-and-rules"
   },
   "scripts": {
     "docs": "eslint-doc-generator"

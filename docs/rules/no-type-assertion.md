@@ -2,7 +2,7 @@
 
 📝 Disallow type assertions other than `as const`.
 
-💼 This rule is enabled in the 🧱 `concrete` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
+💼 This rule is enabled in the 🧱 `concrete` [config](https://github.com/cunarist/eslint-plugin-explicit-types#configs-and-rules).
 
 <!-- end auto-generated rule header -->
 
@@ -26,7 +26,11 @@ what is written right there.
   still reported.
 - `x as unknown as T` reports twice, once per assertion.
 - Non-null assertions (`x!`) are not this rule's business — Oxlint's built-in
-  `typescript/no-non-null-assertion` already covers them.
+  `typescript/no-non-null-assertion` already covers them, as does
+  `typescript-eslint` under ESLint. Pair it with `no-explicit-any` from the same
+  places; this plugin does not duplicate either.
+- Syntax, not types: only `x as T` and `<T>x` are seen, not an assertion
+  laundered through a function signature such as a generic that returns `T`.
 - `satisfies` looks related but is not reported. It checks a value against a
   type without overruling the compiler, and unlike an assertion it keeps the
   narrow inferred type — which is more precise than an annotation, not less.

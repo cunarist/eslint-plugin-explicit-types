@@ -2,7 +2,7 @@
 
 📝 Disallow the `keyof` type operator.
 
-💼 This rule is enabled in the 🧱 `concrete` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
+💼 This rule is enabled in the 🧱 `concrete` [config](https://github.com/cunarist/eslint-plugin-explicit-types#configs-and-rules).
 
 <!-- end auto-generated rule header -->
 
