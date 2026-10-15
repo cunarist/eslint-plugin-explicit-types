@@ -1,5 +1,5 @@
 ---
-description: vite.config.ts must keep every lint check Deno ran; camelcase is project/camelcase; three import-check rules are open gaps
+description: The lint config must keep every lint check Deno ran; camelcase is project/camelcase; three import-check rules are open gaps
 ---
 
 The user requires lint coverage never to shrink below the Deno setup:
@@ -13,7 +13,8 @@ The rule-by-rule table is in the porting PR,
 cunarist/eslint-plugin-explicit-types#1. In short, each of the 97 Deno rules is
 one of:
 
-- the same rule in `vite.config.ts`, set to `error`;
+- the same rule in `configs.project` of `scripts/project-lint.ts`, set to
+  `error`;
 - a renamed equivalent (`no-new-symbol` → `no-new-native-nonconstructor`,
   `no-window` → `no-restricted-globals: window`, `ban-untagged-ignore` →
   `unicorn/no-abusive-eslint-disable`, `ban-unused-ignore` and
@@ -35,4 +36,6 @@ Open gaps, not decisions: `import-check`'s `prefer-alias-import`,
 `no-absolute-import`, and `no-parent-import` map to `import/*` rules, and
 `import/no-cycle` stands in for its CLI's cycle check.
 
-Before removing a line from `vite.config.ts`, find what else covers it.
+The rule list lives in `configs.project` of `scripts/project-lint.ts`;
+`vite.config.ts` only spreads it (user decision: no rule listed one by one
+there). Before removing a line from it, find what else covers it.

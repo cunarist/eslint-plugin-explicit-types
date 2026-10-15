@@ -50,8 +50,13 @@ and follow it before reasoning or responding.
   `scripts/project-lint.test.ts`. `scripts/` is never packed or published.
 - The repo lints itself with its own rules. Never add an `oxlint-disable` or
   `eslint-disable`; fix the source.
+- `vite.config.ts` lists no rule by name: its `rules` spreads
+  `configs.all.rules` from `src/index.ts` and `configs.project.rules` from
+  `scripts/project-lint.ts`, which holds the repo's own rule list (Deno parity,
+  extras, opt-outs, built-in ids included). Only `overrides`, being file globs,
+  stays in `vite.config.ts`.
 - Lint coverage never drops below what Deno enforced. Check
-  `lint-parity-with-deno` before removing anything from `vite.config.ts`.
+  `lint-parity-with-deno` before removing anything from `configs.project`.
 - Every rule has a `docs/rules/<rule>.md` in the ESLint core layout: Rule
   Details, incorrect/correct examples, and When Not To Use It.
 - CI runs the rule tests on node@22, node@latest, bun@1.3.13, and bun@latest.

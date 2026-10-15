@@ -8,7 +8,11 @@ The user decided the published plugin contains exactly the 15 rules of
 
 A rule this repo needs only for its own lint parity goes in
 `scripts/project-lint.ts`: a repo-local plugin, `meta.name` `project`, loaded in
-`vite.config.ts` `jsPlugins` and turned on as `project/<rule>`. Today it holds
+`vite.config.ts` `jsPlugins` and turned on as `project/<rule>`. Its
+`configs.project` is the repo's whole rule list beyond `configs.all`: Deno
+parity, extras, pedantic opt-outs and per-rule options, built-in Oxlint ids
+included. `vite.config.ts` spreads it and names no rule itself; only the
+`overrides` entry, a file glob, stays there. Today it holds
 `camelcase`, a port of Deno's built-in rule (Oxlint has none). It may import
 `#helpers`; its test, `scripts/project-lint.test.ts`, runs under both testers
 through `#testing`.

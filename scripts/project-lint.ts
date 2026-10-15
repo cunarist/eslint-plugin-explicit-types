@@ -10,7 +10,7 @@
  * @module
  */
 
-import type { Plugin, RuleFixer, RuleTextEdit, SuggestedEdit } from "@eslint/core";
+import type { ConfigObject, Plugin, RuleFixer, RuleTextEdit, SuggestedEdit } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
 import { type ExplicitRule, renameFix } from "#helpers";
@@ -485,10 +485,65 @@ export const camelcaseRule: ExplicitRule = {
   },
 };
 
-/** The repo-local plugin, namespace `project`, e.g. `project/camelcase`. */
-const plugin: Plugin = {
+/** The repo-local plugin's configs, known by name. */
+interface ProjectConfigs {
+  project: ConfigObject;
+}
+
+/** The repo-local plugin, with its configs known by name. */
+interface ProjectPlugin {
+  meta?: Plugin["meta"];
+  rules?: Plugin["rules"];
+  configs: ProjectConfigs;
+}
+
+/**
+ * The repo-local plugin, namespace `project`, e.g. `project/camelcase`.
+ *
+ * `configs.project` is this repository's own rule list, spread by
+ * `vite.config.ts` after the published `all` config: Deno lint parity beyond
+ * the Oxlint categories, plus a few extras and opt-outs. Built-in Oxlint rule
+ * ids sit here too, so `vite.config.ts` lists no rule by name.
+ */
+const plugin: ProjectPlugin = {
   meta: { name: "project" },
   rules: Object.fromEntries([["camelcase", camelcaseRule]]),
+  configs: {
+    project: {
+      name: "project",
+      rules: {
+        // Deno lint parity beyond the categories in `vite.config.ts`.
+        "project/camelcase": "error",
+        curly: "error",
+        "guard-for-in": "error",
+        "no-console": "error",
+        "no-empty": "error",
+        "no-regex-spaces": "error",
+        "no-restricted-globals": ["error", "window"],
+        "no-var": "error",
+        "prefer-const": "error",
+        "import/no-cycle": "error",
+        "import/no-relative-parent-imports": "error",
+        "typescript/adjacent-overload-signatures": "error",
+        "typescript/consistent-type-imports": "error",
+        "typescript/no-empty-interface": "error",
+        "typescript/no-explicit-any": "error",
+        "typescript/no-namespace": "error",
+        "typescript/no-non-null-assertion": "error",
+        "unicorn/no-abusive-eslint-disable": "error",
+        // Pedantic rules that fight the AST types: nodes are mutable, `type` is
+        // an enum imported only as a type, and visitors are long by nature.
+        "typescript/prefer-readonly-parameter-types": "off",
+        "typescript/no-unsafe-enum-comparison": "off",
+        "typescript/switch-exhaustiveness-check": [
+          "error",
+          { considerDefaultExhaustiveForUnions: true },
+        ],
+        "max-lines": "off",
+        "max-lines-per-function": "off",
+      },
+    },
+  },
 };
 
 export default plugin;
