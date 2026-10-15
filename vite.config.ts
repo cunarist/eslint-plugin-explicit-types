@@ -44,6 +44,13 @@ export default defineConfig({
       "max-lines": "off",
       "max-lines-per-function": "off",
     },
+    overrides: [
+      {
+        // The rule registry imports every rule, one file each, by design.
+        files: ["src/rules/index.ts"],
+        rules: { "import/max-dependencies": "off" },
+      },
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
