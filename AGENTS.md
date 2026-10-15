@@ -14,7 +14,8 @@ and follow it before reasoning or responding.
 - The package's only export is the default one, the plugin. Configs live at
   `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,
   built from the full rule map). No `recommended`, no named exports.
-- Node.js 24+ and Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
+- Runs on Node.js 22+ or Bun 1.3.13+; `engines` names only `node`. Built with
+  Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
 
 ## Rules
@@ -39,5 +40,12 @@ and follow it before reasoning or responding.
   `lint-parity-with-deno` before removing anything from `vite.config.ts`.
 - Every rule has a `docs/rules/<rule>.md` in the ESLint core layout: Rule
   Details, incorrect/correct examples, and When Not To Use It.
+- CI runs the rule tests on node@22, node@latest, bun@1.3.13, and bun@latest.
+  Bun legs run only the ESLint half; Oxlint's `RuleTester` refuses Bun.
+- `package.json` keys stay in hand-written order (metadata, then `scripts`,
+  `exports`, `imports`, dependencies); `fmt.sortPackageJson` is off. There is
+  no `packageManager` field; npm is detected from `package-lock.json`.
 - Only CI publishes, from a published GitHub release `vX.Y.Z` that matches
   `package.json`. Use the `release` skill and ask the user first.
+- Release notes live only on GitHub releases. There is no `CHANGELOG.md`; never
+  add one.

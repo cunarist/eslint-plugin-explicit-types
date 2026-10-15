@@ -13,34 +13,13 @@
     "type": "git",
     "url": "git+https://github.com/cunarist/eslint-plugin-explicit-types.git"
   },
+  "type": "module",
   "files": [
     "dist"
   ],
-  "type": "module",
-  "imports": {
-    "#helpers": "./src/helpers/index.ts",
-    "#package": "./package.json",
-    "#plugin": "./src/index.ts",
-    "#testing": "./src/testing/index.ts"
-  },
-  "exports": {
-    ".": "./dist/index.js"
-  },
-  "scripts": {
-    "docs": "eslint-doc-generator"
-  },
-  "devDependencies": {
-    "@eslint/core": "^0.17.0",
-    "@typescript-eslint/parser": "^8.71.1",
-    "@typescript-eslint/types": "^8.71.1",
-    "eslint": "^9.39.5",
-    "eslint-doc-generator": "^3.7.1",
-    "vite-plus": "^1.1.0"
-  },
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
-  "packageManager": "npm@11.17.0",
   "eslint-doc-generator": {
     "configEmoji": [
       [
@@ -64,5 +43,25 @@
       "When Not To Use It"
     ],
     "urlConfigs": "https://github.com/cunarist/eslint-plugin-explicit-types#setup"
+  },
+  "scripts": {
+    "docs": "eslint-doc-generator"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "imports": {
+    "#helpers": "./src/helpers/index.ts",
+    "#package": "./package.json",
+    "#plugin": "./src/index.ts",
+    "#testing": "./src/testing/index.ts"
+  },
+  "devDependencies": {
+    "@eslint/core": "^0.17.0",
+    "@typescript-eslint/parser": "^8.71.1",
+    "@typescript-eslint/types": "^8.71.1",
+    "eslint": "^9.39.5",
+    "eslint-doc-generator": "^3.7.1",
+    "vite-plus": "^1.1.0"
   }
 }

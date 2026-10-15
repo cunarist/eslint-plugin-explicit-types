@@ -3,6 +3,11 @@ import { defineConfig } from "vite-plus";
 import plugin from "./src/index.ts";
 
 export default defineConfig({
+  fmt: {
+    // Keep package.json in its hand-written order: metadata first, then
+    // `scripts`, `exports`, `imports`, and the dependency lists.
+    sortPackageJson: false,
+  },
   lint: {
     plugins: ["typescript", "unicorn", "oxc", "import"],
     // Lints itself from source, so a new rule applies to its own code.

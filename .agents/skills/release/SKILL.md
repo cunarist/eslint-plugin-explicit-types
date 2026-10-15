@@ -20,6 +20,8 @@ and never push a bare `v*` tag; see [[publish-from-github-release]].
    ```
 
    Add `--prerelease` to publish under the `next` dist-tag instead of `latest`.
+   The release page is the only place release notes live; edit them there.
+   There is no `CHANGELOG.md`, and none should be added.
 
 4. Watch the `Publish` workflow (`gh run watch`). It fails early if the tag and
    `package.json` disagree; fix the version through a PR, delete the release and

@@ -22,6 +22,24 @@ OxlintRuleTester.describe = (text, fn) => {
 };
 OxlintRuleTester.it = it;
 
+/** Node's and Bun's `process`, as far as this file reads it; there are no Node types. */
+interface Process {
+  env: object;
+}
+
+declare const process: Process;
+
+/**
+ * CI names the runtime each matrix leg means to test on, `node` or `bun`, in
+ * `TEST_RUNTIME`. Fail every test file if the tests landed on the other one,
+ * so a Bun leg cannot pass by quietly running on Node.
+ */
+const expectedRuntime: unknown = Reflect.get(process.env, "TEST_RUNTIME");
+const actualRuntime: string = "Bun" in globalThis ? "bun" : "node";
+if (typeof expectedRuntime === "string" && expectedRuntime !== actualRuntime) {
+  throw new Error(`tests run on ${actualRuntime}, not ${expectedRuntime}`);
+}
+
 /** The filename every snippet is linted as, so both parsers read TypeScript. */
 const FILENAME = "example.ts";
 
