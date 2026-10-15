@@ -13,7 +13,7 @@ and follow it before reasoning or responding.
   (`concrete`, `naming`, `absence`).
 - The package's only export is the default one, the plugin. Configs live at
   `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,
-  built from the full rule map). No `recommended`, no named exports.
+  built from the rule registry). No `recommended`, no named exports.
 - Runs on Node.js 22+ or Bun 1.3.13+; `engines` names only `node`. Built with
   Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
