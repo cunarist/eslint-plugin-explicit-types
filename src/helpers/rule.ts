@@ -6,9 +6,25 @@ export interface ScopeReference {
   identifier: TSESTree.Node;
 }
 
+/** The scope a variable is declared in, e.g. `module` or `function`. */
+export interface Scope {
+  type: string;
+}
+
+/** A host's global scope, whose `through` lists every reference left unresolved. */
+export interface GlobalScope {
+  through: ScopeReference[];
+}
+
+/** A host's scope analysis, as far as the rules read it. */
+export interface ScopeManager {
+  globalScope: GlobalScope | null;
+}
+
 /** A declared name with every place it is declared and used. */
 export interface ScopeVariable {
   name: string;
+  scope: Scope;
   identifiers: TSESTree.Identifier[];
   references: ScopeReference[];
 }
@@ -18,6 +34,7 @@ export interface ScopeVariable {
  * lookup ESLint and Oxlint each implement on it.
  */
 export interface ExplicitSourceCode extends TextSourceCode {
+  scopeManager: ScopeManager | null;
   getDeclaredVariables(node: TSESTree.Node): ScopeVariable[];
 }
 

@@ -60,13 +60,11 @@ export const requireReturnTypeRule: ExplicitRule = {
       description: "Require explicit return types on named functions",
       url: docsUrl("require-return-type"),
     },
-    hasSuggestions: true,
+    fixable: "code",
     schema: [],
     messages: {
       function: "Missing return type on function.",
       methodSignature: "Missing return type on method signature.",
-      addVoid: "Declare the return type `void`.",
-      addPromiseVoid: "Declare the return type `Promise<void>`.",
     },
   },
   create(context) {
@@ -100,8 +98,8 @@ export const requireReturnTypeRule: ExplicitRule = {
 
     /**
      * Report the function being left if it lacks a return type. When it would
-     * infer `void`, suggest writing that out: a suggestion rather than a fix,
-     * since the author may mean a wider type the body does not yet return.
+     * infer `void`, fix it by writing that out: the annotation is exactly the
+     * type TypeScript already gives the function, so no caller can tell.
      */
     function leave(): void {
       const frame = frames.pop();
@@ -114,15 +112,9 @@ export const requireReturnTypeRule: ExplicitRule = {
       context.report({
         node: node.id ?? node,
         messageId: "function",
-        suggest:
-          offset === null
-            ? []
-            : [
-                {
-                  messageId: node.async ? "addPromiseVoid" : "addVoid",
-                  fix: (fixer) => fixer.insertTextAfterRange([offset, offset], annotation),
-                },
-              ],
+        ...(offset === null
+          ? {}
+          : { fix: (fixer) => fixer.insertTextAfterRange([offset, offset], annotation) }),
       });
     }
 

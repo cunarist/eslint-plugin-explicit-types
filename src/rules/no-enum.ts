@@ -1,10 +1,20 @@
-import type { RuleTextEdit } from "@eslint/core";
+import type { RuleFixer, RuleTextEdit } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
-import { docsUrl, type ExplicitRule, type ExplicitSourceCode, literalString } from "#helpers";
+import {
+  docsUrl,
+  type ExplicitRule,
+  type ExplicitSourceCode,
+  isFilePrivate,
+  literalString,
+  type ScopeVariable,
+} from "#helpers";
 
 /** `OPEN`, `IN_PROGRESS` — the casing a string union member must have. */
 const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
+
+/** A name `pascal-case-types` accepts for a type. */
+const PASCAL_CASE_PATTERN = /^[A-Z][A-Za-z0-9]*$/u;
 
 /** The start of a line or block comment. */
 const COMMENT_PATTERN = /\/[/*]/u;
@@ -27,20 +37,25 @@ function upperSnakeValues(node: TSESTree.TSEnumDeclaration): string[] | null {
   return values.length === 0 ? null : values;
 }
 
-/**
- * Whether every use of the enum in this file is as a bare type, `Status`, which
- * the union also satisfies. A member access, `Status.Open`, has no union
- * equivalent. A merged enum, declared twice, is left alone too.
- */
-function usedOnlyAsType(source: ExplicitSourceCode, node: TSESTree.TSEnumDeclaration): boolean {
+/** The variable an enum declares, unless it merges with another declaration. */
+function enumVariable(
+  source: ExplicitSourceCode,
+  node: TSESTree.TSEnumDeclaration,
+): ScopeVariable | null {
   const variable = source
     .getDeclaredVariables(node)
     .find((each) =>
       each.identifiers.some((identifier) => identifier.range[0] === node.id.range[0]),
     );
-  if (variable === undefined || variable.identifiers.length !== 1) {
-    return false;
-  }
+  return variable === undefined || variable.identifiers.length !== 1 ? null : variable;
+}
+
+/**
+ * Whether every use of the enum in this file is as a bare type, `Status`, which
+ * the union also satisfies. A member access, `Status.Open`, has no union
+ * equivalent.
+ */
+function usedOnlyAsType(variable: ScopeVariable): boolean {
   return variable.references.every((reference) => {
     const parent = reference.identifier.parent;
     return (
@@ -59,8 +74,9 @@ function usedOnlyAsType(source: ExplicitSourceCode, node: TSESTree.TSEnumDeclara
  * nobody can read, and the declaration must be imported everywhere the value is
  * named. A string union is the same closed set with none of that.
  *
- * A string enum this file uses only as a type gets a suggestion to become the
- * union of its values. It is not a fix: other files may still name its members.
+ * A string enum this file uses only as a type becomes the union of its values:
+ * by a fix when the enum is private to this file, and by a suggestion when it
+ * is exported or global, since other files may still name its members.
  */
 export const noEnumRule: ExplicitRule = {
   meta: {
@@ -69,6 +85,7 @@ export const noEnumRule: ExplicitRule = {
       description: "Disallow `enum` declarations",
       url: docsUrl("no-enum"),
     },
+    fixable: "code",
     hasSuggestions: true,
     schema: [],
     messages: {
@@ -82,27 +99,30 @@ export const noEnumRule: ExplicitRule = {
         const name = node.id.name;
         const source = context.sourceCode;
         const values = upperSnakeValues(node);
+        const variable = enumVariable(source, node);
         const replaceable =
           values !== null &&
+          variable !== null &&
           !COMMENT_PATTERN.test(source.text.slice(node.range[0], node.range[1])) &&
-          usedOnlyAsType(source, node);
+          usedOnlyAsType(variable);
+        if (!replaceable) {
+          context.report({ node: node.id, messageId: "enum", data: { name } });
+          return;
+        }
+        const fix: RuleFixer = (fixer): RuleTextEdit =>
+          fixer.replaceText(
+            node,
+            `type ${name} = ${values.map((value) => `"${value}"`).join(" | ")};`,
+          );
+        if (PASCAL_CASE_PATTERN.test(name) && isFilePrivate(source, [variable])) {
+          context.report({ node: node.id, messageId: "enum", data: { name }, fix });
+          return;
+        }
         context.report({
           node: node.id,
           messageId: "enum",
           data: { name },
-          suggest: replaceable
-            ? [
-                {
-                  messageId: "toUnion",
-                  data: { name },
-                  fix: (fixer): RuleTextEdit =>
-                    fixer.replaceText(
-                      node,
-                      `type ${name} = ${values.map((value) => `"${value}"`).join(" | ")};`,
-                    ),
-                },
-              ]
-            : [],
+          suggest: [{ messageId: "toUnion", data: { name }, fix }],
         });
       },
     };

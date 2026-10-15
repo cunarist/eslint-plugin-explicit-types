@@ -5,13 +5,8 @@ import { requireReturnTypeRule } from "./require-return-type.ts";
 const FUNCTION = { messageId: "function" };
 const METHOD_SIGNATURE = { messageId: "methodSignature" };
 
-/** A missing return type with no suggestion, as TypeScript may infer more. */
-const BARE = { ...FUNCTION, suggestions: [] };
-
-/** A missing return type with a suggested `void`-like annotation. */
-function suggesting(messageId: string, output: string): object {
-  return { ...FUNCTION, suggestions: [{ messageId, output }] };
-}
+/** A missing return type with no fix, as TypeScript may infer more. */
+const BARE = FUNCTION;
 
 const functionCode = "function loadConfig() { return 1; }";
 
@@ -49,22 +44,26 @@ testRule("require-return-type", requireReturnTypeRule, {
     // rejects a bare function declaration
     { code: "function f() { return 1; }", errors: [BARE] },
 
-    // suggests void for a function that returns no value
+    // fixes void for a function that returns no value
     {
       code: "function f() { run(); }",
-      errors: [suggesting("addVoid", "function f(): void { run(); }")],
+      output: "function f(): void { run(); }",
+      errors: [FUNCTION],
     },
     {
       code: "function f(a: number) { if (a) { return; } }",
-      errors: [suggesting("addVoid", "function f(a: number): void { if (a) { return; } }")],
+      output: "function f(a: number): void { if (a) { return; } }",
+      errors: [FUNCTION],
     },
     {
       code: "function f() { throw new Error(); }",
-      errors: [suggesting("addVoid", "function f(): void { throw new Error(); }")],
+      output: "function f(): void { throw new Error(); }",
+      errors: [FUNCTION],
     },
     {
       code: "export default function () { run(); }",
-      errors: [suggesting("addVoid", "export default function (): void { run(); }")],
+      output: "export default function (): void { run(); }",
+      errors: [FUNCTION],
     },
 
     // offers no void when a comment sits between the parameters and the body
@@ -73,19 +72,19 @@ testRule("require-return-type", requireReturnTypeRule, {
     // looks past nested functions for the returned value
     {
       code: "function f() { items.map((item) => { return item.id; }); }",
-      errors: [
-        suggesting("addVoid", "function f(): void { items.map((item) => { return item.id; }); }"),
-      ],
+      output: "function f(): void { items.map((item) => { return item.id; }); }",
+      errors: [FUNCTION],
     },
     {
       code: "function f() { const g = function () { return 1; }; return g; }",
       errors: [BARE, BARE],
     },
 
-    // suggests Promise<void> for an async function
+    // fixes Promise<void> for an async function
     {
       code: "async function f() { await run(); }",
-      errors: [suggesting("addPromiseVoid", "async function f(): Promise<void> { await run(); }")],
+      output: "async function f(): Promise<void> { await run(); }",
+      errors: [FUNCTION],
     },
 
     // offers no void for a generator
@@ -102,11 +101,13 @@ testRule("require-return-type", requireReturnTypeRule, {
     { code: "class C { m() { return 1; } }", errors: [BARE] },
     {
       code: "class C { m() { run(); } }",
-      errors: [suggesting("addVoid", "class C { m(): void { run(); } }")],
+      output: "class C { m(): void { run(); } }",
+      errors: [FUNCTION],
     },
     {
       code: "class C { async m() {} }",
-      errors: [suggesting("addPromiseVoid", "class C { async m(): Promise<void> {} }")],
+      output: "class C { async m(): Promise<void> {} }",
+      errors: [FUNCTION],
     },
 
     // checks abstract methods and overload signatures

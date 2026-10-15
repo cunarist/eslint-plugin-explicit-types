@@ -1,4 +1,4 @@
-import type { RuleTextEdit, SuggestedEdit } from "@eslint/core";
+import type { RuleFixer, RuleTextEdit, SuggestedEdit } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
 import { docsUrl, type ExplicitRule, renameFix } from "#helpers";
@@ -95,15 +95,26 @@ function isDefaultExport(node: TSESTree.Node): boolean {
   return node.parent?.type === "ExportDefaultDeclaration";
 }
 
+/** What a report offers to change: a fix, suggestions, or neither. */
+interface Remedy {
+  fix?: RuleFixer;
+  suggest: SuggestedEdit[];
+}
+
+/** A report that offers no change. */
+const NO_REMEDY: Remedy = { suggest: [] };
+
 /** The suggestion to quote a key as `replacement`, which leaves the object's shape alone. */
-function quoteSuggestions(identifier: TSESTree.Identifier, replacement: string): SuggestedEdit[] {
-  return [
-    {
-      messageId: "quoteKey",
-      data: { name: identifier.name },
-      fix: (fixer): RuleTextEdit => fixer.replaceText(identifier, replacement),
-    },
-  ];
+function quoteSuggestions(identifier: TSESTree.Identifier, replacement: string): Remedy {
+  return {
+    suggest: [
+      {
+        messageId: "quoteKey",
+        data: { name: identifier.name },
+        fix: (fixer): RuleTextEdit => fixer.replaceText(identifier, replacement),
+      },
+    ],
+  };
 }
 
 /**
@@ -113,9 +124,10 @@ function quoteSuggestions(identifier: TSESTree.Identifier, replacement: string):
  * A port of `deno_lint`'s `src/rules/camelcase.rs`, reporting the same
  * identifiers with ESLint's `camelcase` message.
  *
- * A declared name gets a suggestion renaming it and its uses in this file.
- * An object or type key gets one quoting it, which keeps the shape. Neither is
- * a fix: other files may import the name or read the key.
+ * A declared name private to this file is renamed, with its uses, by a fix;
+ * one other files may see, being exported or global, gets the rename as a
+ * suggestion. An object or type key gets a suggestion quoting it, which keeps
+ * the shape: other files may read the key.
  */
 export const camelcaseRule: ExplicitRule = {
   meta: {
@@ -124,6 +136,7 @@ export const camelcaseRule: ExplicitRule = {
       description: "Enforce camelCase, PascalCase, or UPPER_SNAKE_CASE for declared names",
       url: docsUrl("camelcase"),
     },
+    fixable: "code",
     hasSuggestions: true,
     schema: [],
     messages: {
@@ -136,27 +149,36 @@ export const camelcaseRule: ExplicitRule = {
     /** Identifiers already judged, keyed by range, as Deno dedupes them. */
     const visited = new Set<string>();
 
-    /** The suggestion to rename a declared name and its uses, if one is safe. */
-    function renameSuggestions(
-      identifier: TSESTree.Identifier,
-      suggestion: string,
-    ): SuggestedEdit[] {
-      const fix = renameFix(context.sourceCode, identifier, suggestion);
-      if (fix === null) {
-        return [];
+    /**
+     * The rename of a declared name and its uses, if one is safe: a fix when
+     * the name is private to this file, a suggestion when others may see it.
+     * A camelCase name for a type `pascal-case-types` would reject is never a
+     * fix either.
+     */
+    function renameRemedy(identifier: TSESTree.Identifier, suggestion: string): Remedy {
+      const rename = renameFix(context.sourceCode, identifier, suggestion);
+      if (rename === null) {
+        return NO_REMEDY;
       }
-      return [{ messageId: "renameTo", data: { name: identifier.name, suggestion }, fix }];
+      if (rename.private && (!rename.namesType || PASCAL_CASE_PATTERN.test(suggestion))) {
+        return { fix: rename.fix, suggest: [] };
+      }
+      return {
+        suggest: [
+          { messageId: "renameTo", data: { name: identifier.name, suggestion }, fix: rename.fix },
+        ],
+      };
     }
 
     /**
      * Report an identifier once, unless it is ambient or acceptably cased.
-     * `suggest` builds the report's suggestions from the camelCase or
+     * `remedy` builds the report's fix and suggestions from the camelCase or
      * PascalCase `suggestion`.
      */
     function check(
       identifier: TSESTree.Identifier,
       suggestion: string,
-      suggest: (identifier: TSESTree.Identifier, suggestion: string) => SuggestedEdit[],
+      remedy: (identifier: TSESTree.Identifier, suggestion: string) => Remedy,
     ): void {
       const key = `${identifier.range[0]}:${identifier.name}`;
       if (visited.has(key)) {
@@ -177,13 +199,13 @@ export const camelcaseRule: ExplicitRule = {
         },
         messageId: "notCamelCase",
         data: { name: identifier.name },
-        suggest: suggest(identifier, suggestion),
+        ...remedy(identifier, suggestion),
       });
     }
 
     /** A value or function name, suggested in camelCase. */
     function checkValue(identifier: TSESTree.Identifier): void {
-      check(identifier, toCamelCase(identifier.name), renameSuggestions);
+      check(identifier, toCamelCase(identifier.name), renameRemedy);
     }
 
     /**
@@ -192,13 +214,13 @@ export const camelcaseRule: ExplicitRule = {
      */
     function checkTypeLike(identifier: TSESTree.Identifier): void {
       check(identifier, toPascalCase(identifier.name), (target, suggestion) =>
-        PASCAL_CASE_PATTERN.test(suggestion) ? renameSuggestions(target, suggestion) : [],
+        PASCAL_CASE_PATTERN.test(suggestion) ? renameRemedy(target, suggestion) : NO_REMEDY,
       );
     }
 
     /** An enum member, which a rename cannot follow through `Enum.member` uses. */
     function checkEnumMember(identifier: TSESTree.Identifier): void {
-      check(identifier, toPascalCase(identifier.name), () => []);
+      check(identifier, toPascalCase(identifier.name), () => NO_REMEDY);
     }
 
     /**
@@ -207,7 +229,7 @@ export const camelcaseRule: ExplicitRule = {
      */
     function checkKey(identifier: TSESTree.Identifier, computed: boolean): void {
       check(identifier, toCamelCase(identifier.name), (target) =>
-        computed ? [] : quoteSuggestions(target, `"${target.name}"`),
+        computed ? NO_REMEDY : quoteSuggestions(target, `"${target.name}"`),
       );
     }
 

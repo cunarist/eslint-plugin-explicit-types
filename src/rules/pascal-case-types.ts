@@ -23,6 +23,9 @@ function toPascalCase(name: string): string {
  * A type's name is the only part of it most readers ever see. PascalCase is the
  * one signal that a bare identifier denotes a type rather than a value, so a
  * name that breaks the convention makes every use site ambiguous.
+ *
+ * A type private to this file is renamed, with its uses, by a fix. One other
+ * files may see, being exported or global, gets the rename as a suggestion.
  */
 export const pascalCaseTypesRule: ExplicitRule = {
   meta: {
@@ -31,6 +34,7 @@ export const pascalCaseTypesRule: ExplicitRule = {
       description: "Enforce PascalCase names for classes, interfaces, type aliases, and enums",
       url: docsUrl("pascal-case-types"),
     },
+    fixable: "code",
     hasSuggestions: true,
     schema: [],
     messages: {
@@ -48,17 +52,24 @@ export const pascalCaseTypesRule: ExplicitRule = {
         return;
       }
       const suggestion = toPascalCase(identifier.name);
-      const fix = PASCAL_CASE_PATTERN.test(suggestion)
+      const rename = PASCAL_CASE_PATTERN.test(suggestion)
         ? renameFix(context.sourceCode, identifier, suggestion)
         : null;
       context.report({
         node: identifier,
         messageId: "notPascalCase",
         data: { kind, name: identifier.name },
+        ...(rename?.private === true ? { fix: rename.fix } : {}),
         suggest:
-          fix === null
+          rename === null || rename.private
             ? []
-            : [{ messageId: "rename", data: { name: identifier.name, suggestion }, fix }],
+            : [
+                {
+                  messageId: "rename",
+                  data: { name: identifier.name, suggestion },
+                  fix: rename.fix,
+                },
+              ],
       });
     }
 

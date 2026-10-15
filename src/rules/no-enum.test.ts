@@ -15,6 +15,9 @@ function toUnion(name: string, output: string): ExpectedError {
   };
 }
 
+/** An error on an enum the fix turns into a union. */
+const FIXED = { ...ENUM, suggestions: [] };
+
 const enumCode = "enum Status { Pending, Done }";
 
 const constEnumCode = "const enum Flag { On }";
@@ -37,7 +40,55 @@ testRule("no-enum", noEnumRule, {
       errors: [{ ...ENUM, data: { name: "Status" }, ...spanOf(enumCode, "Status") }],
     },
 
-    // rejects a string enum, suggesting the union of its values
+    // fixes a string enum private to a module into the union of its values
+    {
+      code: 'export {};\nenum Status { Pending = "PENDING", Done = "DONE" }',
+      output: 'export {};\ntype Status = "PENDING" | "DONE";',
+      errors: [FIXED],
+    },
+    {
+      code: 'import { show } from "./show.ts";\nenum Status { Open = "OPEN" }\nshow((status: Status): Status[] => [status]);',
+      output:
+        'import { show } from "./show.ts";\ntype Status = "OPEN";\nshow((status: Status): Status[] => [status]);',
+      errors: [FIXED],
+    },
+    {
+      code: 'export {};\ndeclare const enum Mode { Fast = "FAST" }',
+      output: 'export {};\ntype Mode = "FAST";',
+      errors: [FIXED],
+    },
+
+    // only suggests the union for an enum other files may see
+    {
+      code: 'export enum Status { Open = "OPEN" }',
+      errors: [toUnion("Status", 'export type Status = "OPEN";')],
+    },
+    {
+      code: 'export {};\ndeclare global {\n  enum Status { Open = "OPEN" }\n}',
+      errors: [toUnion("Status", 'export {};\ndeclare global {\n  type Status = "OPEN";\n}')],
+    },
+    {
+      code: 'export namespace Api {\n  export enum Status { Open = "OPEN" }\n}',
+      errors: [toUnion("Status", 'export namespace Api {\n  export type Status = "OPEN";\n}')],
+    },
+
+    // only suggests the union for an enum pascal-case-types would still reject
+    {
+      code: 'export {};\nenum status { Open = "OPEN" }',
+      errors: [toUnion("status", 'export {};\ntype status = "OPEN";')],
+    },
+
+    // offers no union for an enum exported under another name or by default
+    { code: 'enum Status { Open = "OPEN" }\nexport { Status as State };', errors: [NO_UNION] },
+    { code: 'enum Status { Open = "OPEN" }\nexport default Status;', errors: [NO_UNION] },
+
+    // offers no union for an enum merged with a namespace
+    {
+      code: 'export {};\nenum Status { Open = "OPEN" }\nnamespace Status {}',
+      errors: [NO_UNION],
+    },
+
+    // only suggests the union of a string enum in a script, whose names are global
     {
       code: 'enum Status { Pending = "PENDING", Done = "DONE" }',
       errors: [toUnion("Status", 'type Status = "PENDING" | "DONE";')],

@@ -20,6 +20,9 @@ const mergedSuggestion = {
   ],
 };
 
+/** An error fixed by the rename, which leaves no suggestion behind. */
+const FIXED = { ...NOT_PASCAL, suggestions: [] };
+
 const classCode = "class data_store { run() {} }";
 
 const interfaceCode = "interface http_response { status: number }";
@@ -75,13 +78,114 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
       ],
     },
 
-    // rejects a named class expression
+    // fixes a named class expression, whose name only its own body sees
     {
       code: "const C = class my_class {};",
+      output: "const C = class MyClass {};",
+      errors: [FIXED],
+    },
+
+    // fixes a type private to a module, along with every reference
+    {
+      code: "export {};\ntype user_id = string;\nfunction f(id: user_id): user_id[] {\n  return [id];\n}",
+      output:
+        "export {};\ntype UserId = string;\nfunction f(id: UserId): UserId[] {\n  return [id];\n}",
+      errors: [FIXED],
+    },
+    {
+      code: 'import { run } from "./run.ts";\nclass data_store {}\nrun(new data_store());',
+      output: 'import { run } from "./run.ts";\nclass DataStore {}\nrun(new DataStore());',
+      errors: [FIXED],
+    },
+
+    // fixes a type declared inside a function, even in a script
+    {
+      code: "function f(): void {\n  type user_id = string;\n  const id: user_id = '';\n}",
+      output: "function f(): void {\n  type UserId = string;\n  const id: UserId = '';\n}",
+      errors: [FIXED],
+    },
+
+    // fixes every declaration of a merged interface at once
+    {
+      code: "export {};\ninterface http_response { status: number }\ninterface http_response { body: string }",
+      output:
+        "export {};\ninterface HttpResponse { status: number }\ninterface HttpResponse { body: string }",
+      errors: [FIXED, FIXED],
+    },
+
+    // fixes a shadowing type apart from the one it shadows, one per pass
+    {
+      code: "export {};\ntype user_id = string;\nfunction f(): void {\n  const a: user_id = '';\n  type user_Id = number;\n}",
+      output:
+        "export {};\ntype UserId = string;\nfunction f(): void {\n  const a: UserId = '';\n  type user_Id = number;\n}",
+      errors: [FIXED, FIXED],
+    },
+    {
+      code: "export {};\ntype UserId = string;\nfunction f(): void {\n  const a: UserId = '';\n  type user_Id = number;\n}",
+      errors: [{ ...NOT_PASCAL, suggestions: [] }],
+    },
+
+    // only suggests renaming a type exported under another name or by default
+    {
+      code: "type user_id = string;\nexport { user_id as UserIdAlias };",
       errors: [
         {
           ...NOT_PASCAL,
-          suggestions: [rename("my_class", "MyClass", "const C = class MyClass {};")],
+          suggestions: [
+            rename("user_id", "UserId", "type UserId = string;\nexport { UserId as UserIdAlias };"),
+          ],
+        },
+      ],
+    },
+    {
+      code: "class data_store {}\nexport default data_store;",
+      errors: [
+        {
+          ...NOT_PASCAL,
+          suggestions: [
+            rename("data_store", "DataStore", "class DataStore {}\nexport default DataStore;"),
+          ],
+        },
+      ],
+    },
+    {
+      code: "export default class data_store {}",
+      errors: [
+        {
+          ...NOT_PASCAL,
+          suggestions: [rename("data_store", "DataStore", "export default class DataStore {}")],
+        },
+      ],
+    },
+    {
+      code: "export namespace Api {\n  export type user_id = string;\n}",
+      errors: [
+        {
+          ...NOT_PASCAL,
+          suggestions: [
+            rename(
+              "user_id",
+              "UserId",
+              "export namespace Api {\n  export type UserId = string;\n}",
+            ),
+          ],
+        },
+      ],
+    },
+
+    // only suggests renaming a global type, which other files can see
+    {
+      code: "export {};\ndeclare global {\n  interface app_config { debug: boolean }\n}",
+      errors: [
+        {
+          ...NOT_PASCAL,
+          suggestions: [
+            rename(
+              "app_config",
+              "AppConfig",
+              "export {};\ndeclare global {\n  interface AppConfig { debug: boolean }\n}",
+            ),
+          ],
         },
       ],
     },
@@ -119,7 +223,7 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
       ],
     },
 
-    // fires on an exported declaration
+    // only suggests renaming an exported declaration
     {
       code: "export class data_store {}",
       errors: [
@@ -223,7 +327,7 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
       ],
     },
 
-    // renames every declaration of a merged interface
+    // only suggests renaming a merged interface in a script
     {
       code: "interface http_response { status: number }\ninterface http_response { body: string }",
       errors: [mergedSuggestion, mergedSuggestion],

@@ -33,6 +33,11 @@ function key(col: number, name: string, output?: string): DenoError {
   return { col, name, suggestions };
 }
 
+/** An invalid case whose fix leaves `output`, in `RuleTester` form. */
+function fixed(code: string, output: string, ...errors: DenoError[]): RuleCase {
+  return { ...invalid(code, ...errors), output };
+}
+
 /** An invalid case in `RuleTester` form. */
 function invalid(code: string, ...errors: DenoError[]): RuleCase {
   return {
@@ -236,121 +241,90 @@ testRule("camelcase", camelcaseRule, {
       "var { category_id: category_id } = query;",
       rename(19, "category_id", "categoryId", "var { category_id: categoryId } = query;"),
     ),
-    invalid(
+    fixed(
       'import * as no_camelcased from "external-module";',
-      rename(
-        12,
-        "no_camelcased",
-        "noCamelcased",
-        'import * as noCamelcased from "external-module";',
-      ),
+      'import * as noCamelcased from "external-module";',
+      rename(12, "no_camelcased", "noCamelcased"),
     ),
-    invalid(
+    fixed(
       'import { no_camelcased as no_camel_cased } from "external module";',
-      rename(
-        26,
-        "no_camel_cased",
-        "noCamelCased",
-        'import { no_camelcased as noCamelCased } from "external module";',
-      ),
+      'import { no_camelcased as noCamelCased } from "external module";',
+      rename(26, "no_camel_cased", "noCamelCased"),
     ),
-    invalid(
+    fixed(
       'import { camelCased as no_camel_cased } from "external module";',
-      rename(
-        23,
-        "no_camel_cased",
-        "noCamelCased",
-        'import { camelCased as noCamelCased } from "external module";',
-      ),
+      'import { camelCased as noCamelCased } from "external module";',
+      rename(23, "no_camel_cased", "noCamelCased"),
     ),
-    invalid(
+    fixed(
       'import no_camelcased, { another_no_camelcased as camelCased } from "external-module";',
-      rename(
-        7,
-        "no_camelcased",
-        "noCamelcased",
-        'import noCamelcased, { another_no_camelcased as camelCased } from "external-module";',
-      ),
+      'import noCamelcased, { another_no_camelcased as camelCased } from "external-module";',
+      rename(7, "no_camelcased", "noCamelcased"),
     ),
-    invalid(
+    fixed(
       "import snake_cased from 'mod'",
-      rename(7, "snake_cased", "snakeCased", "import snakeCased from 'mod'"),
+      "import snakeCased from 'mod'",
+      rename(7, "snake_cased", "snakeCased"),
     ),
-    invalid(
+    fixed(
       "import * as snake_cased from 'mod'",
-      rename(12, "snake_cased", "snakeCased", "import * as snakeCased from 'mod'"),
+      "import * as snakeCased from 'mod'",
+      rename(12, "snake_cased", "snakeCased"),
     ),
     invalid("export * as snake_cased from 'mod'", rename(12, "snake_cased", "snakeCased")),
-    invalid(
+    fixed(
       "function foo({ no_camelcased }) {};",
-      rename(
-        15,
-        "no_camelcased",
-        "noCamelcased",
-        "function foo({ no_camelcased: noCamelcased }) {};",
-      ),
+      "function foo({ no_camelcased: noCamelcased }) {};",
+      rename(15, "no_camelcased", "noCamelcased"),
     ),
-    invalid(
+    fixed(
       "function foo({ no_camelcased = 'default value' }) {};",
-      rename(
-        15,
-        "no_camelcased",
-        "noCamelcased",
-        "function foo({ no_camelcased: noCamelcased = 'default value' }) {};",
-      ),
+      "function foo({ no_camelcased: noCamelcased = 'default value' }) {};",
+      rename(15, "no_camelcased", "noCamelcased"),
     ),
-    invalid(
+    fixed(
       "const no_camelcased = 0; function foo({ camelcased_value = no_camelcased }) {}",
+      "const no_camelcased = 0; function foo({ camelcased_value: camelcasedValue = no_camelcased }) {}",
       rename(
         6,
         "no_camelcased",
         "noCamelcased",
         "const noCamelcased = 0; function foo({ camelcased_value = noCamelcased }) {}",
       ),
-      rename(
-        40,
-        "camelcased_value",
-        "camelcasedValue",
-        "const no_camelcased = 0; function foo({ camelcased_value: camelcasedValue = no_camelcased }) {}",
-      ),
+      rename(40, "camelcased_value", "camelcasedValue"),
     ),
     invalid(
       "const { bar: no_camelcased } = foo;",
       rename(13, "no_camelcased", "noCamelcased", "const { bar: noCamelcased } = foo;"),
     ),
-    invalid(
+    fixed(
       "function foo({ value_1: my_default }) {}",
-      rename(24, "my_default", "myDefault", "function foo({ value_1: myDefault }) {}"),
+      "function foo({ value_1: myDefault }) {}",
+      rename(24, "my_default", "myDefault"),
     ),
-    invalid(
+    fixed(
       "function foo({ isCamelcased: no_camelcased }) {};",
-      rename(
-        29,
-        "no_camelcased",
-        "noCamelcased",
-        "function foo({ isCamelcased: noCamelcased }) {};",
-      ),
+      "function foo({ isCamelcased: noCamelcased }) {};",
+      rename(29, "no_camelcased", "noCamelcased"),
     ),
-    invalid(
+    fixed(
       "function foo({ isCamelcased: { no_camelcased } }) {};",
-      rename(
-        31,
-        "no_camelcased",
-        "noCamelcased",
-        "function foo({ isCamelcased: { no_camelcased: noCamelcased } }) {};",
-      ),
+      "function foo({ isCamelcased: { no_camelcased: noCamelcased } }) {};",
+      rename(31, "no_camelcased", "noCamelcased"),
     ),
     invalid(
       "var { foo: bar_baz = 1 } = quz;",
       rename(11, "bar_baz", "barBaz", "var { foo: barBaz = 1 } = quz;"),
     ),
-    invalid(
+    fixed(
       "const f = function no_camelcased() {};",
-      rename(19, "no_camelcased", "noCamelcased", "const f = function noCamelcased() {};"),
+      "const f = function noCamelcased() {};",
+      rename(19, "no_camelcased", "noCamelcased"),
     ),
-    invalid(
+    fixed(
       "const c = class no_camelcased {};",
-      rename(16, "no_camelcased", "NoCamelcased", "const c = class NoCamelcased {};"),
+      "const c = class NoCamelcased {};",
+      rename(16, "no_camelcased", "NoCamelcased"),
     ),
     invalid(
       "class no_camelcased {}",
@@ -370,9 +344,10 @@ testRule("camelcase", camelcaseRule, {
       key(16, "snake_case", 'interface Foo { "snake_case": number; };'),
     ),
     invalid("namespace foo_bar {}", rename(10, "foo_bar", "FooBar", "namespace FooBar {}")),
-    invalid(
+    fixed(
       "namespace FooBar { const snake_case = 42; }",
-      rename(25, "snake_case", "snakeCase", "namespace FooBar { const snakeCase = 42; }"),
+      "namespace FooBar { const snakeCase = 42; }",
+      rename(25, "snake_case", "snakeCase"),
     ),
     invalid(
       "enum foo_bar { VariantOne }",
@@ -381,37 +356,43 @@ testRule("camelcase", camelcaseRule, {
     invalid("enum FooBar { variant_one }", rename(14, "variant_one", "VariantOne")),
 
     // matches Deno where its AST differs from ESTree
-    invalid(
+    fixed(
       "export default function foo_bar(c_d) {}",
-      rename(32, "c_d", "cD", "export default function foo_bar(cD) {}"),
+      "export default function foo_bar(cD) {}",
+      rename(32, "c_d", "cD"),
     ),
     invalid("interface X { [foo_bar]: string }", key(15, "foo_bar")),
-    invalid(
+    fixed(
       'import { a_b as a_b } from "m";',
-      rename(16, "a_b", "aB", 'import { a_b as aB } from "m";'),
+      'import { a_b as aB } from "m";',
+      rename(16, "a_b", "aB"),
     ),
-    invalid(
+    fixed(
       "class A { constructor(private a_b: number, c_d: number) {} }",
-      rename(43, "c_d", "cD", "class A { constructor(private a_b: number, cD: number) {} }"),
+      "class A { constructor(private a_b: number, cD: number) {} }",
+      rename(43, "c_d", "cD"),
     ),
-    invalid("class A { set v(a_b) {} }", rename(16, "a_b", "aB", "class A { set v(aB) {} }")),
-    invalid("const o = { m(a_b) {} };", rename(14, "a_b", "aB", "const o = { m(aB) {} };")),
-    invalid(
+    fixed("class A { set v(a_b) {} }", "class A { set v(aB) {} }", rename(16, "a_b", "aB")),
+    fixed("const o = { m(a_b) {} };", "const o = { m(aB) {} };", rename(14, "a_b", "aB")),
+    fixed(
       "function f(a_b: string): void;",
-      rename(11, "a_b", "aB", "function f(aB: string): void;"),
+      "function f(aB: string): void;",
+      rename(11, "a_b", "aB"),
     ),
-    invalid(
+    fixed(
       "class A { m(a_b): void; m(c_d) {} }",
-      rename(12, "a_b", "aB", "class A { m(aB): void; m(c_d) {} }"),
-      rename(26, "c_d", "cD", "class A { m(a_b): void; m(cD) {} }"),
+      "class A { m(aB): void; m(c_d) {} }",
+      rename(12, "a_b", "aB"),
+      rename(26, "c_d", "cD"),
     ),
-    invalid(
+    fixed(
       "abstract class A { abstract m(a_b): void; }",
-      rename(30, "a_b", "aB", "abstract class A { abstract m(aB): void; }"),
+      "abstract class A { abstract m(aB): void; }",
+      rename(30, "a_b", "aB"),
     ),
     invalid("namespace a_b.c_d {}", rename(10, "a_b", "AB"), rename(14, "c_d", "CD")),
     invalid("module a_b {}", rename(7, "a_b", "AB", "module AB {}")),
-    invalid("for (const a_b of []) {}", rename(11, "a_b", "aB", "for (const aB of []) {}")),
+    fixed("for (const a_b of []) {}", "for (const aB of []) {}", rename(11, "a_b", "aB")),
     invalid(
       "type T = { m(): { a_b: string }; get g(): { c_d: number }; set s(v_w) };",
       key(18, "a_b", 'type T = { m(): { "a_b": string }; get g(): { c_d: number }; set s(v_w) };'),
@@ -445,8 +426,68 @@ testRule("camelcase", camelcaseRule, {
       rename(9, "foo_bar", "fooBar", "function fooBar() { return fooBar; }"),
     ),
 
+    // fixes a name private to a module, renaming every use
+    fixed(
+      "export {}; const a_b = 1; f(a_b);",
+      "export {}; const aB = 1; f(aB);",
+      rename(17, "a_b", "aB"),
+    ),
+    fixed(
+      'import { f } from "m"; function foo_bar(): void {} f(foo_bar);',
+      'import { f } from "m"; function fooBar(): void {} f(fooBar);',
+      rename(32, "foo_bar", "fooBar"),
+    ),
+
+    // only suggests renaming a name exported under another name or by default
+    invalid(
+      "const a_b = 1; export { a_b as c };",
+      rename(6, "a_b", "aB", "const aB = 1; export { aB as c };"),
+    ),
+    invalid(
+      "const a_b = 1; export default a_b;",
+      rename(6, "a_b", "aB", "const aB = 1; export default aB;"),
+    ),
+    invalid(
+      'import a_b from "m"; export { a_b };',
+      rename(7, "a_b", "aB", 'import aB from "m"; export { aB as a_b };'),
+    ),
+    invalid(
+      "export namespace N { export const a_b = 1; }",
+      rename(34, "a_b", "aB", "export namespace N { export const aB = 1; }"),
+    ),
+
+    // only suggests renaming a top-level name in a script, which is global
+    invalid("const a_b = 1; f(a_b);", rename(6, "a_b", "aB", "const aB = 1; f(aB);")),
+
+    // only suggests renaming when an unresolved use of the name remains
+    invalid(
+      "export {}; function f(): void { const a_b = 1; g(a_b); } g(a_b);",
+      rename(38, "a_b", "aB", "export {}; function f(): void { const aB = 1; g(aB); } g(a_b);"),
+    ),
+
+    // fixes a shadowing name apart from the one it shadows, one per pass
+    fixed(
+      "export {}; const a_b = 1; function f(): void { const a_b = 2; g(a_b); } g(a_b);",
+      "export {}; const aB = 1; function f(): void { const a_b = 2; g(a_b); } g(aB);",
+      rename(17, "a_b", "aB"),
+      rename(53, "a_b", "aB"),
+    ),
+    invalid(
+      "export {}; const aB = 1; function f(): void { const a_b = 2; g(a_b); } g(aB);",
+      rename(52, "a_b", "aB"),
+    ),
+
+    // fixes a value merged with a type only to a name both rules accept
+    fixed(
+      "export {}; const a_b = 1; type a_b = number;",
+      "export {}; const AB = 1; type AB = number;",
+      rename(17, "a_b", "aB", "export {}; const aB = 1; type aB = number;"),
+      rename(31, "a_b", "AB"),
+    ),
+
     // offers no rename onto a name the file already has
     invalid("const fooBar = 1; const foo_bar = 2;", rename(24, "foo_bar", "fooBar")),
+    invalid("export {}; const fooBar = 1; const foo_bar = 2;", rename(35, "foo_bar", "fooBar")),
 
     // offers no rename of a type that pascal-case-types would still reject
     invalid("class Sha3_224 {}", rename(6, "Sha3_224", "SHA3_224")),
