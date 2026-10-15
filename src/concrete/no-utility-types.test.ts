@@ -94,7 +94,7 @@ describe("no-utility-types: names the utility in the message", () => {
     invalid: [
       {
         code: "type A = ReturnType<B>;",
-        errors: [{ message: /`ReturnType`/ }],
+        errors: [{ message: /`ReturnType`/u }],
       },
     ],
   });

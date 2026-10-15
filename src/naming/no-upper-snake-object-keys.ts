@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule, keyText } from "#helpers";
 
 /** `OPEN`, `IN_PROGRESS`, `HTTP2_PUSH` — the casing a string union member has. */
-const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/;
+const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
 
 /**
  * `no-upper-snake-object-keys` — rejects UPPER_SNAKE_CASE object keys and type

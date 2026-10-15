@@ -3,13 +3,13 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /** Lowercase ASCII letter after a non-underscore and one underscore. */
-const UNDERSCORE_CHAR_PATTERN = /([^_])_([a-z])/g;
+const UNDERSCORE_CHAR_PATTERN = /([^_])_([a-z])/gu;
 
 /** A lowercase ASCII first letter. */
-const FIRST_CHAR_LOWERCASE_PATTERN = /^[a-z]/;
+const FIRST_CHAR_LOWERCASE_PATTERN = /^[a-z]/u;
 
 /** Leading and trailing underscores. */
-const EDGE_UNDERSCORES_PATTERN = /^_+|_+$/g;
+const EDGE_UNDERSCORES_PATTERN = /^_+|_+$/gu;
 
 /** Declarations whose `declare` modifier makes the whole subtree ambient. */
 const AMBIENT_TYPES: string[] = [
@@ -23,7 +23,7 @@ const AMBIENT_TYPES: string[] = [
 ];
 
 /** Source ending in `(`, then only whitespace and comments. */
-const PARENTHESIZED_TAIL_PATTERN = /\((?:\s|\/\*[\s\S]*?\*\/|\/\/[^\n]*)*$/;
+const PARENTHESIZED_TAIL_PATTERN = /\((?:\s|\/\*[\s\S]*?\*\/|\/\/[^\n]*)*$/u;
 
 /** Nodes a destructuring pattern can sit in before reaching its owner. */
 const PATTERN_TYPES: string[] = [
@@ -36,7 +36,7 @@ const PATTERN_TYPES: string[] = [
 
 /** ASCII-only uppercase, as Deno's `to_ascii_uppercase`. */
 function asciiUpper(text: string): string {
-  return text.replace(/[a-z]/g, (char) => char.toUpperCase());
+  return text.replaceAll(/[a-z]/gu, (char) => char.toUpperCase());
 }
 
 /** Whether a name has an underscore, ignoring leading and trailing ones, and is not ALL_UPPER. */
@@ -69,7 +69,7 @@ function toPascalCase(name: string): string {
 function isAmbient(node: TSESTree.Node): boolean {
   let current: TSESTree.Node | null = node;
   while (current !== null) {
-    if (AMBIENT_TYPES.includes(current.type) && "declare" in current && current.declare === true) {
+    if (AMBIENT_TYPES.includes(current.type) && "declare" in current && current.declare) {
       return true;
     }
     current = current.parent ?? null;
@@ -183,9 +183,9 @@ export const camelcase: ExplicitRule = {
           for (const property of pattern.properties) {
             checkPatternProperty(pattern, property);
           }
-          return;
+          break;
         default:
-          return;
+          break;
       }
     }
 
@@ -287,7 +287,7 @@ export const camelcase: ExplicitRule = {
       }
       const text = source.text;
       let index = node.range[0] - 1;
-      while (index >= 0 && /\s/.test(text.charAt(index))) {
+      while (index >= 0 && /\s/u.test(text.charAt(index))) {
         index -= 1;
       }
       const previous = text.charAt(index);

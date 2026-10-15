@@ -46,7 +46,7 @@ export function typeNameTail(node: TypeNameNode): string | null {
     return null;
   }
   const segments = name.split(".");
-  return segments[segments.length - 1] ?? null;
+  return segments.at(-1) ?? null;
 }
 
 /**

@@ -17,7 +17,9 @@ import type { ExplicitRule } from "#helpers";
 EslintRuleTester.describe = describe;
 EslintRuleTester.it = it;
 EslintRuleTester.itOnly = it.only;
-OxlintRuleTester.describe = describe;
+OxlintRuleTester.describe = (text, fn) => {
+  describe(text, fn);
+};
 OxlintRuleTester.it = it;
 
 /** The filename every snippet is linted as, so both parsers read TypeScript. */
@@ -91,7 +93,7 @@ function position(code: string, offset: number): Position {
   const before = code.slice(0, offset).split("\n");
   return {
     line: before.length,
-    column: (before[before.length - 1]?.length ?? 0) + 1,
+    column: (before.at(-1)?.length ?? 0) + 1,
   };
 }
 
@@ -165,7 +167,7 @@ function stringEntries(data: unknown): [string, string][] {
   }
   return Object.entries(data).map(([key, value]) => {
     if (typeof value !== "string") {
-      throw new Error(`placeholder ${key} is not a string`);
+      throw new TypeError(`placeholder ${key} is not a string`);
     }
     return [key, value];
   });

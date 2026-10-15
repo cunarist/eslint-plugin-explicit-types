@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /** A name that starts uppercase and carries no underscores. */
-const PASCAL_CASE_PATTERN = /^[A-Z][A-Za-z0-9]*$/;
+const PASCAL_CASE_PATTERN = /^[A-Z][A-Za-z0-9]*$/u;
 
 /**
  * `pascal-case-types` — requires class, interface, type alias, and enum
