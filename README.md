@@ -169,6 +169,7 @@ not `null`, so returning `| null` means normalising where you parse data.
 
 | Name                                                                   | Description                                                               | 💼 |
 | :--------------------------------------------------------------------- | :------------------------------------------------------------------------ | :- |
+| [camelcase](docs/rules/camelcase.md)                                   | Enforce camelCase, PascalCase, or UPPER_SNAKE_CASE for declared names     | 🔤 |
 | [no-conditional-types](docs/rules/no-conditional-types.md)             | Disallow conditional types and the `infer` keyword                        | 🧱 |
 | [no-enum](docs/rules/no-enum.md)                                       | Disallow `enum` declarations                                              | 🔤 |
 | [no-index-signatures](docs/rules/no-index-signatures.md)               | Disallow index signatures                                                 | 🧱 |
@@ -217,8 +218,8 @@ duplicating them.
   laundered through a function signature.
 - **Names you didn't choose are left alone.** `no-upper-snake-object-keys` only
   reports UPPER_SNAKE_CASE, so custom element tags, `data-*` attributes, HTTP
-  headers and library keymaps pass. Unquoted `snake_case` keys pass too; that
-  was Deno's built-in `camelcase` rule's job.
+  headers and library keymaps pass. Unquoted `snake_case` keys are
+  `camelcase`'s job, and only where this code declares them.
 
 ## License
 

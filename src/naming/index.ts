@@ -2,11 +2,13 @@
  * The `naming` preset — names carry the contract.
  *
  * Requires PascalCase type names and UPPER_SNAKE_CASE string union members,
- * keeps that casing out of object keys, and bans `enum`.
+ * keeps that casing out of object keys, bans `enum`, and rejects `snake_case`
+ * declared names.
  */
 
 import type { ExplicitRule } from "#helpers";
 
+import { camelcase } from "./camelcase.ts";
 import { noEnum } from "./no-enum.ts";
 import { noUpperSnakeObjectKeys } from "./no-upper-snake-object-keys.ts";
 import { pascalCaseTypes } from "./pascal-case-types.ts";
@@ -24,4 +26,5 @@ export const namingRules: Map<string, ExplicitRule> = new Map([
   ["upper-snake-string-unions", upperSnakeStringUnions],
   ["no-upper-snake-object-keys", noUpperSnakeObjectKeys],
   ["no-enum", noEnum],
+  ["camelcase", camelcase],
 ]);

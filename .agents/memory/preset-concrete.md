@@ -2,7 +2,7 @@
 description: concrete preset: nine rules that ban derived types; split from memona's restricted-types
 ---
 
-15 rules in three presets: [[preset-concrete]], [[preset-naming]],
+16 rules in three presets: [[preset-concrete]], [[preset-naming]],
 [[preset-absence]]. Src column: `mem` = ported from memona's plugin, `std` =
 written in memona's `coding-standards.md` but never enforced, `new` = neither,
 added here.

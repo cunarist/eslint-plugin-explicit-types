@@ -9,7 +9,7 @@ and follow it before reasoning or responding.
 
 - **@cunarist/eslint-plugin-explicit-types**: TypeScript style rules that keep
   types written out rather than derived. One ESLint plugin that also runs under
-  Oxlint. Namespace `@cunarist/explicit-types`, 15 rules in three presets
+  Oxlint. Namespace `@cunarist/explicit-types`, 16 rules in three presets
   (`concrete`, `naming`, `absence`).
 - Node.js 24+ and Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
