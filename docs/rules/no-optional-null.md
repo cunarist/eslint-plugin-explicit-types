@@ -4,6 +4,8 @@
 
 💼 This rule is enabled in the 🫙 `absence` [config](https://github.com/cunarist/eslint-plugin-explicit-types#setup).
 
+💡 This rule is manually fixable by [editor suggestions](https://eslint.org/docs/latest/use/core-concepts#rule-suggestions).
+
 <!-- end auto-generated rule header -->
 
 ## Rule Details
