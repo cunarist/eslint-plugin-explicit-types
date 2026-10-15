@@ -10,7 +10,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import type { ExplicitSourceCode, ScopeReference, ScopeVariable } from "./rule.ts";
 
 /** Patterns a declared name can sit in on the way up to its declaration. */
-const PATTERN_TYPES: readonly string[] = [
+const PATTERN_TYPES: ReadonlySet<string> = new Set([
   "ArrayPattern",
   "AssignmentPattern",
   "ObjectPattern",
@@ -18,10 +18,10 @@ const PATTERN_TYPES: readonly string[] = [
   "RestElement",
   "VariableDeclarator",
   "VariableDeclaration",
-];
+]);
 
 /** Declarations whose own name, `id`, a declared identifier can be. */
-const NAMED_DECLARATION_TYPES: readonly string[] = [
+const NAMED_DECLARATION_TYPES: ReadonlySet<string> = new Set([
   "ClassDeclaration",
   "FunctionDeclaration",
   "TSDeclareFunction",
@@ -30,36 +30,36 @@ const NAMED_DECLARATION_TYPES: readonly string[] = [
   "TSInterfaceDeclaration",
   "TSModuleDeclaration",
   "TSTypeAliasDeclaration",
-];
+]);
 
 /** Declarations that name a type, which `pascal-case-types` wants PascalCase. */
-const TYPE_DECLARATION_TYPES: readonly string[] = [
+const TYPE_DECLARATION_TYPES: ReadonlySet<string> = new Set([
   "ClassDeclaration",
   "TSEnumDeclaration",
   "TSInterfaceDeclaration",
   "TSModuleDeclaration",
   "TSTypeAliasDeclaration",
-];
+]);
 
 /** Statements that hand a declaration, or a reference, to other files. */
-const EXPORT_TYPES: readonly string[] = [
+const EXPORT_TYPES: ReadonlySet<string> = new Set([
   "ExportDefaultDeclaration",
   "ExportNamedDeclaration",
   "ExportSpecifier",
   "TSExportAssignment",
-];
+]);
 
 /** Top-level statements that make a file a module rather than a global script. */
-const MODULE_STATEMENT_TYPES: readonly string[] = [
+const MODULE_STATEMENT_TYPES: ReadonlySet<string> = new Set([
   "ExportAllDeclaration",
   "ExportDefaultDeclaration",
   "ExportNamedDeclaration",
   "ImportDeclaration",
   "TSExportAssignment",
-];
+]);
 
 /** Scopes whose names a script file shares with every other script. */
-const TOP_LEVEL_SCOPE_TYPES: readonly string[] = ["global", "module"];
+const TOP_LEVEL_SCOPE_TYPES: ReadonlySet<string> = new Set(["global", "module"]);
 
 /** Whether two nodes cover the same source text. */
 function sameRange(left: TSESTree.Node, right: TSESTree.Node): boolean {
@@ -127,7 +127,7 @@ function replacement(target: TSESTree.Node, oldName: string, name: string): stri
 function declarationOf(identifier: TSESTree.Identifier): TSESTree.Node | null {
   let current: TSESTree.Node = identifier;
   let parent: TSESTree.Node | null = current.parent ?? null;
-  while (parent !== null && PATTERN_TYPES.includes(parent.type)) {
+  while (parent !== null && PATTERN_TYPES.has(parent.type)) {
     current = parent;
     parent = current.parent ?? null;
   }
@@ -136,7 +136,7 @@ function declarationOf(identifier: TSESTree.Identifier): TSESTree.Node | null {
   }
   if (
     parent !== null &&
-    NAMED_DECLARATION_TYPES.includes(parent.type) &&
+    NAMED_DECLARATION_TYPES.has(parent.type) &&
     "id" in parent &&
     parent.id !== null &&
     sameRange(parent.id, current)
@@ -191,7 +191,7 @@ function isModule(program: TSESTree.Node): boolean {
   }
   return program.body.some(
     (statement) =>
-      MODULE_STATEMENT_TYPES.includes(statement.type) ||
+      MODULE_STATEMENT_TYPES.has(statement.type) ||
       (statement.type === "TSImportEqualsDeclaration" &&
         statement.moduleReference.type === "TSExternalModuleReference"),
   );
@@ -200,14 +200,14 @@ function isModule(program: TSESTree.Node): boolean {
 /** Whether a reference hands its variable to other files, as `export { name }` does. */
 function isExportingReference(reference: ScopeReference): boolean {
   const parent = reference.identifier.parent;
-  return parent !== undefined && EXPORT_TYPES.includes(parent.type);
+  return parent !== undefined && EXPORT_TYPES.has(parent.type);
 }
 
 /** Whether a declaration is exported, from the file or from a namespace. */
 function isExportedDeclaration(identifier: TSESTree.Identifier): boolean {
   const declaration = declarationOf(identifier);
   const parent = declaration?.parent;
-  return parent !== undefined && EXPORT_TYPES.includes(parent.type);
+  return parent !== undefined && EXPORT_TYPES.has(parent.type);
 }
 
 /**
@@ -233,7 +233,7 @@ export function isFilePrivate(source: ExplicitSourceCode, variables: ScopeVariab
       (identifier) =>
         !isExportedDeclaration(identifier) &&
         !inAmbientModule(identifier) &&
-        (!TOP_LEVEL_SCOPE_TYPES.includes(variable.scope.type) || isModule(programOf(identifier))),
+        (!TOP_LEVEL_SCOPE_TYPES.has(variable.scope.type) || isModule(programOf(identifier))),
     );
   });
 }
@@ -297,7 +297,7 @@ export function renameFix(
     namesType: variables.some((variable) =>
       variable.identifiers.some((each) => {
         const declaration = declarationOf(each);
-        return declaration !== null && TYPE_DECLARATION_TYPES.includes(declaration.type);
+        return declaration !== null && TYPE_DECLARATION_TYPES.has(declaration.type);
       }),
     ),
   };

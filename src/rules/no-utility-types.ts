@@ -4,7 +4,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule, typeNameTail } from "#helpers";
 
 /** The 22 built-in TypeScript utility types this rule rejects. */
-const UTILITY_TYPE_NAMES: readonly string[] = [
+const UTILITY_TYPE_NAMES: ReadonlySet<string> = new Set([
   "Awaited",
   "Partial",
   "Required",
@@ -27,7 +27,7 @@ const UTILITY_TYPE_NAMES: readonly string[] = [
   "Lowercase",
   "Capitalize",
   "Uncapitalize",
-];
+]);
 
 /** The intrinsic string types, each with the change it makes to a literal. */
 const STRING_INTRINSICS: ReadonlyMap<string, (value: string) => string> = new Map([
@@ -38,11 +38,11 @@ const STRING_INTRINSICS: ReadonlyMap<string, (value: string) => string> = new Ma
 ]);
 
 /** Parents that bind tighter than `readonly`, so the operator needs parentheses. */
-const TIGHTER_THAN_READONLY: readonly string[] = [
+const TIGHTER_THAN_READONLY: ReadonlySet<string> = new Set([
   "TSArrayType",
   "TSIndexedAccessType",
   "TSTypeOperator",
-];
+]);
 
 /**
  * The written-out equivalent of a utility type reference, when syntax alone
@@ -68,7 +68,7 @@ function writtenOut(node: TSESTree.TSTypeReference, text: string): string | null
       return null;
     }
     const operator = `readonly ${argumentText}`;
-    return TIGHTER_THAN_READONLY.includes(node.parent.type) ? `(${operator})` : operator;
+    return TIGHTER_THAN_READONLY.has(node.parent.type) ? `(${operator})` : operator;
   }
   const transform = STRING_INTRINSICS.get(name);
   if (transform === undefined || argument.type !== "TSLiteralType") {
@@ -106,7 +106,7 @@ export const noUtilityTypesRule: ExplicitRule = {
     return {
       TSTypeReference(node: TSESTree.TSTypeReference): void {
         const name = typeNameTail(node.typeName);
-        if (name === null || !UTILITY_TYPE_NAMES.includes(name)) {
+        if (name === null || !UTILITY_TYPE_NAMES.has(name)) {
           return;
         }
         const source = context.sourceCode;

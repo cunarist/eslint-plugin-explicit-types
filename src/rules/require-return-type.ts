@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /** Method kinds TypeScript forbids a return type on. */
-const UNANNOTATABLE_METHOD_KINDS: readonly string[] = ["constructor", "set"];
+const UNANNOTATABLE_METHOD_KINDS: ReadonlySet<string> = new Set(["constructor", "set"]);
 
 /** A function-like node that may carry a `returnType`. */
 type FunctionNode = TSESTree.FunctionLike;
@@ -19,7 +19,7 @@ function isNamed(node: FunctionNode): boolean {
     return true;
   }
   if (parent.type === "MethodDefinition" || parent.type === "TSAbstractMethodDefinition") {
-    return !UNANNOTATABLE_METHOD_KINDS.includes(parent.kind);
+    return !UNANNOTATABLE_METHOD_KINDS.has(parent.kind);
   }
   return false;
 }
