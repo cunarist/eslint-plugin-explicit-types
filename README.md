@@ -55,5 +55,4 @@ export default [ts, plugin.configs.concrete];
 <!-- end auto-generated rules list -->
 <!-- prettier-ignore-end -->
 
-Upgrading from `jsr:@cunarist/deno-lint-plugin-explicit-types`: rule ids `explicit-concrete/*`, `explicit-naming/*`, and `explicit-absence/*` become `@cunarist/explicit-types/*`, same rule names.\
 License: MIT.
