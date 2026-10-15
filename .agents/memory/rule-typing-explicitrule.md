@@ -26,4 +26,4 @@ in `vite.config.ts` acknowledges.
 
 Messages are one string, Deno's old `message` and `hint` joined, because ESLint
 and Oxlint diagnostics have no hint field. Report with `messageId` and `data`
-so tests can assert which message fired. See [[dual-ruletester]].
+so tests can assert which message fired. See [[plugin-dual-ruletester]].

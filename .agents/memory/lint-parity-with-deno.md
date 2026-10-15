@@ -30,7 +30,7 @@ one of:
 `maxWarnings: 0` keeps Deno's every-diagnostic-fails behaviour.
 
 `camelcase`, which Oxlint lacks, is the built-in `id-match` in `configs.project`
-(see [[repo-only-rules]]): pattern `^_*[^_]*_*$|^[^a-z]*$` (Deno's
+(see [[project-lint-plugin]] and [[naming-id-match]]): pattern `^_*[^_]*_*$|^[^a-z]*$` (Deno's
 `is_underscored`: no `_` once edge underscores are trimmed, or no lowercase
 ASCII), `properties: false`, `classFields: false`, `onlyDeclarations: false`,
 `ignoreDestructuring: true`. No autofix. Against `deno_lint`'s 130 test cases
