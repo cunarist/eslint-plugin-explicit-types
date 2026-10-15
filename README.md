@@ -17,12 +17,12 @@ One plugin, namespace `@cunarist/explicit-types`, so every rule id reads
 itself. Its flat configs sit at `plugin.configs`: one per preset, plus `all`
 with every rule.
 
-| Config     | Turns on                       |
-| ---------- | ------------------------------ |
-| `concrete` | write the type out             |
-| `naming`   | names carry the contract       |
-| `absence`  | one spelling for absence       |
-| `all`      | every rule, new ones included  |
+| Config     | Turns on                      |
+| ---------- | ----------------------------- |
+| `concrete` | write the type out            |
+| `naming`   | names carry the contract      |
+| `absence`  | one spelling for absence      |
+| `all`      | every rule, new ones included |
 
 ### Oxlint, through Vite+
 
