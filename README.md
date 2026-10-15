@@ -171,7 +171,7 @@ not `null`, so returning `| null` means normalising where you parse data.
 | [no-conditional-types](docs/rules/no-conditional-types.md)             | Disallow conditional types and the `infer` keyword                        | 🧱 |    |    |
 | [no-enum](docs/rules/no-enum.md)                                       | Disallow `enum` declarations                                              | 🔤 |    |    |
 | [no-index-signatures](docs/rules/no-index-signatures.md)               | Disallow index signatures                                                 | 🧱 |    |    |
-| [no-inline-object-types](docs/rules/no-inline-object-types.md)         | Disallow inline object type literals                                      | 🧱 |    |    |
+| [no-inline-object-types](docs/rules/no-inline-object-types.md)         | Disallow inline object type literals                                      | 🧱 |    | 💡 |
 | [no-keyof](docs/rules/no-keyof.md)                                     | Disallow the `keyof` type operator                                        | 🧱 |    |    |
 | [no-mapped-types](docs/rules/no-mapped-types.md)                       | Disallow mapped types                                                     | 🧱 |    | 💡 |
 | [no-optional-null](docs/rules/no-optional-null.md)                     | Disallow combining an optional `?` with `\| null`                         | 🫙 |    |    |
@@ -181,7 +181,7 @@ not `null`, so returning `| null` means normalising where you parse data.
 | [no-upper-snake-object-keys](docs/rules/no-upper-snake-object-keys.md) | Disallow UPPER_SNAKE_CASE object keys and type members                    | 🔤 |    |    |
 | [no-utility-types](docs/rules/no-utility-types.md)                     | Disallow the built-in TypeScript utility types                            | 🧱 | 🔧 |    |
 | [pascal-case-types](docs/rules/pascal-case-types.md)                   | Enforce PascalCase names for classes, interfaces, type aliases, and enums | 🔤 |    |    |
-| [require-return-type](docs/rules/require-return-type.md)               | Require explicit return types on named functions                          | 🧱 |    |    |
+| [require-return-type](docs/rules/require-return-type.md)               | Require explicit return types on named functions                          | 🧱 |    | 💡 |
 | [upper-snake-string-unions](docs/rules/upper-snake-string-unions.md)   | Enforce UPPER_SNAKE_CASE for string literal union members                 | 🔤 |    |    |
 
 <!-- end auto-generated rules list -->
