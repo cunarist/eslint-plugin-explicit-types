@@ -115,21 +115,28 @@ function position(code: string, offset: number): Position {
   };
 }
 
-/** Run one rule over valid and invalid snippets, under ESLint and Oxlint. */
+/**
+ * Run one rule over all its valid and invalid snippets, under ESLint and
+ * Oxlint. Each rule's test file calls this once. The suites nest as
+ * `<rule> > eslint|oxlint`, so a full test name contains ` eslint ` or
+ * ` oxlint `, which is what CI filters each host's step by.
+ */
 export function testRule(name: string, rule: ExplicitRule, cases: RuleCases): void {
-  describe("eslint", () => {
-    eslintTester.run(name, rule, {
-      valid: cases.valid.map((code) => ({ code, filename: FILENAME })),
-      invalid: cases.invalid.map((test) => ({ ...test, filename: FILENAME })),
+  describe(name, () => {
+    describe("eslint", () => {
+      eslintTester.run(name, rule, {
+        valid: cases.valid.map((code) => ({ code, filename: FILENAME })),
+        invalid: cases.invalid.map((test) => ({ ...test, filename: FILENAME })),
+      });
     });
-  });
-  describe("oxlint", () => {
-    oxlintTester.run(name, rule, {
-      valid: cases.valid,
-      invalid: cases.invalid.map((test) => ({
-        code: test.code,
-        errors: oxlintErrors(test.errors),
-      })),
+    describe("oxlint", () => {
+      oxlintTester.run(name, rule, {
+        valid: cases.valid,
+        invalid: cases.invalid.map((test) => ({
+          code: test.code,
+          errors: oxlintErrors(test.errors),
+        })),
+      });
     });
   });
 }
