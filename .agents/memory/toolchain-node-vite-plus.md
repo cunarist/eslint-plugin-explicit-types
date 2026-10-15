@@ -43,7 +43,9 @@ before any push. CI installs the toolchain with `voidzero-dev/setup-vp`.
 ## Gotchas found during the migration
 
 - `vp check` does **not** report `isolatedDeclarations` errors (TS9010); only
-  `vp pack` does, so packages run `vp pack` in CI on every PR.
+  `vp pack` does, so packages run `vp pack` in CI on every PR. Like Deno's
+  `no-slow-types`, it accepts a trivially inferable export
+  (`export const o = { a: 1 }`) and rejects `export const x = make()`.
 - Oxfmt sorts `package.json` keys by default, which destroys the required key
   order. Set `fmt: { sortPackageJson: false }` ([[package-json-shape]]).
 - Oxlint and Oxfmt skip what `.gitignore` lists; that is the only reason
