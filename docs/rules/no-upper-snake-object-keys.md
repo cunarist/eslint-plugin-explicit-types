@@ -31,8 +31,9 @@ prescribes for union members is treated as a signal.
   `"cl-zip-dialog"` (HTML requires the hyphen), `"data-language"`,
   `"Content-Type"`, `"Mod-z"`, `$anchor`, `TSIndexSignature`, `ToggleBold`.
 - `snake_case` keys are left alone. Under Deno this split with the built-in
-  `camelcase` rule, which reported them. Oxlint ships no `camelcase` rule, and
-  restoring that coverage is an open follow-up.
+  `camelcase` rule, which reported them. Oxlint has no `camelcase`; its
+  `id-match` with `properties: true` reports them, though also on assignments
+  to foreign objects' properties.
 - Quoting is not an escape hatch. `{ "PENDING": 1 }` fires exactly as
   `{ PENDING: 1 }` does; the rule reads the spelling, not the syntax around it.
 - Class members are not checked. `static MAX_RETRIES = 5` is a constant, not a

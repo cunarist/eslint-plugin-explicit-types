@@ -1,5 +1,5 @@
 ---
-description: naming preset: PascalCase types, UPPER_SNAKE unions, no union-shaped keys, no enum; camelcase is repo-only
+description: naming preset: PascalCase types, UPPER_SNAKE unions, no union-shaped keys, no enum; camelcase is Oxlint id-match
 ---
 
 | Rule                         | Src | Enforces                                                    |
@@ -26,12 +26,12 @@ keeps the intended target and clears every one of those, and it let the
 `deno-lint-ignore-file` lines come out of this repo's own rule files.
 
 Under Deno the rule divided cleanly with the built-in `camelcase`, which
-reported unquoted `snake_case` keys. Oxlint ships no `camelcase` rule, so a port
-of `deno_lint`'s `camelcase.rs` (same reports, same message, plus fixes and
-suggestions) lives in `scripts/project-lint.ts` as `project/camelcase`, rather
-than widening this rule, which would reopen the foreign-vocabulary problem
-above. It is repo-only and never published: the plugin carries exactly the 15
-rules of the Deno plugin.
+reported unquoted `snake_case` keys. Oxlint ships no `camelcase` rule; this repo
+uses the built-in `id-match` instead (see [[lint-parity-with-deno]]), with
+`properties: false`, so unquoted `snake_case` object keys are no longer reported
+here. That is accepted rather than widening this rule, which would reopen the
+foreign-vocabulary problem above. Nothing is added to the published plugin: it
+carries exactly the 15 rules of the Deno plugin.
 
 `upper-snake-string-unions` visits `TSUnionType` rather than
 `TSTypeAliasDeclaration`, so a union written inline on an interface member

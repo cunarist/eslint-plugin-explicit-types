@@ -39,8 +39,8 @@ so you never have to resolve it to find out.
 - Only declaration names are checked. Uses of a badly-named type imported from
   another module are not reported — there is no cross-file resolution.
 - Type parameters, variables, functions, and properties are out of scope. The
-  value side was Deno's built-in `camelcase`; Oxlint ships no equivalent, and
-  restoring one is an open follow-up.
+  value side was Deno's built-in `camelcase`; under Oxlint, the built-in
+  `id-match` rule with a no-snake_case pattern covers it.
 
 Examples of **incorrect** code for this rule:
 

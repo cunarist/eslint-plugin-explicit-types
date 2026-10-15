@@ -44,10 +44,11 @@ and follow it before reasoning or responding.
 - Every rule test runs under both ESLint's and Oxlint's `RuleTester` through
   `testRule`, called exactly once per rule file with every case in its `valid`
   and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
-- Rules this repo enforces on itself but does not publish (e.g. `camelcase`
-  for Deno lint parity) live in `scripts/project-lint.ts`, a repo-local plugin
-  named `project` loaded by `vite.config.ts`. `scripts/` is never packed or
-  published.
+- Rules this repo enforces on itself but does not publish live in
+  `scripts/project-lint.ts`, a repo-local plugin named `project` loaded by
+  `vite.config.ts`; it has no custom rule today (`rules: {}`). Deno's
+  `camelcase` is Oxlint's built-in `id-match`, set in its `configs.project`.
+  `scripts/` is never packed or published.
 - `scripts/` is repo tooling, not production code: no tests.
 - The repo lints itself with its own rules. Never add an `oxlint-disable` or
   `eslint-disable`; fix the source.

@@ -1,5 +1,5 @@
 ---
-description: The lint config must keep every lint check Deno ran; camelcase is project/camelcase; three import-check rules are open gaps
+description: The lint config must keep every lint check Deno ran; camelcase is Oxlint's id-match; three import-check rules are open gaps
 ---
 
 The user requires lint coverage never to shrink below the Deno setup:
@@ -28,8 +28,19 @@ one of:
 
 `maxWarnings: 0` keeps Deno's every-diagnostic-fails behaviour.
 
-`camelcase`, which Oxlint lacks, is `project/camelcase` from the repo-only
-plugin `scripts/project-lint.ts` (see [[repo-only-rules]]).
+`camelcase`, which Oxlint lacks, is the built-in `id-match` in `configs.project`
+(see [[repo-only-rules]]): pattern `^_*[^_]*_*$|^[^a-z]*$` (Deno's
+`is_underscored`: no `_` once edge underscores are trimmed, or no lowercase
+ASCII), `properties: false`, `classFields: false`, `onlyDeclarations: false`,
+`ignoreDestructuring: true`. No autofix. Against `deno_lint`'s 130 test cases
+it misses 9: unquoted object-literal keys (`{ bar_baz: 1 }`, `{ bar_baz }`),
+shorthand destructuring in parameters (`function f({ no_camel })`, with or
+without a default, nested too), a same-name alias (`{ a_b: a_b }`), and a
+defaulted alias (`{ foo: bar_baz = 1 }`). It over-reports 17: a non-renamed
+import (`import { or_middle }`), unresolved global references and assignments
+(`first_name = 1`, `x = snake_cased`, `{ [category_id]: y }`), and the 11
+ambient `declare` cases. Beyond Deno it also checks type parameters, interface
+and type-literal members, class methods, and labels.
 
 Open gaps, not decisions: `import-check`'s `prefer-alias-import`,
 `no-barrel-bypass`, and `no-relative-bypass`. Its `no-self-import`,
