@@ -39,11 +39,13 @@ const CONCRETE: string[] = [
 /**
  * The `naming` preset — names carry the contract.
  *
- * Requires PascalCase type names and UPPER_SNAKE_CASE string union members,
- * keeps that casing out of object keys, and bans `enum`.
+ * Requires PascalCase type names, single capital type parameters, and
+ * UPPER_SNAKE_CASE string union members, keeps that casing out of object keys,
+ * and bans `enum`.
  */
 const NAMING: string[] = [
   "pascal-case-types",
+  "single-capital-type-params",
   "upper-snake-string-unions",
   "no-upper-snake-object-keys",
   "no-enum",
