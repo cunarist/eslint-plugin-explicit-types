@@ -70,8 +70,8 @@ Examples of **correct** code for this rule:
 let firstName = "Ichigo";
 const FIRST_NAME = "Ichigo";
 const __private = "Hoshimiya";
-const obj = { last_name: "Hoshimiya" };
-const { last_name } = obj;
+const row = loadRow();
+const { last_name } = row;
 do_something();
 function load({ snake_case: camelCase = "default" }) {}
 class PascalCaseClass {}
