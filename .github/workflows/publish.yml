@@ -31,6 +31,7 @@ jobs:
       - run: vp check
       - run: vp test -t " eslint "
       - run: vp test -t " oxlint "
+      - run: vp test tests
       - run: vp pack
       - run: npm run docs -- --check
       # Only for the first release, before npm allows a trusted publisher on

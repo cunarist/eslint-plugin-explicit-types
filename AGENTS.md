@@ -11,6 +11,9 @@ and follow it before reasoning or responding.
   types written out rather than derived. One ESLint plugin that also runs under
   Oxlint. Namespace `@cunarist/explicit-types`, 16 rules in three presets
   (`concrete`, `naming`, `absence`).
+- The package's only export is the default one, the plugin. Configs live at
+  `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,
+  built from the full rule map). No `recommended`, no named exports.
 - Node.js 24+ and Vite+ (`vp`): Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
 
@@ -26,6 +29,8 @@ and follow it before reasoning or responding.
   relative path out of a directory.
 - Rules use ESLint's standard `create` API, typed `ExplicitRule`, with every
   visitor's node parameter annotated. No runtime dependencies.
+- Unit tests sit next to the code as `*.test.ts`. Regression and integration
+  tests go in `tests/` and use only the public entry, `#plugin`.
 - Every rule test runs under both ESLint's and Oxlint's `RuleTester` through
   `testRule`. Write cases once, in ESLint's shape and 1-based columns.
 - The repo lints itself with its own rules. Never add an `oxlint-disable` or

@@ -20,6 +20,9 @@ jobs:
         run: vp test -t " eslint "
       - name: Rule tests under Oxlint's RuleTester
         run: vp test -t " oxlint "
+      # Regression tests in tests/, against the public entry only.
+      - name: Regression tests
+        run: vp test tests
       - run: vp pack
       # The rules list in README.md and each rule doc's header are generated
       # from the built plugin; fail if they no longer match it.

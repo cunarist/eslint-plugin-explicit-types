@@ -1,6 +1,6 @@
 import { defineConfig } from "vite-plus";
 
-import { absenceConfig, concreteConfig, namingConfig } from "./src/index.ts";
+import plugin from "./src/index.ts";
 
 export default defineConfig({
   lint: {
@@ -10,9 +10,7 @@ export default defineConfig({
     // that implements it. Oxlint strips the types itself; no build needed.
     jsPlugins: ["./src/index.ts"],
     rules: {
-      ...concreteConfig.rules,
-      ...namingConfig.rules,
-      ...absenceConfig.rules,
+      ...plugin.configs.all.rules,
 
       // Parity with Deno's `recommended` and `jsr` tags and the old
       // `deno.json` include list. See the parity table in the PR that ported

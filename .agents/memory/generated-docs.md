@@ -10,9 +10,11 @@ rewrites the README rules list and the header of every `docs/rules/*.md` (title
 
 Its options live in the `eslint-doc-generator` key of `package.json`, since
 the only config files allowed are `package.json`, `tsconfig.json`, and
-`vite.config.ts`. Config emojis: 🧱 concrete, 🔤 naming,
-🫙 absence. Emojis carrying a U+FE0F variation selector (🏷️, 🕳️) were
-avoided because table padding then never settles.
+`vite.config.ts`. Config emojis: 🧱 concrete, 🔤 naming, 🫙 absence.
+`ignoreConfig: ["all"]` keeps `all` out of the tables, since it would mark
+every rule. `urlConfigs` links the configs to the README setup section. Emojis
+carrying a U+FE0F variation selector (🏷️, 🕳️) were avoided because table
+padding then never settles.
 
 The README list is wrapped in `<!-- prettier-ignore-start/end -->`: oxfmt
 and the generator measure emoji widths differently, so without it `vp fmt` and

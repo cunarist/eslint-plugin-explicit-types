@@ -1,5 +1,5 @@
 ---
-description: One plugin, namespace @cunarist/explicit-types; Deno's three plugins survive as flat configs
+description: One plugin, namespace @cunarist/explicit-types, default export only; Deno's three plugins survive as plugin.configs, plus all
 ---
 
 ESLint's convention is one plugin per package, named from the package:
@@ -9,11 +9,14 @@ ESLint's convention is one plugin per package, named from the package:
 
 The Deno package was three plugins — `explicit-concrete`, `explicit-naming`,
 `explicit-absence` — because Deno's plugin API had no presets. Those survive as
-flat configs: `concreteConfig`, `namingConfig` and `absenceConfig`, exported by
-name and on `plugin.configs`. There is no `recommended` all-rules config; a user
-who wants every rule lists all three.
-ESLint users list a config; Oxlint, whose plugins have no `configs` and turn no
-rule on by themselves, spreads a config's `rules` next to
+flat configs at `plugin.configs.concrete`, `.naming` and `.absence`, plus
+`.all` with every rule. `all` is built from the full rule map, so a new rule
+joins it without an edit; `tests/configs.test.ts` checks it equals the union of
+the three. There is no `recommended` and no `meta.docs.recommended`.
+The package has only a default export, the plugin, as ESLint plugins do; no
+named config exports. ESLint users list `plugin.configs.<name>`; Oxlint, whose
+plugins have no `configs` and turn no rule on by themselves, spreads
+`plugin.configs.<name>.rules` next to
 `jsPlugins: ["@cunarist/eslint-plugin-explicit-types"]`.
 
 **No rule takes settings.** None has needed one. Where memona hardcoded a

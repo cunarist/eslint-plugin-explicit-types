@@ -13,36 +13,33 @@ npm install --save-dev @cunarist/eslint-plugin-explicit-types
 ```
 
 One plugin, namespace `@cunarist/explicit-types`, so every rule id reads
-`@cunarist/explicit-types/<rule>`. The rules come in three presets, each
-exported as a flat config. Use the ones you want, or all three:
+`@cunarist/explicit-types/<rule>`. The package's only export is the plugin
+itself. Its flat configs sit at `plugin.configs`: one per preset, plus `all`
+with every rule.
 
-| Preset     | Export           | Also at                   |
-| ---------- | ---------------- | ------------------------- |
-| `concrete` | `concreteConfig` | `plugin.configs.concrete` |
-| `naming`   | `namingConfig`   | `plugin.configs.naming`   |
-| `absence`  | `absenceConfig`  | `plugin.configs.absence`  |
+| Config     | Turns on                       |
+| ---------- | ------------------------------ |
+| `concrete` | write the type out             |
+| `naming`   | names carry the contract       |
+| `absence`  | one spelling for absence       |
+| `all`      | every rule, new ones included  |
 
 ### Oxlint, through Vite+
 
 Oxlint loads the plugin through `jsPlugins` and turns on only the rules you
-list, so spread a preset's `rules`:
+list, so spread a config's `rules`:
 
 ```ts
 // vite.config.ts
-import {
-  absenceConfig,
-  concreteConfig,
-  namingConfig,
-} from "@cunarist/eslint-plugin-explicit-types";
+import plugin from "@cunarist/eslint-plugin-explicit-types";
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
   lint: {
     jsPlugins: ["@cunarist/eslint-plugin-explicit-types"],
     rules: {
-      ...concreteConfig.rules,
-      ...namingConfig.rules,
-      ...absenceConfig.rules,
+      ...plugin.configs.concrete.rules,
+      // Or every rule: ...plugin.configs.all.rules,
       // Later keys win, so turn one off by id.
       "@cunarist/explicit-types/no-type-assertion": "off",
     },
@@ -59,14 +56,13 @@ ESLint 9 flat config in TypeScript (needs `jiti` installed), with
 
 ```ts
 // eslint.config.ts
-import explicitTypes from "@cunarist/eslint-plugin-explicit-types";
+import plugin from "@cunarist/eslint-plugin-explicit-types";
 import tseslint from "typescript-eslint";
 
 export default [
   { files: ["**/*.ts"], languageOptions: { parser: tseslint.parser } },
-  explicitTypes.configs.concrete,
-  explicitTypes.configs.naming,
-  explicitTypes.configs.absence,
+  plugin.configs.concrete,
+  // Or every rule: plugin.configs.all,
   { rules: { "@cunarist/explicit-types/no-type-assertion": "off" } },
 ];
 ```
