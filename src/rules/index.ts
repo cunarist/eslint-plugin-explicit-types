@@ -20,6 +20,7 @@ import { noUpperSnakeObjectKeysRule } from "./no-upper-snake-object-keys.ts";
 import { noUtilityTypesRule } from "./no-utility-types.ts";
 import { pascalCaseTypesRule } from "./pascal-case-types.ts";
 import { requireReturnTypeRule } from "./require-return-type.ts";
+import { singleCapitalTypeParamsRule } from "./single-capital-type-params.ts";
 import { upperSnakeStringUnionsRule } from "./upper-snake-string-unions.ts";
 
 /**
@@ -44,5 +45,6 @@ export const rules: Map<string, ExplicitRule> = new Map([
   ["no-utility-types", noUtilityTypesRule],
   ["pascal-case-types", pascalCaseTypesRule],
   ["require-return-type", requireReturnTypeRule],
+  ["single-capital-type-params", singleCapitalTypeParamsRule],
   ["upper-snake-string-unions", upperSnakeStringUnionsRule],
 ]);

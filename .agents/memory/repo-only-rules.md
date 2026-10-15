@@ -1,10 +1,11 @@
 ---
-description: Published plugin = the Deno plugin's 15 rules exactly; repo-only rules live in scripts/project-lint.ts (no-disable-comments, no-non-ts-imports; camelcase is id-match)
+description: Published plugin = the Deno plugin's 15 rules plus single-capital-type-params; repo-only rules live in scripts/project-lint.ts (no-disable-comments, no-non-ts-imports; camelcase is id-match)
 ---
 
 The user decided the published plugin contains exactly the 15 rules of
-`cunarist/deno-lint-plugin-explicit-types`, nothing added or removed.
-`tests/configs.test.ts` pins that list.
+`cunarist/deno-lint-plugin-explicit-types`, nothing removed. The one later
+addition, also the user's decision, is `single-capital-type-params` in
+`naming` (16 rules). `tests/configs.test.ts` pins that list.
 
 A rule this repo needs only for its own lint parity goes in
 `scripts/project-lint.ts`: a repo-local plugin, `meta.name` `project`, loaded in

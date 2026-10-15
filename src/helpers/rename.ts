@@ -254,15 +254,18 @@ export interface Rename {
  * object's shape nor what other files import changes.
  *
  * Returns `null` when the declaration is not a scoped variable, or when
- * `name` already appears in the file and the rename could capture or shadow it.
+ * `name` already appears in the text of `within`, the whole file unless a
+ * narrower node is given, and the rename could capture or shadow it.
  */
 export function renameFix(
   source: ExplicitSourceCode,
   identifier: TSESTree.Identifier,
   name: string,
+  within?: TSESTree.Node,
 ): Rename | null {
   const variables = variablesOf(source, identifier);
-  if (variables.length === 0 || appearsIn(source.text, name)) {
+  const text = within === undefined ? source.text : source.text.slice(...within.range);
+  if (variables.length === 0 || appearsIn(text, name)) {
     return null;
   }
   const targets = new Map<number, TSESTree.Node>();

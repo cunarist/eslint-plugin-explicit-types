@@ -38,7 +38,9 @@ so you never have to resolve it to find out.
   should still be PascalCase.
 - Only declaration names are checked. Uses of a badly-named type imported from
   another module are not reported — there is no cross-file resolution.
-- Type parameters, variables, functions, and properties are out of scope. The
+- Type parameters are
+  [`single-capital-type-params`](single-capital-type-params.md)'s concern.
+  Variables, functions, and properties are out of scope. The
   value side was Deno's built-in `camelcase`; under Oxlint, the built-in
   `id-match` rule with a no-snake_case pattern covers it.
 

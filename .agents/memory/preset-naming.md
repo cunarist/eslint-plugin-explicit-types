@@ -1,10 +1,11 @@
 ---
-description: naming preset: PascalCase types, UPPER_SNAKE unions, no union-shaped keys, no enum; camelcase is Oxlint id-match
+description: naming preset: PascalCase types, single capital type params, UPPER_SNAKE unions, no union-shaped keys, no enum; camelcase is Oxlint id-match
 ---
 
 | Rule                         | Src | Enforces                                                    |
 | ---------------------------- | --- | ----------------------------------------------------------- |
 | `pascal-case-types`          | mem | Class, interface, type alias, and enum names are PascalCase |
+| `single-capital-type-params` | new | Type parameters are one capital letter, `T`, `K`, `V`       |
 | `upper-snake-string-unions`  | mem | String literals in any union type are UPPER_SNAKE_CASE      |
 | `no-upper-snake-object-keys` | new | No UPPER_SNAKE_CASE object keys or type members             |
 | `no-enum`                    | new | No `enum` — use an UPPER_SNAKE_CASE string union            |
@@ -30,10 +31,19 @@ reported unquoted `snake_case` keys. Oxlint ships no `camelcase` rule; this repo
 uses the built-in `id-match` instead (see [[lint-parity-with-deno]]), with
 `properties: false`, so unquoted `snake_case` object keys are no longer reported
 here. That is accepted rather than widening this rule, which would reopen the
-foreign-vocabulary problem above. Nothing is added to the published plugin: it
-carries exactly the 15 rules of the Deno plugin.
+foreign-vocabulary problem above. Nothing is added to the published plugin for this: it
+carries the 15 rules of the Deno plugin plus `single-capital-type-params`.
 
 `upper-snake-string-unions` visits `TSUnionType` rather than
 `TSTypeAliasDeclaration`, so a union written inline on an interface member
 (`type: "Directory" | "File"`) is held to the same casing as an aliased one.
 Checking only aliases left that entire shape unguarded.
+
+`single-capital-type-params` (user request, after the port) checks every
+`TSTypeParameterDeclaration`'s params; `infer` and mapped keys are left to
+`no-conditional-types` and `no-mapped-types`. Several parameters may be any
+distinct capitals in any order. No autofix, since merged interfaces must agree
+on parameter names: a suggestion renames within the owning declaration to the
+name's initial (past a `T` prefix), else `T`, `U`, `V`, `W`, then A-Z, skipping
+any capital that appears as a word in the declaration's text (`renameFix`'s
+`within` argument).

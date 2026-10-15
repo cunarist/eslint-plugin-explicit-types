@@ -50,6 +50,7 @@ export default [ts, plugin.configs.concrete];
 | [no-utility-types](docs/rules/no-utility-types.md)                     | Disallow the built-in TypeScript utility types                            | 🧱 |
 | [pascal-case-types](docs/rules/pascal-case-types.md)                   | Enforce PascalCase names for classes, interfaces, type aliases, and enums | 🔤 |
 | [require-return-type](docs/rules/require-return-type.md)               | Require explicit return types on named functions                          | 🧱 |
+| [single-capital-type-params](docs/rules/single-capital-type-params.md) | Require type parameters to be named with a single capital letter          | 🔤 |
 | [upper-snake-string-unions](docs/rules/upper-snake-string-unions.md)   | Enforce UPPER_SNAKE_CASE for string literal union members                 | 🔤 |
 
 <!-- end auto-generated rules list -->

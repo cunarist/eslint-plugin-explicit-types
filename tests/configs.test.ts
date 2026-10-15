@@ -5,10 +5,12 @@ import plugin from "#plugin";
 const NAMESPACE = "@cunarist/explicit-types";
 
 /**
- * The rules of the Deno plugin this one ports, and nothing else. A repo-only
- * rule goes in `scripts/project-lint.ts`, never in the published plugin.
+ * Every published rule: the 15 of the Deno plugin this one ports, plus
+ * `single-capital-type-params`, the first rule added after the port. A
+ * repo-only rule goes in `scripts/project-lint.ts`, never in the published
+ * plugin.
  */
-const DENO_RULES: string[] = [
+const PUBLISHED_RULES: string[] = [
   "no-conditional-types",
   "no-enum",
   "no-index-signatures",
@@ -23,18 +25,19 @@ const DENO_RULES: string[] = [
   "no-utility-types",
   "pascal-case-types",
   "require-return-type",
+  "single-capital-type-params",
   "upper-snake-string-unions",
 ];
 
 describe("plugin.rules", () => {
-  it("holds exactly the 15 rules of the Deno plugin", () => {
-    expect(Object.keys(plugin.rules ?? {}).toSorted()).toEqual(DENO_RULES);
+  it("holds exactly the 16 published rules", () => {
+    expect(Object.keys(plugin.rules ?? {}).toSorted()).toEqual(PUBLISHED_RULES);
   });
 });
 
 describe("plugin.configs.all", () => {
   it("turns on every rule in the plugin", () => {
-    expect(Object.keys(plugin.configs.all.rules ?? {})).toHaveLength(15);
+    expect(Object.keys(plugin.configs.all.rules ?? {})).toHaveLength(16);
     const ruleIds = Object.keys(plugin.rules ?? {}).map((id) => `${NAMESPACE}/${id}`);
     expect(Object.keys(plugin.configs.all.rules ?? {}).toSorted()).toEqual(ruleIds.toSorted());
   });
