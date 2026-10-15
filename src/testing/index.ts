@@ -128,6 +128,7 @@ export function testRule(name: string, rule: ExplicitRule, cases: RuleCases): vo
         invalid: cases.invalid.map((test) => ({
           code: test.code,
           errors: oxlintErrors(test.errors),
+          ...(test.output === undefined ? {} : { output: test.output }),
         })),
       });
     });
@@ -146,6 +147,9 @@ function oxlintErrors(
       return error;
     }
     const shifted: OxlintRuleTester.Error = { ...oxlintMessage(error) };
+    if (error.suggestions !== undefined) {
+      shifted.suggestions = oxlintSuggestions(error.suggestions);
+    }
     if (error.line !== undefined) {
       shifted.line = error.line;
     }
@@ -159,6 +163,28 @@ function oxlintErrors(
       shifted.endColumn = error.endColumn - 1;
     }
     return shifted;
+  });
+}
+
+/** ESLint's expected suggestions, in the shape Oxlint reads. */
+function oxlintSuggestions(
+  suggestions: EslintRuleTester.SuggestionOutput[] | null,
+): OxlintRuleTester.ErrorSuggestion[] | null {
+  if (suggestions === null) {
+    return null;
+  }
+  return suggestions.map((suggestion) => {
+    const expected: OxlintRuleTester.ErrorSuggestion = { output: suggestion.output };
+    if (suggestion.messageId !== undefined) {
+      expected.messageId = suggestion.messageId;
+    }
+    if (suggestion.desc !== undefined) {
+      expected.desc = suggestion.desc;
+    }
+    if (suggestion.data !== undefined) {
+      expected.data = Object.fromEntries(stringEntries(suggestion.data));
+    }
+    return expected;
   });
 }
 

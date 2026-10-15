@@ -64,6 +64,51 @@ testRule("no-utility-types", noUtilityTypesRule, {
     // highlights the whole type reference
     { code: highlighted, errors: [{ ...UTILITY, ...spanOf(highlighted, "Partial<Article>") }] },
 
+    // fixes Readonly over an array or tuple to the readonly operator
+    {
+      code: "type A = Readonly<string[]>;",
+      output: "type A = readonly string[];",
+      errors: [UTILITY],
+    },
+    {
+      code: "function f(xs: Readonly<[string, number]>): void {}",
+      output: "function f(xs: readonly [string, number]): void {}",
+      errors: [UTILITY],
+    },
+    {
+      code: "type A = Readonly<string[]> | null;",
+      output: "type A = readonly string[] | null;",
+      errors: [UTILITY],
+    },
+
+    // parenthesizes the readonly operator where it would bind too loosely
+    {
+      code: "type A = Readonly<string[]>[];",
+      output: "type A = (readonly string[])[];",
+      errors: [UTILITY],
+    },
+    {
+      code: 'type A = Readonly<string[]>["length"];',
+      output: 'type A = (readonly string[])["length"];',
+      errors: [UTILITY],
+    },
+
+    // fixes a string intrinsic over a string literal to the literal it yields
+    { code: 'type A = Uppercase<"draft">;', output: 'type A = "DRAFT";', errors: [UTILITY] },
+    { code: "type A = Lowercase<'DRAFT'>;", output: 'type A = "draft";', errors: [UTILITY] },
+    { code: 'type A = Capitalize<"draft">;', output: 'type A = "Draft";', errors: [UTILITY] },
+    { code: 'type A = Uncapitalize<"Draft">;', output: 'type A = "draft";', errors: [UTILITY] },
+
+    // leaves alone what syntax cannot rewrite exactly
+    { code: "type A = ns.Readonly<string[]>;", errors: [UTILITY] },
+    { code: "type A = Readonly</* list */ string[]>;", errors: [UTILITY] },
+    { code: "type A = Uppercase<string>;", errors: [UTILITY] },
+    { code: 'type A = Uppercase<"draft" | "done">;', errors: [UTILITY] },
+    { code: "type A = Uppercase<`draft`>;", errors: [UTILITY] },
+
+    // leaves a union member alone, so the result cannot break upper-snake-string-unions
+    { code: 'type A = Lowercase<"DRAFT"> | "DONE";', errors: [UTILITY] },
+
     // names the utility in the message
     {
       code: "type A = ReturnType<B>;",
