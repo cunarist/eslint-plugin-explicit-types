@@ -28,11 +28,12 @@ so they never reach package consumers.
   become patterns, `"#components/*": "./src/components/*"`.
 - Aliases point only at direct subfolders of `src/` (`#helpers` →
   `./src/helpers/index.ts`, or a `#x/*` pattern inside one such folder).
-  Never at `src/` itself (`src/index.ts`), a deeper folder, or anything
+  Never at `src/` itself, a deeper folder, or anything
   outside `src/` (`scripts/`, root files); those are imported by relative
-  path (`vite.config.ts` → `./src/index.ts`, `./scripts/project-lint.ts`).
+  path (`vite.config.ts` → `./src/plugin/index.ts`, `./scripts/project-lint.ts`).
   Rule from 2026-10-16. That is why the plugin lives in `src/plugin/index.ts`
-  (`#plugin`) and `src/index.ts` only re-exports it: `tests/` would otherwise
+  (`#plugin`), which is also the pack entry, and there is no `src/index.ts`:
+  `tests/` would otherwise
   need a `../src` import, which `import/no-relative-parent-imports` forbids
   and no override may excuse ([[lint-overrides-policy]]).
 - Aliases point at `.ts` files only. There is no `#package` alias

@@ -32,8 +32,9 @@ and follow it before reasoning or responding.
   registered in `src/rules/index.ts`. There are no per-preset folders.
 - Each rule file has one named export with a `Rule` suffix, e.g.
   `export const noKeyofRule`. The package's only default export is the plugin,
-  written in `src/plugin/index.ts` (`#plugin`) and re-exported by the entry
-  `src/index.ts`; `scripts/project-lint.ts` default-exports its own.
+  written in `src/plugin/index.ts` (`#plugin`), which is also the `vp pack`
+  entry (built to `dist/index.js`); there is no `src/index.ts`.
+  `scripts/project-lint.ts` default-exports its own.
 - Configs are lists of rule ids in `src/plugin/index.ts`, since a rule can belong to
   several. `all` is built from the registry.
 - Shared code comes through `#helpers`, `#testing`, `#rules`, and `#plugin`,
@@ -48,7 +49,8 @@ and follow it before reasoning or responding.
 - Rules use ESLint's standard `create` API, typed `ExplicitRule`, with every
   visitor's node parameter annotated. No runtime dependencies.
 - Unit tests sit next to the code as `*.test.ts`. Regression and integration
-  tests go in `tests/` and use only the plugin, `#plugin`, which the entry re-exports unchanged.
+  tests go in `tests/` and import code only through `#` aliases (the plugin
+  as `#plugin`), never `../` paths.
 - Every rule test runs under both ESLint's and Oxlint's `RuleTester` through
   `testRule`, called exactly once per rule file with every case in its `valid`
   and `invalid` lists. Write cases once, in ESLint's shape and 1-based columns.
@@ -66,7 +68,7 @@ and follow it before reasoning or responding.
   `reportUnusedDisableDirectives` (a directive naming
   `project/no-disable-comments`, which that rule skips). Keep all three.
 - `vite.config.ts` lists no rule by name: its `rules` spreads
-  `configs.all.rules` from `src/index.ts` and `configs.project.rules` from
+  `configs.all.rules` from `src/plugin/index.ts` and `configs.project.rules` from
   `scripts/project-lint.ts`, which holds the repo's own rule list (Deno parity,
   extras, opt-outs, built-in ids included). Only `overrides`, being file globs,
   stays in `vite.config.ts`.
