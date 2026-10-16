@@ -15,22 +15,7 @@ Decided 2026-10-14 for all repos.
   same file `vp pack` builds), never `../` paths. No overrides for `tests/`. `vp test tests` runs just these.
 - **No in-source tests** (`import.meta.vitest`).
 - **`scripts/` gets no tests** (2026-10-15): it is repo tooling, not
-  production code (`project-lint.ts`, `decorators.ts`, `lit-check.ts`,
-  release helpers).
+  production code (`project-lint*.ts`).
 - Test files follow every lint rule; no relaxed overrides for tests.
 
-## Migrating Deno tests
-
-`Deno.test` suites were converted by a codemod
-(`~/.local/share/deno-migration/src/convert.ts` on the user's machine), then
-its TODOs finished by hand. Watch for:
-
-- `@std/assert` → `expect` (`assertEquals` → `toStrictEqual` or `toBe`,
-  `assertThrows` → `toThrow`, `assertRejects` → `rejects.toThrow`);
-- `Deno.*` file, env, and process APIs → `node:fs`, `process.env`,
-  `node:child_process`;
-- `t.step` → nested `describe`/`it`;
-- sanitizer options, which Vitest doesn't have.
-
-A migration PR must keep every test case; a dropped case is lost coverage.
 Tests must pass locally before any push.

@@ -1,5 +1,5 @@
 ---
-description: Shared code comes through # aliases in package.json imports, each directory's entry is index.ts, barrels keep imports few; never ../ out of a directory
+description: Shared code comes through # aliases in package.json imports, each src/ subfolder's entry is index.ts, barrels keep imports few; never ../ out of a directory; scripts/ is flat
 ---
 
 ## `#` aliases
@@ -24,8 +24,6 @@ Node, TypeScript, Vite, Vite+'s config bundler, and Oxlint's plugin loader
 all resolve them natively, so `.ts` source runs unbuilt. `vp pack` inlines them,
 so they never reach package consumers.
 
-- Deno's trailing-slash mappings (`"#components/"`) don't exist in Node; they
-  become patterns, `"#components/*": "./src/components/*"`.
 - Aliases point only at direct subfolders of `src/` (`#helpers` →
   `./src/helpers/index.ts`, or a `#x/*` pattern inside one such folder).
   Never at `src/` itself, a deeper folder, or anything
@@ -45,8 +43,10 @@ so they never reach package consumers.
 
 ## `index.ts` entries and barrels
 
-- Every directory's entry file is `index.ts`, never `mod.ts` (decided
-  2026-10-12; import-check's `enforce-mod-file` now requires `index.ts`).
+- Every `src/` subfolder's entry file is `index.ts`, never `mod.ts` (decided
+  2026-10-12). `index.ts` stands for a folder only inside `src/`
+  (2026-10-16): `scripts/` is flat, with no subfolders and no `index.ts`, and
+  its files are imported directly by name (`./scripts/project-lint.ts`).
 - A directory used from outside exposes its API through its `index.ts`
   barrel, and callers import the barrel (`#ui`), not files inside it
   (`no-barrel-bypass`).
