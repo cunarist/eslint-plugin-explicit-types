@@ -57,8 +57,9 @@
   },
   "imports": {
     "#helpers": "./src/helpers/index.ts",
-    "#plugin": "./src/index.ts",
-    "#testing": "./src/testing/index.ts"
+    "#testing": "./src/testing/index.ts",
+    "#rules": "./src/rules/index.ts",
+    "#plugin": "./src/plugin/index.ts"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
