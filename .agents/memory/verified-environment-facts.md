@@ -29,12 +29,11 @@ Checked empirically against Oxlint 1.87 (Vite+ 1.1.0), ESLint 9.39, and
 - Oxlint's `RuleTester` counts **columns from 0**, ESLint's from 1.
 - ESLint's `RuleTester` parses as TypeScript only when given a `.ts` filename
   with `@typescript-eslint/parser`; the harness sets both.
-- The type systems do not meet: `@eslint/core`'s `RuleDefinition` is not
-  assignable to Oxlint's `Rule` (`meta.docs` lacks an index signature; the
-  `sourceCode` shapes differ), and `@typescript-eslint/utils`' `RuleModule` fits
-  neither. Oxlint runs ESLint rules unchanged at runtime; the harness bridges the
-  types in one documented place.
+- The type systems do not meet: Oxlint runs ESLint rules unchanged at
+  runtime, but the types don't line up. See [[rule-typing-explicitrule]] and
+  [[plugin-dual-ruletester]].
 - Oxlint loads a `.ts` plugin from a relative path directly on Node 24, `#`
-  imports and a JSON import of `package.json` included.
+  imports included. It could also load a JSON import of `package.json`, but
+  this repo bans that import ([[ts-only-files-and-imports]]).
 - Oxlint and Oxfmt respect `.gitignore`; that is the only reason `dist/` and
   `node_modules/` are not linted.
