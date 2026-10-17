@@ -23,9 +23,11 @@ lint: {
   `max-lines-per-function` 50, `max-classes-per-file` 1,
   `max-dependencies` 10, `max-params` 3, `complexity` 20. Don't raise them to
   make code pass; refactor (see [[lint-overrides-policy]]). `max-lines` is
-  never turned off, `scripts/` included: split the file (2026-10-16). This
-  repo turns off `max-lines-per-function`,
-  `typescript/prefer-readonly-parameter-types`, and
+  never turned off, `scripts/` included: split the file (2026-10-16).
+  `max-lines-per-function` is on at 50 (2026-10-17): split a long `create()`
+  or visitor into named module-level helpers that take context, source, or
+  plain data explicitly. This repo turns off
+  `typescript/prefer-readonly-parameter-types` and
   `typescript/no-unsafe-enum-comparison` because AST visitors fight them; do
   not add new opt-outs without asking the user.
 - **`vite.config.ts` names no rule.** Every rule id, built-in ones included,
