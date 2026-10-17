@@ -11,13 +11,13 @@ unbuilt. `vp pack` inlines them, so they never reach package consumers.
 
 One rule for every file, never tied to folder or file names (user rule
 2026-10-17; it replaces the earlier "aliases only point at direct `src/`
-subfolders" rule and the "import-check checks only aliased folders" scope):
+subfolders" rule and the "the modules plugin checks only aliased folders" scope):
 
 - **An alias may point anywhere** and owns its target. An alias to a
   folder's `index.ts` owns that folder and everything below it; an alias to
   any other file owns only that file.
 - **No overlap.** No file may be owned by 2 aliases: no alias inside another
-  alias's area, and no 2 aliases with the same target. import-check's
+  alias's area, and no 2 aliases with the same target. the modules plugin's
   `enforce-layer-order` reports it once at the top of every file 2 aliases
   claim. Fix by merging the aliases or moving files apart.
 - **Outside an area, only the exact alias reaches it.** A deeper alias
@@ -86,7 +86,7 @@ Relative imports are written with the `.ts` extension.
   `jsPlugins` list keeps `./src/plugin/index.ts` as a path string.
 - `../` is caught by Oxlint's `import/no-relative-parent-imports` in
   `configs.project`, with no override. The bypass checks wait for
-  import-check's npm release ([[lint-parity-with-deno]]).
-- `imports` is already in import-check's layer order (`#plugin`, `#rules`,
+  the modules plugin's npm release ([[lint-parity-with-deno]]).
+- `imports` is already in the modules plugin's layer order (`#plugin`, `#rules`,
   `#testing`, `#helpers`: each may import only the ones below it), checked
-  against import-check 0.10.0 on 2026-10-17 with no other finding.
+  against eslint-plugin-modules 0.10.0 on 2026-10-17 with no other finding.
