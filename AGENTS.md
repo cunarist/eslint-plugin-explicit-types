@@ -47,9 +47,10 @@ and follow it before reasoning or responding.
   free. `../` is banned in every file. Files no alias owns (`scripts/`,
   `tests/`, `vite.config.ts`) need no alias and import `./` paths freely.
   `jsPlugins` entries stay path strings. Imports
-  name `.ts` modules, or `.js` package subpaths; `project/no-asset-imports`
-  fails any other extension in the last path segment (CSS, JSON, SVG, ...),
-  a query suffix like `?raw`, or import attributes. Bare package names, `#`
+  name `.ts` modules, or `.js`, `.mts`, `.mjs` package subpaths;
+  `project/no-asset-imports` fails any other extension in the last path
+  segment (CSS, JSON, SVG, `.jsx`, `.tsx`, ...), a query suffix like `?raw`,
+  or import attributes. Bare package names, `#`
   aliases, and `node:` builtins pass.
 - `meta.name` and `meta.version` are written out in `src/plugin/index.ts`; a release
   bumps them with `package.json`, and `tests/package-meta.test.ts` checks both.
