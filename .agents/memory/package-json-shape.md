@@ -24,7 +24,7 @@ order inside `imports`, which can matter (below).
   "scripts": { "docs": "eslint-doc-generator" },
   "dependencies": {},
   "devDependencies": { "vite-plus": "^1.1.0" },
-  "engines": { "node": ">=22" },
+  "engines": { "node": ">=22.18" },
   "eslint-doc-generator": {/* tool options that can only live here */},
 }
 ```

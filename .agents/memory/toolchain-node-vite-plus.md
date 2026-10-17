@@ -1,10 +1,10 @@
 ---
-description: Node.js 22+ with Vite+ (vp) and npm; only package.json, tsconfig.json, vite.config.ts plus a committed package-lock.json
+description: Node.js 22.18+ with Vite+ (vp) and npm; only package.json, tsconfig.json, vite.config.ts plus a committed package-lock.json
 ---
 
 ## The stack
 
-- **Runtime:** Node.js 22 or newer. `engines` is `{ "node": ">=22" }` and
+- **Runtime:** Node.js 22.18 or newer. `engines` is `{ "node": ">=22.18" }` and
   nothing else. The publish job uses Node 24 (LTS).
 - **Bun is not supported** (dropped 2026-10-15). No Bun CI legs, docs, or
   runtime branches. Oxlint's `RuleTester` refuses to run under Bun anyway, and
