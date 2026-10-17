@@ -20,9 +20,9 @@ removed. `tests/configs.test.ts` pins the rule list.
   to `naming`). Never
   slip a new rule into a port PR.
 - **Differences forced by Node** are allowed and documented: `deno.json`
-  `imports` → `package.json` `imports`, `mod.ts` → `index.ts` (the modules plugin's
-  `enforce-mod-file` keeps its name but now requires `index.ts`), Deno's
-  `message` + `hint` → one ESLint-style message plus suggestions.
+  `imports` → `package.json` `imports`, `mod.ts` → `index.ts` (the modules
+  plugin's `enforce-mod-file` keeps its name but now requires `index.ts`),
+  Deno's `message` + `hint` → one ESLint-style message plus suggestions.
 - **Anything else that can't be 1:1** is flagged to the user in the PR and
   `.agents/memory`, not decided quietly. Open examples: deno-import-check's CLI
   (alias checks) was not ported; renaming `enforce-mod-file`; whether lit
