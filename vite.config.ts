@@ -1,7 +1,8 @@
 import { defineConfig } from "vite-plus";
 
+import explicitTypes from "#plugin";
+
 import projectLint from "./scripts/project-lint.ts";
-import explicitTypes from "./src/plugin/index.ts";
 
 export default defineConfig({
   lint: {
