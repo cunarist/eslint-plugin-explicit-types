@@ -11,7 +11,9 @@ plain `.ts`. Build output in a gitignored folder is the only JS.
 the flag stays explicit), `noUncheckedIndexedAccess`,
 `noPropertyAccessFromIndexSignature`, `noImplicitReturns`, `noUnusedLocals`,
 `noUnusedParameters`, `noImplicitOverride`, `noFallthroughCasesInSwitch`,
-`erasableSyntaxOnly`, plus the mechanical `verbatimModuleSyntax`,
+`erasableSyntaxOnly`, with `allowUnreachableCode` and `allowUnusedLabels`
+set to `false` (user decision, 2026-10-18; they were on in the Deno setup),
+plus the mechanical `verbatimModuleSyntax`,
 `allowImportingTsExtensions`, and `noEmit` (packages also keep `declaration`
 and `isolatedDeclarations`). `exactOptionalPropertyTypes` is off everywhere:
 write `{ key: maybeUndefined }` rather than leaving the key out to please it.

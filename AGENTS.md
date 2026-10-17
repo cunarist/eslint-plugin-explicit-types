@@ -30,7 +30,8 @@ and follow it before reasoning or responding.
 - `tsconfig.json` enables exactly `strict`, `noUncheckedIndexedAccess`,
   `noPropertyAccessFromIndexSignature`, `noImplicitReturns`, `noUnusedLocals`,
   `noUnusedParameters`, `noImplicitOverride`, `noFallthroughCasesInSwitch`,
-  and `erasableSyntaxOnly`, plus `verbatimModuleSyntax`,
+  and `erasableSyntaxOnly`, sets `allowUnreachableCode` and
+  `allowUnusedLabels` to `false`, plus `verbatimModuleSyntax`,
   `allowImportingTsExtensions`, `noEmit`, `declaration`, and
   `isolatedDeclarations`. `exactOptionalPropertyTypes` stays off.
 - Every `src/` subfolder's entry file is `index.ts`; `scripts/` is flat, with
