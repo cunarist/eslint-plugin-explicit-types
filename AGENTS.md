@@ -38,21 +38,30 @@ and follow it before reasoning or responding.
   `scripts/project-lint.ts` default-exports its own.
 - Configs are lists of rule ids in `src/plugin/index.ts`, since a rule can
   belong to several. `all` is built from the registry.
-- Shared code comes through `#helpers`, `#testing`, `#rules`, and `#plugin`,
-  never a relative path out of a directory. Aliases point only at direct
-  subfolders of `src/`, never at `src/` itself, deeper folders, `scripts/`,
-  or root files; `vite.config.ts` imports those by relative path. Imports
-  name `.ts` modules, or `.js` package subpaths; `project/no-asset-imports`
-  fails any other extension in the last path segment (CSS, JSON, SVG, ...),
-  a query suffix like `?raw`, or import attributes. Bare package names, `#`
-  aliases, and `node:` builtins pass.
+- Shared code comes through `#helpers`, `#testing`, `#rules`, and `#plugin`. An
+  alias owns its target: a folder's `index.ts` owns that folder and everything
+  below it, any other file owns only itself. No file is owned by 2 aliases (no
+  alias inside another's area, no 2 aliases with one target). Outside an area
+  only the exact alias reaches it, never a deeper alias specifier or a relative
+  path; inside it, `./` siblings and subfolders are free. `../` is banned in
+  every file. Files no alias owns (`scripts/`, `tests/`, `vite.config.ts`) need
+  no alias and import `./` paths freely. `jsPlugins` entries stay path strings.
+  Imports name `.ts` modules, or `.js`, `.mts`, `.mjs` package subpaths;
+  `project/no-asset-imports` fails any other extension in the last path segment
+  (CSS, JSON, SVG, `.jsx`, `.tsx`, ...), a query suffix like `?raw`, or import
+  attributes. Bare package names, `#` aliases, and `node:` builtins pass.
+- Local convention, stricter than the general alias rule and kept out of
+  plugin code and docs: in this repo, `imports` aliases point only at a
+  direct subfolder of `src/` (`"#helpers": "./src/helpers/index.ts"`). Code
+  outside `src/` imports its own files by `./` relative paths. See
+  `imports-aliases-barrels`.
 - `meta.name` and `meta.version` are written out in `src/plugin/index.ts`; a
   release bumps them with `package.json`, and `tests/package-meta.test.ts`
   checks both.
 - Rules use ESLint's standard `create` API, typed `ExplicitRule`, with every
-  visitor's node parameter annotated. The only dependency is `@eslint/core`,
-  for the types in the published declarations; nothing is imported at
-  runtime.
+  visitor's node parameter annotated. `@eslint/core` is a real runtime
+  dependency, in `dependencies` and installed with the plugin: the published
+  `.d.ts` imports its types, though the bundled JS does not import it.
 - Unit tests sit next to the code as `*.test.ts`. Regression and integration
   tests go in `tests/` and import code only through `#` aliases (the plugin
   as `#plugin`), never `../` paths.

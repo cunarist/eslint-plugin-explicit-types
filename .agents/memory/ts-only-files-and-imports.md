@@ -1,31 +1,33 @@
 ---
-description: Every file is .ts (no js/mjs/cjs/jsx/tsx, configs included); imports are .ts or package .js subpaths, never CSS/JSON/SVG or import attributes
+description: Every file is .ts (no js/mjs/cjs/jsx/tsx, configs included); imports are .ts or package .js/.mts/.mjs subpaths, never CSS/JSON/SVG/JSX/TSX or import attributes
 ---
 
 The user's rule, from the Deno days and restated for Node (2026-10-12): "No
 JS, not even JSX/TSX, only TS." Source, scripts, tests, and configs are all
 plain `.ts`. Build output in a gitignored folder is the only JS.
 
-`tsconfig.json`: no `allowJs`, no `jsx`, and the template's strict flags
+`tsconfig.json`: no `allowJs`, no `jsx`, `"strict": true` written out (TS 6
+defaults to it, but the flag stays explicit), and the template's strict flags
 (`verbatimModuleSyntax`, `erasableSyntaxOnly`, `allowImportingTsExtensions`,
 `isolatedDeclarations` in packages, `exactOptionalPropertyTypes`,
 `noUncheckedIndexedAccess`). If a tool or framework seems to need a JS or TSX
 file, stop and flag it instead of adding one.
 
-## Only module imports (2026-10-14, widened 2026-10-16)
+## No asset imports (2026-10-14, widened 2026-10-16 and 2026-10-17)
 
 `project/no-asset-imports` (in `scripts/project-lint-modules.ts`, renamed
 from `no-non-ts-imports` on 2026-10-16) fails:
 
 - a relative, absolute, `#`, or package-subpath specifier whose last segment
-  has an extension other than `.ts` or `.js`: `.css`, `.json`, `.svg`,
-  `.mjs`, `.tsx`;
+  has an extension other than `.ts`, `.js`, `.mts`, or `.mjs`: `.css`,
+  `.json`, `.svg`, `.jsx`, `.tsx`, and every other asset;
 - any `?query` suffix (`?raw`, `?url`, `?inline`);
 - any import attributes (`with { type: "json" }`, `with { type: "text" }`).
 
-`.js` is allowed only for package subpaths that ship as `.js`
-(`lit/decorators.js`); this repo's own files are all `.ts`. Bare packages,
-`#` aliases, and `node:` builtins pass.
+`.js`, `.mts`, and `.mjs` are allowed (user decision, 2026-10-17) for package
+subpaths such as `lit/decorators.js` or `pdfjs-dist/legacy/build/pdf.mjs`;
+this repo's own files are still `.ts` only. `.jsx` and `.tsx` stay banned.
+Bare packages, `#` aliases, and `node:` builtins pass.
 
 ```ts
 import data from "./scenes.json" with { type: "json" }; // no

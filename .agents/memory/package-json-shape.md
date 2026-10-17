@@ -29,7 +29,7 @@ order inside `imports`, which can matter (below).
 }
 ```
 
-The `imports` key order can carry meaning: import-check's
+The `imports` key order can carry meaning: the modules plugin's
 `enforce-layer-order` reads it as the layer order. Never reorder it casually.
 
 ## Fields
