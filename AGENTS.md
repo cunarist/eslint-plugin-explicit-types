@@ -55,9 +55,9 @@ and follow it before reasoning or responding.
 - `meta.name` and `meta.version` are written out in `src/plugin/index.ts`; a release
   bumps them with `package.json`, and `tests/package-meta.test.ts` checks both.
 - Rules use ESLint's standard `create` API, typed `ExplicitRule`, with every
-  visitor's node parameter annotated. The only dependency is `@eslint/core`,
-  for the types in the published declarations; nothing is imported at
-  runtime.
+  visitor's node parameter annotated. `@eslint/core` is a real runtime
+  dependency, in `dependencies` and installed with the plugin: the published
+  `.d.ts` imports its types, though the bundled JS does not import it.
 - Unit tests sit next to the code as `*.test.ts`. Regression and integration
   tests go in `tests/` and import code only through `#` aliases (the plugin
   as `#plugin`), never `../` paths.

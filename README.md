@@ -8,7 +8,9 @@ Install with `npm install --save-dev @cunarist/eslint-plugin-explicit-types`. Re
 import plugin from "@cunarist/eslint-plugin-explicit-types";
 import { defineConfig } from "vite-plus";
 const rules = { ...plugin.configs.concrete.rules };
-export default defineConfig({ lint: { jsPlugins: [plugin.meta.name], rules } });
+export default defineConfig({
+  lint: { jsPlugins: ["@cunarist/eslint-plugin-explicit-types"], rules },
+});
 ```
 
 ```ts

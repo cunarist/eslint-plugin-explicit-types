@@ -21,8 +21,9 @@ Why not the alternatives, all checked:
 - Oxlint's `Rule` type would make the package depend on `@oxlint/plugins`.
 
 The public `.d.ts` imports `ConfigObject` and `Plugin` from `@eslint/core`,
-so `@eslint/core` is in `dependencies` even though `dist/index.js` never
-imports it ([[package-json-shape]]).
+so `@eslint/core` is a real runtime dependency in `dependencies`, installed
+with the plugin, even though `dist/index.js` does not import it
+([[package-json-shape]]).
 
 Messages and `messageId` follow [[plugin-messages-and-fixes]]; tests follow
 [[plugin-dual-ruletester]].
