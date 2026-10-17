@@ -1,5 +1,5 @@
 ---
-description: What this repo's Deno lint ran (tags, include list, import-check); the mapping is in PR 1; three import-check rules wait for the npm plugin
+description: What this repo's Deno lint ran (tags, include list, modules); the mapping is in PR 1; three eslint-plugin-modules rules wait for the npm plugin
 ---
 
 This repo's own Deno lint setup, which `configs.project` in
@@ -16,10 +16,10 @@ in [[lint-parity-never-shrinks]]. `camelcase` became `id-match`
 ([[naming-id-match]]). `maxWarnings: 0` keeps Deno's rule that every
 diagnostic fails.
 
-**Pending, not accepted:** import-check's `prefer-alias-import`,
+**Pending, not accepted:** the modules plugin's `prefer-alias-import`,
 `no-barrel-bypass`, and `no-relative-bypass` have no equivalent here yet. They
-come back when `@cunarist/eslint-plugin-import-check` is published and this
-repo adds it to `jsPlugins` with its config. The rest of import-check is
+come back when `@cunarist/eslint-plugin-modules` is published and this
+repo adds it to `jsPlugins` with its config. The rest of modules is
 covered: `no-self-import`, `no-absolute-import`, and `no-parent-import` map to
 `import/*` rules, and `import/no-cycle` replaces its CLI's cycle check.
 
