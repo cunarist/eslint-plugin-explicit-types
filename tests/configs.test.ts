@@ -5,8 +5,8 @@ import plugin from "#plugin";
 const NAMESPACE = "@cunarist/explicit-types";
 
 /**
- * Every published rule: the 15 of the Deno plugin this one ports, plus
- * `single-capital-type-params`, the first rule added after the port. A
+ * Every published rule: the 15 original rules, plus
+ * `single-capital-type-params`, the first rule added since. A
  * repo-only rule goes in `scripts/project-lint.ts`, never in the published
  * plugin.
  */

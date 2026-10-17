@@ -12,7 +12,7 @@
 
 import type { ConfigObject, Plugin } from "@eslint/core";
 
-import { rules } from "./rules/index.ts";
+import { rules } from "#rules";
 
 /** The prefix of every rule id, as ESLint derives it from the package name. */
 const NAMESPACE = "@cunarist/explicit-types";

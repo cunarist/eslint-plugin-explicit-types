@@ -1,5 +1,5 @@
 ---
-description: Every file is .ts (no js/mjs/cjs/jsx/tsx, configs included) and source imports only .ts; CSS comes from HTML, JSON/SVG become .ts modules
+description: Every file is .ts (no js/mjs/cjs/jsx/tsx, configs included); imports are .ts or package .js subpaths, never CSS/JSON/SVG or import attributes
 ---
 
 The user's rule, from the Deno days and restated for Node (2026-10-12): "No
@@ -12,37 +12,33 @@ plain `.ts`. Build output in a gitignored folder is the only JS.
 `noUncheckedIndexedAccess`). If a tool or framework seems to need a JS or TSX
 file, stop and flag it instead of adding one.
 
-## Only `.ts` imports (2026-10-14)
+## Only module imports (2026-10-14, widened 2026-10-16)
 
-`project/no-non-ts-imports` (in `scripts/project-lint.ts`) fails:
+`project/no-asset-imports` (in `scripts/project-lint-modules.ts`, renamed
+from `no-non-ts-imports` on 2026-10-16) fails:
 
 - a relative, absolute, `#`, or package-subpath specifier whose last segment
-  has a non-`.ts` extension: `.css`, `.json`, `.svg`, `.js`, `.mjs`, `.tsx`;
+  has an extension other than `.ts` or `.js`: `.css`, `.json`, `.svg`,
+  `.mjs`, `.tsx`;
 - any `?query` suffix (`?raw`, `?url`, `?inline`);
 - any import attributes (`with { type: "json" }`, `with { type: "text" }`).
 
-Bare packages (`lit`, `@types/json-schema`, `lodash.debounce`), `#` aliases,
-and `node:` builtins pass. `@fortawesome/x/svgs/a.svg` fails.
+`.js` is allowed only for package subpaths that ship as `.js`
+(`lit/decorators.js`); this repo's own files are all `.ts`. Bare packages,
+`#` aliases, and `node:` builtins pass.
 
 ```ts
-import "./theme.css"; // no
 import data from "./scenes.json" with { type: "json" }; // no
 import icon from "./lock.svg?raw"; // no
-import { scenes } from "#data/scenes"; // yes: scenes.ts
+import { typeNameTail } from "#helpers"; // yes
 ```
 
 ## What to do instead
 
-- **CSS:** load it from HTML with `<link rel="stylesheet" href="...">`. Never
-  import CSS from TS, not even for Vite. (This also removes most of the
-  `import/no-unassigned-import` hits the `suspicious` category reports.)
 - **JSON data:** turn it into a `.ts` module exporting a typed constant.
-- **SVG:** a `.ts` module exporting a Lit template; see [[icons-memona-style]].
 - **`package.json` fields at runtime:** never `import pkg from
   "./package.json"` and there is no `#package` alias. Write the value out in
   `.ts` and add a test in `tests/` that reads `package.json` with `node:fs`
-  and fails on drift (the plugin repos do this for `meta.name`/`meta.version`).
+  and fails on drift (`meta.name`/`meta.version`, `tests/package-meta.test.ts`).
 - **Reading a file is not importing it.** `readFileSync` + `JSON.parse` is
   fine in tooling and tests.
-- **A tool's `.js` entry:** don't `import("pkg/cli.js")`; use the package
-  entry or spawn the package's bin ([[lit-analyzer-ts6]]).

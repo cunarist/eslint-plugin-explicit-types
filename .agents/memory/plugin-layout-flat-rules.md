@@ -5,7 +5,7 @@ description: Rules live flat in src/rules/<rule-id>.ts with a Rule-suffixed name
 Layout decided 2026-10-14, the template for every cunarist plugin repo:
 
 ```
-src/index.ts                         the plugin, its meta, and its configs
+src/plugin/index.ts                  #plugin: the plugin, its meta, its configs; the pack entry
 src/rules/index.ts                   the registry: a Map of every rule by id
 src/rules/no-keyof.ts                export const noKeyofRule
 src/rules/no-keyof.test.ts           one testRule call
@@ -22,7 +22,8 @@ scripts/project-lint.ts              repo-local lint plugin, never published
   name is its rule id, so a diagnostic maps straight to a file.
 - **Each rule file has one named export with a `Rule` suffix**
   (`noUtilityTypesRule`). The only default exports are the plugin in
-  `src/index.ts` and the plugin in `scripts/project-lint.ts`.
+  `src/plugin/index.ts` (the package entry; there is no `src/index.ts`) and the
+  plugin in `scripts/project-lint.ts`.
 - **Rule records are `Map`s** keyed by rule id (`Object.fromEntries` turns one
   into the object a plugin needs), which keeps naming rules satisfied without
   disable comments.
@@ -42,6 +43,7 @@ scripts/project-lint.ts              repo-local lint plugin, never published
   every visitor's node parameter** (`TSTypeOperator(node:
   TSESTree.TSTypeOperator): void`); a missing one becomes `any` and the
   type-aware `no-unsafe-*` rules fail.
-- `vp pack` builds only `src/index.ts`; `files` is `["dist"]`; `scripts/`
+- `vp pack` builds only `src/plugin/index.ts`, output as `dist/index.js` and
+  `dist/index.d.ts` to match `exports`; `files` is `["dist"]`; `scripts/`
   and tests never ship. `tsconfig` sets `isolatedDeclarations`, checked by
   `vp pack` only.

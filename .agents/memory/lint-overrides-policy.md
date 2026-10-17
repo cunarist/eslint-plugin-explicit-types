@@ -11,7 +11,9 @@ practice.
   off for `src/rules/index.ts`, the rule registry, which must import every
   rule. It is not a precedent for apps.
 - **`scripts/**`:** a narrow override is allowed when a tooling script truly
-  needs it, e.g. `no-console` in a CLI script.
+  needs it, e.g. `no-console` in a CLI script, never for size: an oversized
+  script is split into flat files (2026-10-16).
+- **Every override carries a one-line comment** saying why it is needed.
 - **Generated files:** list them in `ignorePatterns`, never `overrides`.
 - **Anything else needs the user's approval first.** When the user is away,
   don't add it: refactor, or leave the violation failing and log the question.
@@ -25,7 +27,7 @@ covered by the tests, inside the same migration PR.
 | ------------------------- | ------------------------------------------------------- |
 | `import/max-dependencies` | import a barrel (`#ui`) instead of many direct modules  |
 | `max-lines`               | split the file by responsibility                        |
-| `max-lines-per-function`  | extract helpers; split a long Lit template into parts   |
+| `max-lines-per-function`  | extract helpers                                         |
 | `max-classes-per-file`    | one class per file                                      |
 | `max-params`              | pass one options object                                 |
 | `prefer-set-has`          | `const K: ReadonlySet<string> = new Set([...])`, `.has` |
@@ -38,8 +40,4 @@ import { b } from "#ui/dialog";
 import { a, b } from "#ui";
 ```
 
-Measured on memona before the move (Oxlint 1.87, default limits): 921
-pedantic hits in 274 files, of which `max-lines-per-function` 206,
-`max-lines` 145, `max-classes-per-file` 59, `max-dependencies` 45 (median 14
-imports, worst 29). The user chose refactoring over raising limits or
-matching memona's old hugoalh limits (2048 lines per file, no function limit).
+The user chose refactoring over raising limits.
