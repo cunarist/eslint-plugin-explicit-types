@@ -22,8 +22,8 @@ scripts/project-lint.ts              repo-local lint plugin, never published
   name is its rule id, so a diagnostic maps straight to a file.
 - **Each rule file has one named export with a `Rule` suffix**
   (`noUtilityTypesRule`). The only default exports are the plugin in
-  `src/plugin/index.ts` (the package entry; there is no `src/index.ts`) and the plugin in
-  `scripts/project-lint.ts`.
+  `src/plugin/index.ts` (the package entry; there is no `src/index.ts`) and the
+  plugin in `scripts/project-lint.ts`.
 - **Rule records are `Map`s** keyed by rule id (`Object.fromEntries` turns one
   into the object a plugin needs), which keeps naming rules satisfied without
   disable comments.

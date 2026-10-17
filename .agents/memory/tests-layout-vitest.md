@@ -10,9 +10,10 @@ Decided 2026-10-14 for all repos.
   `src/foo/bar.test.ts`. Vitest's default include finds them; no `test`
   config needed. Packages publish only `dist/`, so colocated tests cost nothing
   in the tarball.
-- **Regression and integration tests** live in the top-level `tests/` folder
-  and import code only through `#` aliases (the plugin as `#plugin`, the
-  same file `vp pack` builds), never `../` paths. No overrides for `tests/`. `vp test tests` runs just these.
+- **Regression and integration tests** live in the top-level `tests/` folder and
+  import code only through `#` aliases (the plugin as `#plugin`, the same file
+  `vp pack` builds), never `../` paths. No overrides for `tests/`.
+  `vp test tests` runs just these.
 - **No in-source tests** (`import.meta.vitest`).
 - **`scripts/` gets no tests** (2026-10-15): it is repo tooling, not
   production code (`project-lint*.ts`).

@@ -10,10 +10,10 @@ description: The plugin is the package's only (default) export; one config per f
   `@cunarist/eslint-plugin-explicit-types` → `@cunarist/explicit-types`, so a
   rule id is `@cunarist/explicit-types/no-keyof`. Oxlint normalizes
   `meta.name` the same way (verified).
-- `meta.name` and `meta.version` are **written out** in `src/plugin/index.ts`, never
-  imported from `package.json` (no non-`.ts` imports). A release bumps both;
-  `tests/package-meta.test.ts` reads `package.json` with `node:fs` and fails
-  on drift.
+- `meta.name` and `meta.version` are **written out** in `src/plugin/index.ts`,
+  never imported from `package.json` (no non-`.ts` imports). A release bumps
+  both; `tests/package-meta.test.ts` reads `package.json` with `node:fs` and
+  fails on drift.
 
 ## Configs (2026-10-14)
 
@@ -24,8 +24,9 @@ description: The plugin is the package's only (default) export; one config per f
   rule joins it by itself. `tests/configs.test.ts` checks `all` equals the
   union of the others.
 - **No `recommended`** config and no `meta.docs.recommended` flag.
-- A config is just a list of rule ids in `src/plugin/index.ts`, so one rule may sit
-  in several configs. Each config is a flat config object carrying the plugin:
+- A config is just a list of rule ids in `src/plugin/index.ts`, so one rule may
+  sit in several configs. Each config is a flat config object carrying the
+  plugin:
 
   ```ts
   { name: `${NAMESPACE}/${preset}`, plugins: { [NAMESPACE]: basePlugin },
@@ -48,6 +49,6 @@ template declares `basePlugin: Plugin` (meta + rules) and a small
 `<Name>Plugin` interface with named configs (`<Name>Configs`) for the
 exported object; keep that shape.
 
-The repo lints itself from source: `vite.config.ts` loads `./src/plugin/index.ts` as
-a `jsPlugins` entry and spreads `configs.all.rules`, so a new rule applies to
-the code that implements it immediately.
+The repo lints itself from source: `vite.config.ts` loads
+`./src/plugin/index.ts` as a `jsPlugins` entry and spreads `configs.all.rules`,
+so a new rule applies to the code that implements it immediately.
