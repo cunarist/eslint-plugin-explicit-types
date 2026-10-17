@@ -27,6 +27,12 @@ and follow it before reasoning or responding.
 - The only config files are `package.json`, `tsconfig.json`, and
   `vite.config.ts`, plus `package-lock.json`. Only `.ts` source files, configs
   included; there are no `.js`, `.mjs`, `.cjs`, `.jsx`, or `.tsx` files.
+- `tsconfig.json` enables exactly `strict`, `noUncheckedIndexedAccess`,
+  `noPropertyAccessFromIndexSignature`, `noImplicitReturns`, `noUnusedLocals`,
+  `noUnusedParameters`, `noImplicitOverride`, `noFallthroughCasesInSwitch`,
+  and `erasableSyntaxOnly`, plus `verbatimModuleSyntax`,
+  `allowImportingTsExtensions`, `noEmit`, `declaration`, and
+  `isolatedDeclarations`. `exactOptionalPropertyTypes` stays off.
 - Every `src/` subfolder's entry file is `index.ts`; `scripts/` is flat, with
   no subfolders and no `index.ts`. Every rule lives flat in
   `src/rules/<rule-id>.ts`, tested in `src/rules/<rule-id>.test.ts` and
