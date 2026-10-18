@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-upper-snake-object-keys
+# explicit-types/no-upper-snake-object-keys
 
 📝 Disallow UPPER_SNAKE_CASE object keys and type members.
 

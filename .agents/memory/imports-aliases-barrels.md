@@ -11,7 +11,7 @@ unbuilt. `vp pack` inlines them, so they never reach package consumers.
 
 One rule for every file, never tied to folder or file names (user rule
 2026-10-17; it replaces the earlier "aliases only point at direct `src/`
-subfolders" rule as the general rule, and the "modules plugin checks only
+subfolders" rule as the general rule, and the "import-structure plugin checks only
 aliased folders" scope; this repo keeps the old rule as a local convention, see
 the last section):
 
@@ -19,7 +19,7 @@ the last section):
   folder's `index.ts` owns that folder and everything below it; an alias to
   any other file owns only that file.
 - **No overlap.** No file may be owned by 2 aliases: no alias inside another
-  alias's area, and no 2 aliases with the same target. The modules plugin's
+  alias's area, and no 2 aliases with the same target. The import-structure plugin's
   `enforce-layer-order` reports it once at the top of every file 2 aliases
   claim. Fix by merging the aliases or moving files apart.
 - **Outside an area, only the exact alias reaches it.** A deeper alias
@@ -88,15 +88,15 @@ Relative imports are written with the `.ts` extension.
   `jsPlugins` list keeps `./src/plugin/index.ts` as a path string.
 - `../` is caught by Oxlint's `import/no-relative-parent-imports` in
   `configs.project`, with no override. The bypass checks wait for
-  the modules plugin's npm release ([[lint-parity-with-deno]]).
-- `imports` is already in the modules plugin's layer order (`#plugin`, `#rules`,
+  the import-structure plugin's npm release ([[lint-parity-with-deno]]).
+- `imports` is already in the import-structure plugin's layer order (`#plugin`, `#rules`,
   `#testing`, `#helpers`: each may import only the ones below it), checked
-  against eslint-plugin-modules 0.10.0 on 2026-10-17 with no other finding.
+  against eslint-plugin-import-structure 0.10.0 on 2026-10-17 with no other finding.
 
 ## Local convention: aliases target direct `src/` subfolders
 
 This is a convention of this repo only, stricter than the general rule
-above (which the published modules plugin checks and which allows more). It
+above (which the published import-structure plugin checks and which allows more). It
 is not a plugin rule: keep it out of plugin code, the README, and rule docs.
 
 - Every `package.json` `imports` alias points only at the `index.ts` of a

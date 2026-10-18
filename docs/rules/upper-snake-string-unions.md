@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/upper-snake-string-unions
+# explicit-types/upper-snake-string-unions
 
 📝 Enforce UPPER_SNAKE_CASE for string literal union members.
 

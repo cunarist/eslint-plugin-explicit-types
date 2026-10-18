@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-index-signatures
+# explicit-types/no-index-signatures
 
 📝 Disallow index signatures.
 

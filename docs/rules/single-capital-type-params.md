@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/single-capital-type-params
+# explicit-types/single-capital-type-params
 
 📝 Require type parameters to be named with a single capital letter.
 

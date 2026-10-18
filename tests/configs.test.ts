@@ -2,7 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 
 import plugin from "#plugin";
 
-const NAMESPACE = "@cunarist/explicit-types";
+const NAMESPACE = "explicit-types";
 
 /**
  * Every published rule: the 15 original rules, plus

@@ -1,21 +1,21 @@
 # eslint-plugin-explicit-types
 
 TypeScript style rules for both [ESLint](https://eslint.org) and [Oxlint](https://oxc.rs/docs/guide/usage/linter): types get written out, not derived.\
-Install with `npm install --save-dev @cunarist/eslint-plugin-explicit-types`. Requires Node.js 22.18+.
+Install with `npm install --save-dev eslint-plugin-explicit-types`. Requires Node.js 22.18+.
 
 ```ts
 // Oxlint, through Vite+: vite.config.ts
-import plugin from "@cunarist/eslint-plugin-explicit-types";
+import plugin from "eslint-plugin-explicit-types";
 import { defineConfig } from "vite-plus";
 const rules = { ...plugin.configs.concrete.rules };
 export default defineConfig({
-  lint: { jsPlugins: ["@cunarist/eslint-plugin-explicit-types"], rules },
+  lint: { jsPlugins: ["eslint-plugin-explicit-types"], rules },
 });
 ```
 
 ```ts
 // ESLint 9: eslint.config.ts (loading a .ts config needs jiti)
-import plugin from "@cunarist/eslint-plugin-explicit-types";
+import plugin from "eslint-plugin-explicit-types";
 import { parser } from "typescript-eslint";
 const ts = { files: ["**/*.ts"], languageOptions: { parser } };
 export default [ts, plugin.configs.concrete];

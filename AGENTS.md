@@ -7,9 +7,9 @@ and follow it before reasoning or responding.
 
 ## Project
 
-- **@cunarist/eslint-plugin-explicit-types**: TypeScript style rules that keep
+- **eslint-plugin-explicit-types**: TypeScript style rules that keep
   types written out rather than derived. One ESLint plugin that also runs under
-  Oxlint. Namespace `@cunarist/explicit-types`, 16 rules in three presets
+  Oxlint. Namespace `explicit-types`, 16 rules in three presets
   (`concrete`, `naming`, `absence`).
 - The package's only export is the default one, the plugin. Configs live at
   `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,

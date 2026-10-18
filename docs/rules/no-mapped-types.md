@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-mapped-types
+# explicit-types/no-mapped-types
 
 📝 Disallow mapped types.
 

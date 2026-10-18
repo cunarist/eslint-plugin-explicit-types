@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-optional-null
+# explicit-types/no-optional-null
 
 📝 Disallow combining an optional `?` with `| null`.
 

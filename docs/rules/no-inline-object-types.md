@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-inline-object-types
+# explicit-types/no-inline-object-types
 
 📝 Disallow inline object type literals.
 

@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/require-return-type
+# explicit-types/require-return-type
 
 📝 Require explicit return types on named functions.
 

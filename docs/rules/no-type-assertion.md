@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-type-assertion
+# explicit-types/no-type-assertion
 
 📝 Disallow type assertions other than `as const`.
 

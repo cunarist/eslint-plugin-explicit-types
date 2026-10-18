@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-typeof-type
+# explicit-types/no-typeof-type
 
 📝 Disallow `typeof` in type positions.
 

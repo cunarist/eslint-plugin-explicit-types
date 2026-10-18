@@ -1,9 +1,9 @@
 /**
- * `@cunarist/eslint-plugin-explicit-types` — TypeScript types written out
+ * `eslint-plugin-explicit-types` — TypeScript types written out
  * rather than derived, and names that carry their contract.
  *
- * One plugin, namespace `@cunarist/explicit-types`, so a rule id reads
- * `@cunarist/explicit-types/no-keyof`. The rules come in three presets —
+ * One plugin, namespace `explicit-types`, so a rule id reads
+ * `explicit-types/no-keyof`. The rules come in three presets —
  * `concrete`, `naming`, and `absence` — plus `all`, which turns on every
  * rule. The plugin is the only export; its configs are at `plugin.configs`.
  *
@@ -15,7 +15,7 @@ import type { ConfigObject, Plugin } from "@eslint/core";
 import { rules } from "#rules";
 
 /** The prefix of every rule id, as ESLint derives it from the package name. */
-const NAMESPACE = "@cunarist/explicit-types";
+const NAMESPACE = "explicit-types";
 
 /**
  * The `concrete` preset — write the type out instead of deriving it.
@@ -81,7 +81,7 @@ const basePlugin: Plugin = {
     // Written out rather than imported from `package.json`, so the source has
     // only `.ts` imports. A release bumps both; `tests/package-meta.test.ts`
     // fails if they drift apart.
-    name: "@cunarist/eslint-plugin-explicit-types",
+    name: "eslint-plugin-explicit-types",
     version: "0.6.0",
     namespace: NAMESPACE,
   },
