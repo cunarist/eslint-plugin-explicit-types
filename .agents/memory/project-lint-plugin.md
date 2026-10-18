@@ -1,5 +1,5 @@
 ---
-description: scripts/project-lint.ts is the repo-local plugin "project" holding the repo's rule list (typed DummyRuleMap) and repo-only rules; never published, no tests
+description: scripts/project-lint.ts is the repo-local plugin "project" holding the repo's rule list (typed DummyRuleMap); its own rules sit in flat scripts/project-lint-*.ts files; never published, no tests
 ---
 
 Every repo has `scripts/project-lint.ts`, copied from
@@ -10,12 +10,19 @@ Oxlint plugin with `meta.name` `"project"`, loaded through `jsPlugins` in
 - **`configs.project.rules`**: the repo's whole rule list beyond the published
   plugin configs: Deno parity rules, extras, per-rule options, and opt-outs,
   built-in Oxlint ids included (`curly`, `id-match`, `import/no-cycle`, ...).
-- **Custom rules**, enabled as `project/<rule>`. Every repo has
-  `no-disable-comments` and `no-non-ts-imports`. Apps also port the rules of
-  their old `scripts/deno-lint-plugin.ts` here under the same names and
-  behavior (`no-self-sync`, `app-module-conventions`, `restricted-types`, ...).
+- **Custom rules**, enabled as `project/<rule>`: here
+  `no-disable-comments` and `no-asset-imports` ([[ts-only-files-and-imports]]).
 
-Rules and plugin stay in this one file; don't add `scripts/rules/`.
+Files stay under Oxlint's default `max-lines` of 300 (2026-10-16), so the
+plugin is split into flat themed files sharing the prefix; `scripts/` has no
+subfolders and no `index.ts`:
+
+| File                               | Holds                                   |
+| ---------------------------------- | --------------------------------------- |
+| `scripts/project-lint.ts`          | the plugin object and `configs.project` |
+| `scripts/project-lint-types.ts`    | `ProjectRule` and the shared rule types |
+| `scripts/project-lint-comments.ts` | `no-disable-comments`                   |
+| `scripts/project-lint-modules.ts`  | `no-asset-imports`                      |
 
 ```ts
 import type { DummyRuleMap } from "vite-plus/lint";
@@ -24,11 +31,12 @@ const rules: DummyRuleMap = {
   "id-match": ["error", "^_*[^_]*_*$|^[^a-z]*$", {/* ... */}],
   curly: "error",
   "project/no-disable-comments": "error",
+  "project/no-asset-imports": "error",
 };
 
 const plugin = {
   meta: { name: "project" },
-  rules: { "no-disable-comments": noDisableCommentsRule /* ... */ },
+  rules: { "no-disable-comments": noDisableCommentsRule, "no-asset-imports": noAssetImportsRule },
   configs: { project: { rules } },
 };
 export default plugin;

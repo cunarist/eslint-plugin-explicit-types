@@ -1,19 +1,17 @@
 import { defineConfig } from "vite-plus";
 
 import projectLint from "./scripts/project-lint.ts";
-import explicitTypes from "./src/index.ts";
+import explicitTypes from "./src/plugin/index.ts";
 
 export default defineConfig({
-  // Keep package.json in its hand-written order.
-  fmt: { sortPackageJson: false },
   lint: {
     plugins: ["typescript", "unicorn", "oxc", "import"],
     // Lints itself from source; `scripts/project-lint.ts` holds the repo's own
     // rule list and repo-only rules, never published.
-    jsPlugins: ["./src/index.ts", "./scripts/project-lint.ts"],
+    jsPlugins: ["./src/plugin/index.ts", "./scripts/project-lint.ts"],
     categories: { correctness: "error", suspicious: "error", pedantic: "error", perf: "error" },
     rules: { ...explicitTypes.configs.all.rules, ...projectLint.configs.project.rules },
-    // File globs are config, not a rule list: the registry imports every rule.
+    // The rule registry must import every rule, past max-dependencies' 10.
     overrides: [{ files: ["src/rules/index.ts"], rules: { "import/max-dependencies": "off" } }],
     options: {
       typeAware: true,
@@ -23,7 +21,7 @@ export default defineConfig({
     },
   },
   pack: {
-    entry: "src/index.ts",
+    entry: "src/plugin/index.ts",
     dts: true,
     fixedExtension: false,
   },

@@ -53,7 +53,6 @@ testRule("no-undefined-type", noUndefinedTypeRule, {
     },
 
     // rejects undefined on an accessor field
-    // Deno's lint AST never walked an `accessor` type annotation; Oxlint's does.
     { code: "class C { accessor a: string | undefined; }", errors: [UNDEFINED] },
 
     // rejects undefined on a parameter

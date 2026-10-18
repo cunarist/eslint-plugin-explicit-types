@@ -1,4 +1,4 @@
-import { type ExpectedSuggestion, spanOf, testRule } from "#testing";
+import { type ExpectedError, type ExpectedSuggestion, spanOf, testRule } from "#testing";
 
 import { pascalCaseTypesRule } from "./pascal-case-types.ts";
 
@@ -7,6 +7,11 @@ const NOT_PASCAL = { messageId: "notPascalCase" };
 /** The suggestion to rename `name` to `suggestion`, leaving `output`. */
 function rename(name: string, suggestion: string, output: string): ExpectedSuggestion {
   return { messageId: "rename", data: { name, suggestion }, output };
+}
+
+/** An error whose only suggestion renames `name` to `suggestion`, leaving `output`. */
+function renameError(name: string, suggestion: string, output: string): ExpectedError {
+  return { ...NOT_PASCAL, suggestions: [rename(name, suggestion, output)] };
 }
 
 const mergedSuggestion = {
@@ -129,47 +134,31 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
     {
       code: "type user_id = string;\nexport { user_id as UserIdAlias };",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename("user_id", "UserId", "type UserId = string;\nexport { UserId as UserIdAlias };"),
-          ],
-        },
+        renameError(
+          "user_id",
+          "UserId",
+          "type UserId = string;\nexport { UserId as UserIdAlias };",
+        ),
       ],
     },
     {
       code: "class data_store {}\nexport default data_store;",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename("data_store", "DataStore", "class DataStore {}\nexport default DataStore;"),
-          ],
-        },
+        renameError("data_store", "DataStore", "class DataStore {}\nexport default DataStore;"),
       ],
     },
     {
       code: "export default class data_store {}",
-      errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [rename("data_store", "DataStore", "export default class DataStore {}")],
-        },
-      ],
+      errors: [renameError("data_store", "DataStore", "export default class DataStore {}")],
     },
     {
       code: "export namespace Api {\n  export type user_id = string;\n}",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename(
-              "user_id",
-              "UserId",
-              "export namespace Api {\n  export type UserId = string;\n}",
-            ),
-          ],
-        },
+        renameError(
+          "user_id",
+          "UserId",
+          "export namespace Api {\n  export type UserId = string;\n}",
+        ),
       ],
     },
 
@@ -177,75 +166,45 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
     {
       code: "export {};\ndeclare global {\n  interface app_config { debug: boolean }\n}",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename(
-              "app_config",
-              "AppConfig",
-              "export {};\ndeclare global {\n  interface AppConfig { debug: boolean }\n}",
-            ),
-          ],
-        },
+        renameError(
+          "app_config",
+          "AppConfig",
+          "export {};\ndeclare global {\n  interface AppConfig { debug: boolean }\n}",
+        ),
       ],
     },
 
     // rejects underscores anywhere in the name
     {
       code: "class User_Profile {}",
-      errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [rename("User_Profile", "UserProfile", "class UserProfile {}")],
-        },
-      ],
+      errors: [renameError("User_Profile", "UserProfile", "class UserProfile {}")],
     },
     {
       code: "interface Http_Response { status: number }",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename("Http_Response", "HttpResponse", "interface HttpResponse { status: number }"),
-          ],
-        },
+        renameError("Http_Response", "HttpResponse", "interface HttpResponse { status: number }"),
       ],
     },
 
     // rejects a lowercase or digit first character
     {
       code: "type _Internal = { id: string };",
-      errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [rename("_Internal", "Internal", "type Internal = { id: string };")],
-        },
-      ],
+      errors: [renameError("_Internal", "Internal", "type Internal = { id: string };")],
     },
 
     // only suggests renaming an exported declaration
     {
       code: "export class data_store {}",
-      errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [rename("data_store", "DataStore", "export class DataStore {}")],
-        },
-      ],
+      errors: [renameError("data_store", "DataStore", "export class DataStore {}")],
     },
     {
       code: "export interface http_response { status: number }",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename(
-              "http_response",
-              "HttpResponse",
-              "export interface HttpResponse { status: number }",
-            ),
-          ],
-        },
+        renameError(
+          "http_response",
+          "HttpResponse",
+          "export interface HttpResponse { status: number }",
+        ),
       ],
     },
 
@@ -280,16 +239,11 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
     {
       code: "type user_id = string;\nfunction f(id: user_id): user_id[] {\n  return [id];\n}",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename(
-              "user_id",
-              "UserId",
-              "type UserId = string;\nfunction f(id: UserId): UserId[] {\n  return [id];\n}",
-            ),
-          ],
-        },
+        renameError(
+          "user_id",
+          "UserId",
+          "type UserId = string;\nfunction f(id: UserId): UserId[] {\n  return [id];\n}",
+        ),
       ],
     },
 
@@ -297,16 +251,11 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
     {
       code: "class data_store {\n  static create(): data_store {\n    return new data_store();\n  }\n}",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename(
-              "data_store",
-              "DataStore",
-              "class DataStore {\n  static create(): DataStore {\n    return new DataStore();\n  }\n}",
-            ),
-          ],
-        },
+        renameError(
+          "data_store",
+          "DataStore",
+          "class DataStore {\n  static create(): DataStore {\n    return new DataStore();\n  }\n}",
+        ),
       ],
     },
 
@@ -314,16 +263,11 @@ testRule("pascal-case-types", pascalCaseTypesRule, {
     {
       code: "class data_store {}\nconst registry = { data_store };",
       errors: [
-        {
-          ...NOT_PASCAL,
-          suggestions: [
-            rename(
-              "data_store",
-              "DataStore",
-              "class DataStore {}\nconst registry = { data_store: DataStore };",
-            ),
-          ],
-        },
+        renameError(
+          "data_store",
+          "DataStore",
+          "class DataStore {}\nconst registry = { data_store: DataStore };",
+        ),
       ],
     },
 

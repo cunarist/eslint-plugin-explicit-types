@@ -23,8 +23,8 @@ Standing convention (2026-10-12), applied to every package:
   (`--generate-notes`, edited there). There is no `CHANGELOG.md`; never add
   one.
 - **The version lives in two places in plugin packages:** `package.json` and
-  `meta.version` in `src/index.ts`; `tests/package-meta.test.ts` fails if they
-  differ.
+  `meta.version` in `src/plugin/index.ts`; `tests/package-meta.test.ts` fails if
+  they differ.
 - **Before 1.0**, a change that breaks users (renamed rule id, a rule that
   fires on more code, removed behavior) is a minor bump.
 - **Before a release**, pack the package and lint a known-bad and a known-good
