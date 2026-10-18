@@ -1,5 +1,5 @@
 ---
-description: The disciplined preset, no-unknown, no-satisfies, and the EventTarget ban were dropped on purpose
+description: The disciplined preset, no-unknown, and the EventTarget ban were dropped on purpose; no-satisfies was dropped, then restored in 0.7.0
 ---
 
 - **The whole `disciplined` preset**, dropped after it was built: `no-readonly`,
@@ -22,7 +22,10 @@ description: The disciplined preset, no-unknown, no-satisfies, and the EventTarg
   widens the declaration to the named type, so `a.typo` compiles against an
   index signature; `as const` keeps the literal shape but checks nothing. Only
   `satisfies` does both, and it writes the constraint at the site rather than
-  deriving it, which is what the through-line asks for.
+  deriving it, which is what the through-line asks for. **Reversed
+  (2026-10-19):** the user approved `no-satisfies` back into `concrete` for
+  0.7.0, ported from brain's project-lint: `satisfies` leaves the
+  variable's type computed rather than written.
 - The `EventTarget` ban from memona's `restricted-types` — a memona-specific
   architectural rule, and unconfigurable here.
 - `no-any` and non-null-assertion bans — Oxlint already ships

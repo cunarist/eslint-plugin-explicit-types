@@ -1,8 +1,8 @@
 ---
-description: concrete preset: nine rules that ban derived types; split from memona's restricted-types
+description: concrete preset: ten rules that ban derived types; split from memona's restricted-types
 ---
 
-16 rules in three presets: [[preset-concrete]], [[preset-naming]],
+17 rules in three presets: [[preset-concrete]], [[preset-naming]],
 [[preset-absence]]. Src column: `mem` = ported from memona's plugin, `std` =
 written in memona's `coding-standards.md` but never enforced, `new` = neither,
 added here.
@@ -21,3 +21,4 @@ individually nameable and disableable.
 | `no-conditional-types`   | new | No `T extends U ? A : B`, no `infer`                     |
 | `require-return-type`    | new | Named functions declare their return type                |
 | `no-type-assertion`      | std | No `x as T` / `<T>x`; `as const` is allowed              |
+| `no-satisfies`           | new | No `satisfies`; annotate the declaration (v0.7.0)        |

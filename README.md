@@ -45,6 +45,7 @@ export default [ts, plugin.configs.concrete];
 | [no-keyof](docs/rules/no-keyof.md)                                     | Disallow the `keyof` type operator                                        | 🧱 |
 | [no-mapped-types](docs/rules/no-mapped-types.md)                       | Disallow mapped types                                                     | 🧱 |
 | [no-optional-null](docs/rules/no-optional-null.md)                     | Disallow combining an optional `?` with `\| null`                         | 🫙 |
+| [no-satisfies](docs/rules/no-satisfies.md)                             | Disallow the `satisfies` operator                                         | 🧱 |
 | [no-type-assertion](docs/rules/no-type-assertion.md)                   | Disallow type assertions other than `as const`                            | 🧱 |
 | [no-typeof-type](docs/rules/no-typeof-type.md)                         | Disallow `typeof` in type positions                                       | 🧱 |
 | [no-undefined-type](docs/rules/no-undefined-type.md)                   | Disallow the `undefined` keyword in type positions                        | 🫙 |

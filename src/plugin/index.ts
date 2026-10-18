@@ -21,8 +21,8 @@ const NAMESPACE = "explicit-types";
  * The `concrete` preset — write the type out instead of deriving it.
  *
  * Bans every way of leaving a type implicit: utility types, `keyof`, `typeof`,
- * mapped types, index signatures, conditional types, and assertions. Named
- * functions must declare a return type.
+ * mapped types, index signatures, conditional types, assertions, and
+ * `satisfies`. Named functions must declare a return type.
  */
 const CONCRETE: string[] = [
   "no-utility-types",
@@ -34,6 +34,7 @@ const CONCRETE: string[] = [
   "no-conditional-types",
   "require-return-type",
   "no-type-assertion",
+  "no-satisfies",
 ];
 
 /**
@@ -82,7 +83,7 @@ const basePlugin: Plugin = {
     // only `.ts` imports. A release bumps both; `tests/package-meta.test.ts`
     // fails if they drift apart.
     name: "eslint-plugin-explicit-types",
-    version: "0.6.1",
+    version: "0.7.0",
     namespace: NAMESPACE,
   },
   rules: Object.fromEntries(rules),

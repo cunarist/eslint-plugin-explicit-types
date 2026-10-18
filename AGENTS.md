@@ -9,7 +9,7 @@ and follow it before reasoning or responding.
 
 - **eslint-plugin-explicit-types**: TypeScript style rules that keep
   types written out rather than derived. One ESLint plugin that also runs under
-  Oxlint. Namespace `explicit-types`, 16 rules in three presets
+  Oxlint. Namespace `explicit-types`, 17 rules in three presets
   (`concrete`, `naming`, `absence`).
 - The package's only export is the default one, the plugin. Configs live at
   `plugin.configs`: `concrete`, `naming`, `absence`, and `all` (every rule,
@@ -18,7 +18,8 @@ and follow it before reasoning or responding.
   Oxlint, Oxfmt, type checking, Vitest, tsdown.
 - Ported from the Deno plugin `jsr:@cunarist/deno-lint-plugin-explicit-types`.
   The published plugin holds exactly its 15 rules plus
-  `single-capital-type-params`, added after the port at the user's request.
+  `single-capital-type-params` and `no-satisfies`, added after the port at the
+  user's request.
   `tests/configs.test.ts` pins the list; any other addition needs the user.
 
 ## Rules
