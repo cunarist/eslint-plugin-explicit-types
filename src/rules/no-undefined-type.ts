@@ -1,4 +1,4 @@
-import type { RuleTextEdit, RuleTextEditor } from "@eslint/core";
+import type { RuleTextEdit, RuleTextEditor, ViolationReport } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
 import { docsUrl, type ExplicitRule } from "#helpers";
@@ -138,6 +138,89 @@ function placementOf(annotation: TSESTree.TSTypeAnnotation): Placement {
   }
 }
 
+/** A report on an `undefined` in a type position. */
+type UndefinedReport = ViolationReport<TSESTree.Node>;
+
+/** Whether `union` holds a second `undefined` or a `null` besides `node`. */
+function hasOtherAbsence(union: TSESTree.TSUnionType, node: TSESTree.TSUndefinedKeyword): boolean {
+  return union.types.some(
+    (member) =>
+      member !== node && (member.type === "TSUndefinedKeyword" || member.type === "TSNullKeyword"),
+  );
+}
+
+/**
+ * The report for an `undefined` on a binding already marked `?`: fixed on a
+ * plain parameter, only suggested on a property.
+ */
+function redundantReport(
+  node: TSESTree.TSUndefinedKeyword,
+  annotation: TSESTree.TSTypeAnnotation,
+  removal: [number, number],
+): UndefinedReport {
+  const drop = (fixer: RuleTextEditor): RuleTextEdit => fixer.removeRange(removal);
+  // On a parameter `a?: T` and `a?: T | undefined` are one type. On a
+  // property, parameter properties included, they differ under
+  // `exactOptionalPropertyTypes`.
+  const binding = annotation.parent;
+  if (binding.type === "Identifier" && binding.parent.type !== "TSParameterProperty") {
+    return { node, messageId: "undefinedType", fix: drop };
+  }
+  return {
+    node,
+    messageId: "undefinedType",
+    suggest: [{ messageId: "dropUndefined", fix: drop }],
+  };
+}
+
+/** The report suggesting `?` at `colon` in place of the `undefined` at `removal`. */
+function markableReport(
+  node: TSESTree.TSUndefinedKeyword,
+  colon: number,
+  removal: [number, number],
+): UndefinedReport {
+  return {
+    node,
+    messageId: "undefinedType",
+    suggest: [
+      {
+        messageId: "markOptional",
+        fix: (fixer: RuleTextEditor): RuleTextEdit[] => [
+          fixer.insertTextBeforeRange([colon, colon], "?"),
+          fixer.removeRange(removal),
+        ],
+      },
+    ],
+  };
+}
+
+/**
+ * The report for one `undefined` keyword, with a fix or suggestion when `?`
+ * can say the same thing. `text` is `null` when the host gives no source text.
+ */
+function undefinedReport(text: string | null, node: TSESTree.TSUndefinedKeyword): UndefinedReport {
+  const plain: UndefinedReport = { node, messageId: "undefinedType" };
+  const union = node.parent;
+  if (text === null || union.type !== "TSUnionType") {
+    return plain;
+  }
+  const annotation = union.parent;
+  // A second `undefined` or a `null` would survive the edit and be reported again.
+  if (annotation.type !== "TSTypeAnnotation" || hasOtherAbsence(union, node)) {
+    return plain;
+  }
+  const removal = unionMemberRange(text, union, node);
+  const placement = placementOf(annotation);
+  if (removal === null || placement === "FIXED") {
+    return plain;
+  }
+  if (placement === "REDUNDANT") {
+    return redundantReport(node, annotation, removal);
+  }
+  const colon = colonOffset(text, annotation);
+  return colon === null ? plain : markableReport(node, colon, removal);
+}
+
 /**
  * `no-undefined-type` — rejects the `undefined` keyword in any type position.
  *
@@ -166,65 +249,7 @@ export const noUndefinedTypeRule: ExplicitRule = {
     const text = "text" in source ? source.text : null;
     return {
       TSUndefinedKeyword(node: TSESTree.TSUndefinedKeyword): void {
-        const union = node.parent;
-        if (text === null || union.type !== "TSUnionType") {
-          context.report({ node, messageId: "undefinedType" });
-          return;
-        }
-        const annotation = union.parent;
-        if (
-          annotation.type !== "TSTypeAnnotation" ||
-          // A second `undefined` or a `null` would survive the edit and be reported again.
-          union.types.some(
-            (member) =>
-              member !== node &&
-              (member.type === "TSUndefinedKeyword" || member.type === "TSNullKeyword"),
-          )
-        ) {
-          context.report({ node, messageId: "undefinedType" });
-          return;
-        }
-        const removal = unionMemberRange(text, union, node);
-        const placement = placementOf(annotation);
-        if (removal === null || placement === "FIXED") {
-          context.report({ node, messageId: "undefinedType" });
-          return;
-        }
-        const drop = (fixer: RuleTextEditor): RuleTextEdit => fixer.removeRange(removal);
-        if (placement === "REDUNDANT") {
-          // On a parameter `a?: T` and `a?: T | undefined` are one type. On a
-          // property, parameter properties included, they differ under
-          // `exactOptionalPropertyTypes`.
-          const binding = annotation.parent;
-          if (binding.type === "Identifier" && binding.parent.type !== "TSParameterProperty") {
-            context.report({ node, messageId: "undefinedType", fix: drop });
-            return;
-          }
-          context.report({
-            node,
-            messageId: "undefinedType",
-            suggest: [{ messageId: "dropUndefined", fix: drop }],
-          });
-          return;
-        }
-        const colon = colonOffset(text, annotation);
-        if (colon === null) {
-          context.report({ node, messageId: "undefinedType" });
-          return;
-        }
-        context.report({
-          node,
-          messageId: "undefinedType",
-          suggest: [
-            {
-              messageId: "markOptional",
-              fix: (fixer: RuleTextEditor): RuleTextEdit[] => [
-                fixer.insertTextBeforeRange([colon, colon], "?"),
-                fixer.removeRange(removal),
-              ],
-            },
-          ],
-        });
+        context.report(undefinedReport(text, node));
       },
     };
   },

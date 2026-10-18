@@ -1,3 +1,4 @@
+import type { RuleVisitor, ViolationReport } from "@eslint/core";
 import type { TSESTree } from "@typescript-eslint/types";
 
 import { docsUrl, type ExplicitRule } from "#helpers";
@@ -46,6 +47,94 @@ interface FunctionFrame {
 }
 
 /**
+ * Where `: void` would go in `source` — just after the parameter list's `)` —
+ * if the function returns no value and TypeScript would infer `void` for it.
+ */
+function voidAnnotationOffset(source: string, frame: FunctionFrame): number | null {
+  const { node } = frame;
+  const body = node.body;
+  if (
+    frame.returnsValue ||
+    node.generator ||
+    body?.type !== "BlockStatement" ||
+    !infersVoid(node)
+  ) {
+    return null;
+  }
+  const offset = source.slice(0, body.range[0]).trimEnd().length;
+  return source[offset - 1] === ")" ? offset : null;
+}
+
+/**
+ * The report on a function left without a return type. When it would infer
+ * `void`, fix it by writing that out: the annotation is exactly the type
+ * TypeScript already gives the function, so no caller can tell.
+ */
+function missingReport(source: string, frame: FunctionFrame): ViolationReport<TSESTree.Node> {
+  const { node } = frame;
+  const offset = voidAnnotationOffset(source, frame);
+  const annotation = node.async ? ": Promise<void>" : ": void";
+  return {
+    node: node.id ?? node,
+    messageId: "function",
+    ...(offset === null
+      ? {}
+      : { fix: (fixer) => fixer.insertTextAfterRange([offset, offset], annotation) }),
+  };
+}
+
+/**
+ * The visitors that keep `frames` in step with the function being walked:
+ * push a frame on entering one, mark it on a `return` with a value, and call
+ * `leave` on the way out, which pops it.
+ */
+function frameVisitors(frames: FunctionFrame[], leave: () => void): RuleVisitor {
+  function enter(node: FunctionNode, always: boolean): void {
+    const missing = (always || isNamed(node)) && !node.returnType;
+    frames.push({ node, missing, returnsValue: false });
+  }
+
+  return {
+    FunctionDeclaration(node: TSESTree.FunctionDeclaration): void {
+      enter(node, true);
+    },
+    "FunctionDeclaration:exit"(): void {
+      leave();
+    },
+    TSDeclareFunction(node: TSESTree.TSDeclareFunction): void {
+      enter(node, true);
+    },
+    "TSDeclareFunction:exit"(): void {
+      leave();
+    },
+    FunctionExpression(node: TSESTree.FunctionExpression): void {
+      enter(node, false);
+    },
+    "FunctionExpression:exit"(): void {
+      leave();
+    },
+    TSEmptyBodyFunctionExpression(node: TSESTree.TSEmptyBodyFunctionExpression): void {
+      enter(node, false);
+    },
+    "TSEmptyBodyFunctionExpression:exit"(): void {
+      leave();
+    },
+    ArrowFunctionExpression(node: TSESTree.ArrowFunctionExpression): void {
+      enter(node, false);
+    },
+    "ArrowFunctionExpression:exit"(): void {
+      leave();
+    },
+    ReturnStatement(node: TSESTree.ReturnStatement): void {
+      const frame = frames.at(-1);
+      if (frame !== undefined && node.argument !== null) {
+        frame.returnsValue = true;
+      }
+    },
+  };
+}
+
+/**
  * `require-return-type` — requires a named function to declare its return type.
  *
  * Without one, the only way to learn what a function gives back is to read its
@@ -72,89 +161,15 @@ export const requireReturnTypeRule: ExplicitRule = {
     const code = context.sourceCode;
     const source = "text" in code ? code.text : "";
 
-    function enter(node: FunctionNode, always: boolean): void {
-      const missing = (always || isNamed(node)) && !node.returnType;
-      frames.push({ node, missing, returnsValue: false });
-    }
-
-    /**
-     * Where `: void` would go — just after the parameter list's `)` — if the
-     * function returns no value and TypeScript would infer `void` for it.
-     */
-    function voidAnnotationOffset(frame: FunctionFrame): number | null {
-      const { node } = frame;
-      const body = node.body;
-      if (
-        frame.returnsValue ||
-        node.generator ||
-        body?.type !== "BlockStatement" ||
-        !infersVoid(node)
-      ) {
-        return null;
-      }
-      const offset = source.slice(0, body.range[0]).trimEnd().length;
-      return source[offset - 1] === ")" ? offset : null;
-    }
-
-    /**
-     * Report the function being left if it lacks a return type. When it would
-     * infer `void`, fix it by writing that out: the annotation is exactly the
-     * type TypeScript already gives the function, so no caller can tell.
-     */
     function leave(): void {
       const frame = frames.pop();
-      if (frame === undefined || !frame.missing) {
-        return;
+      if (frame !== undefined && frame.missing) {
+        context.report(missingReport(source, frame));
       }
-      const { node } = frame;
-      const offset = voidAnnotationOffset(frame);
-      const annotation = node.async ? ": Promise<void>" : ": void";
-      context.report({
-        node: node.id ?? node,
-        messageId: "function",
-        ...(offset === null
-          ? {}
-          : { fix: (fixer) => fixer.insertTextAfterRange([offset, offset], annotation) }),
-      });
     }
 
     return {
-      FunctionDeclaration(node: TSESTree.FunctionDeclaration): void {
-        enter(node, true);
-      },
-      "FunctionDeclaration:exit"(): void {
-        leave();
-      },
-      TSDeclareFunction(node: TSESTree.TSDeclareFunction): void {
-        enter(node, true);
-      },
-      "TSDeclareFunction:exit"(): void {
-        leave();
-      },
-      FunctionExpression(node: TSESTree.FunctionExpression): void {
-        enter(node, false);
-      },
-      "FunctionExpression:exit"(): void {
-        leave();
-      },
-      TSEmptyBodyFunctionExpression(node: TSESTree.TSEmptyBodyFunctionExpression): void {
-        enter(node, false);
-      },
-      "TSEmptyBodyFunctionExpression:exit"(): void {
-        leave();
-      },
-      ArrowFunctionExpression(node: TSESTree.ArrowFunctionExpression): void {
-        enter(node, false);
-      },
-      "ArrowFunctionExpression:exit"(): void {
-        leave();
-      },
-      ReturnStatement(node: TSESTree.ReturnStatement): void {
-        const frame = frames.at(-1);
-        if (frame !== undefined && node.argument !== null) {
-          frame.returnsValue = true;
-        }
-      },
+      ...frameVisitors(frames, leave),
       TSMethodSignature(node: TSESTree.TSMethodSignature): void {
         if (node.returnType) {
           return;

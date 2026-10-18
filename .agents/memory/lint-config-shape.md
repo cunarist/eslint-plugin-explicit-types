@@ -23,9 +23,11 @@ lint: {
   `max-lines-per-function` 50, `max-classes-per-file` 1,
   `max-dependencies` 10, `max-params` 3, `complexity` 20. Don't raise them to
   make code pass; refactor (see [[lint-overrides-policy]]). `max-lines` is
-  never turned off, `scripts/` included: split the file (2026-10-16). This
-  repo turns off `max-lines-per-function`,
-  `typescript/prefer-readonly-parameter-types`, and
+  never turned off, `scripts/` included: split the file (2026-10-16).
+  `max-lines-per-function` is on at 50 (2026-10-17): split a long `create()`
+  or visitor into named module-level helpers that take context, source, or
+  plain data explicitly. This repo turns off
+  `typescript/prefer-readonly-parameter-types` and
   `typescript/no-unsafe-enum-comparison` because AST visitors fight them; do
   not add new opt-outs without asking the user.
 - **`vite.config.ts` names no rule.** Every rule id, built-in ones included,
@@ -40,8 +42,8 @@ lint: {
   Hand-written code is never ignored.
 - **No lint disable comments**: [[lint-no-disable-comments]].
 - **Parity:** [[lint-parity-never-shrinks]]. **Naming:** [[naming-id-match]].
-- Don't add a second import sorter; import-check's `enforce-import-order` is
-  the only one, and Oxfmt's `sortImports` stays off.
+- Don't add a second import sorter; the modules plugin's `enforce-import-order`
+  is the only one, and Oxfmt's `sortImports` stays off.
 
 `perf` came last: in the template it flagged nine `.includes` on constant
 arrays, fixed as `ReadonlySet` + `.has()` rather than by turning a rule off.

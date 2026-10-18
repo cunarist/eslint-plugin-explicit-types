@@ -12,12 +12,16 @@ import type { ProjectRule } from "./project-lint-types.ts";
 /** A module specifier read as a path: relative, absolute, or a `#` alias. */
 const PATH_SPECIFIER_PATTERN: RegExp = /^[./#]/u;
 
-/** Module extensions that may be imported: `.ts`, and `.js` for package subpaths. */
-const MODULE_EXTENSIONS: readonly string[] = [".ts", ".js"];
+/**
+ * Module extensions that may be imported, matched as whole extensions: `.ts`,
+ * and `.js`, `.mts`, `.mjs` for package subpaths.
+ */
+const MODULE_EXTENSIONS: ReadonlySet<string> = new Set([".ts", ".js", ".mts", ".mjs"]);
 
 /**
- * Whether `source` names an asset rather than a `.ts` or `.js` module: a query
- * string such as `?raw`, or a final path segment with any other extension.
+ * Whether `source` names an asset rather than a `.ts`, `.js`, `.mts`, or
+ * `.mjs` module: a query string such as `?raw`, or a final path segment with
+ * any other extension.
  * Bare package names are left alone, dots and all, as are extensionless paths.
  */
 function isAssetSource(source: string): boolean {
@@ -35,16 +39,18 @@ function isAssetSource(source: string): boolean {
   if (lastSegment === "." || lastSegment === ".." || !lastSegment.includes(".")) {
     return false;
   }
-  return !MODULE_EXTENSIONS.some((extension) => lastSegment.endsWith(extension));
+  const extension: string = lastSegment.slice(lastSegment.lastIndexOf("."));
+  return !MODULE_EXTENSIONS.has(extension);
 }
 
 /**
- * `no-asset-imports` — rejects importing anything but a `.ts` or `.js`
- * module: a source path, static or a dynamic `import()` with a string
- * literal, ending in another extension (`.css`, `.json`, `.svg`, `.tsx`) or
- * carrying a query string (`?raw`, `?url`), and any import or export with
- * import attributes. `.js` is for package subpaths such as
- * `lit/decorators.js`; this repo's own files are all `.ts`. Bare package
+ * `no-asset-imports` — rejects importing anything but a `.ts`, `.js`, `.mts`,
+ * or `.mjs` module: a source path, static or a dynamic `import()` with a
+ * string literal, ending in another extension (`.css`, `.json`, `.svg`,
+ * `.jsx`, `.tsx`, `.cjs`) or carrying a query string (`?raw`, `?url`), and
+ * any import or export with import attributes. `.js`, `.mts`, and `.mjs` are
+ * for package subpaths such as `lit/decorators.js`; this repo's own files are
+ * all `.ts`. Bare package
  * names, `#` aliases, and `node:` builtins without an extension pass.
  */
 export const noAssetImportsRule: ProjectRule = {
@@ -53,7 +59,7 @@ export const noAssetImportsRule: ProjectRule = {
     docs: { description: "Disallow importing CSS, JSON, SVG, and other assets" },
     schema: [],
     messages: {
-      extension: "Only .ts and .js modules may be imported.",
+      extension: "Only .ts, .js, .mts and .mjs modules may be imported.",
       attributes: "Import attributes are not allowed.",
     },
   },

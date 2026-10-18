@@ -74,6 +74,36 @@ function questionOffset(text: string, annotation: TSESTree.TSTypeAnnotation): nu
 }
 
 /**
+ * Both ways to settle on one spelling, where an edit can make them. `text` is
+ * `null` when the host gives no source text, and then there are none.
+ */
+function suggestions(
+  text: string | null,
+  node: TSESTree.TSNullKeyword,
+  annotation: TSESTree.TSTypeAnnotation,
+): SuggestedEdit[] {
+  if (text === null) {
+    return [];
+  }
+  const suggest: SuggestedEdit[] = [];
+  const removal = nullMemberRange(text, node);
+  if (removal !== null) {
+    suggest.push({
+      messageId: "dropNull",
+      fix: (fixer: RuleTextEditor): RuleTextEdit => fixer.removeRange(removal),
+    });
+  }
+  const question = questionOffset(text, annotation);
+  if (question !== null) {
+    suggest.push({
+      messageId: "dropOptional",
+      fix: (fixer: RuleTextEditor): RuleTextEdit => fixer.removeRange([question, question + 1]),
+    });
+  }
+  return suggest;
+}
+
+/**
  * `no-optional-null` — rejects a binding that is both marked `?` and unioned
  * with `null`.
  *
@@ -100,33 +130,6 @@ export const noOptionalNullRule: ExplicitRule = {
   create(context) {
     const source = context.sourceCode;
     const text = "text" in source ? source.text : null;
-
-    /** Both ways to settle on one spelling, where an edit can make them. */
-    function suggestions(
-      node: TSESTree.TSNullKeyword,
-      annotation: TSESTree.TSTypeAnnotation,
-    ): SuggestedEdit[] {
-      if (text === null) {
-        return [];
-      }
-      const suggest: SuggestedEdit[] = [];
-      const removal = nullMemberRange(text, node);
-      if (removal !== null) {
-        suggest.push({
-          messageId: "dropNull",
-          fix: (fixer: RuleTextEditor): RuleTextEdit => fixer.removeRange(removal),
-        });
-      }
-      const question = questionOffset(text, annotation);
-      if (question !== null) {
-        suggest.push({
-          messageId: "dropOptional",
-          fix: (fixer: RuleTextEditor): RuleTextEdit => fixer.removeRange([question, question + 1]),
-        });
-      }
-      return suggest;
-    }
-
     return {
       TSNullKeyword(node: TSESTree.TSNullKeyword): void {
         const parent = node.parent;
@@ -140,7 +143,7 @@ export const noOptionalNullRule: ExplicitRule = {
           return;
         }
         const name = binding.type === "Identifier" ? binding.name : keyText(binding);
-        const suggest = suggestions(node, annotation);
+        const suggest = suggestions(text, node, annotation);
         if (name === null) {
           context.report({ node, messageId: "unnamed", suggest });
           return;

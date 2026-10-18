@@ -28,8 +28,9 @@ Before removing any line from `configs.project`, find what else covers it.
 - **`no-slow-types`:** `isolatedDeclarations`, enforced by `vp pack` (TS9010)
   in packages.
 - **Vacuous:** JSX rules (no `.tsx` exists) and Deno-only rules.
-- **`@hugoalh` rules** map to Oxlint built-ins in `configs.project`.
-- **import-check's CLI cycle check** → `import/no-cycle`.
+- **`@hugoalh` rules:** this repo's Deno config used none, so there is
+  nothing to map here.
+- **deno-import-check's CLI cycle check** → `import/no-cycle`.
 
 The template's list in `configs.project` is the baseline to copy: `curly`,
 `guard-for-in`, `no-console`, `no-empty`, `no-regex-spaces`,
