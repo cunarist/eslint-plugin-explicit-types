@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-keyof
+# explicit-types/no-keyof
 
 📝 Disallow the `keyof` type operator.
 

@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-conditional-types
+# explicit-types/no-conditional-types
 
 📝 Disallow conditional types and the `infer` keyword.
 

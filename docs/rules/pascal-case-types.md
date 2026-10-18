@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/pascal-case-types
+# explicit-types/pascal-case-types
 
 📝 Enforce PascalCase names for classes, interfaces, type aliases, and enums.
 
@@ -34,7 +34,7 @@ so you never have to resolve it to find out.
 - Enum names are checked here even though [`no-enum`](no-enum.md) rejects `enum`
   outright. The overlap is deliberate: the two rules are separately excludable,
   so someone can enable the `naming` preset while turning off
-  `@cunarist/explicit-types/no-enum` and keep enums. When they do, those enum names
+  `explicit-types/no-enum` and keep enums. When they do, those enum names
   should still be PascalCase.
 - Only declaration names are checked. Uses of a badly-named type imported from
   another module are not reported — there is no cross-file resolution.

@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-enum
+# explicit-types/no-enum
 
 📝 Disallow `enum` declarations.
 

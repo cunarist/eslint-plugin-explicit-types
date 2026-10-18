@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-utility-types
+# explicit-types/no-utility-types
 
 📝 Disallow the built-in TypeScript utility types.
 

@@ -16,7 +16,8 @@ Standing convention (2026-10-12), applied to every package:
 - **Auth is npm trusted publishing** (OIDC, `id-token: write`), which also
   attaches provenance. npm only allows a trusted publisher on a package that
   already exists, so the very first release bootstraps with a short-lived
-  token in the `NPM_TOKEN` repo secret (the workflow uses it only when set).
+  token in the `NPM_TOKEN` repo secret, passed as `NODE_AUTH_TOKEN` to the
+  `.npmrc` that setup-vp writes for `registry-url` (empty once deleted).
   Afterwards the user configures the trusted publisher for `publish.yml`,
   deletes the secret, and sets the package to disallow tokens.
 - **Release notes live only on the GitHub release page**
@@ -32,6 +33,6 @@ Standing convention (2026-10-12), applied to every package:
   `jsPlugins` and once through ESLint 9 with the configs. On the lit plugin
   this caught two bugs that 313 unit tests missed.
 
-The cunarist lint plugins (explicit-types, modules, lit) are published
+The cunarist lint plugins (explicit-types, import-structure, lit-robust) are published
 together, with a token the user provides; the old `deno-*` repos are archived
 only after that, one at a time.

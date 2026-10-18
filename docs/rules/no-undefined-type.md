@@ -1,4 +1,4 @@
-# @cunarist/explicit-types/no-undefined-type
+# explicit-types/no-undefined-type
 
 📝 Disallow the `undefined` keyword in type positions.
 
