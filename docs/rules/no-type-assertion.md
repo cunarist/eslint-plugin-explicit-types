@@ -31,9 +31,9 @@ what is written right there.
   places; this plugin does not duplicate either.
 - Syntax, not types: only `x as T` and `<T>x` are seen, not an assertion
   laundered through a function signature such as a generic that returns `T`.
-- `satisfies` looks related but is not reported. It checks a value against a
-  type without overruling the compiler, and unlike an assertion it keeps the
-  narrow inferred type — which is more precise than an annotation, not less.
+- `satisfies` is not an assertion and is not reported here. It checks a value
+  against a type without overruling the compiler, but it leaves the
+  declaration's type inferred; [`no-satisfies`](no-satisfies.md) reports it.
 - The report highlights the whole assertion expression, operand included.
 
 Examples of **incorrect** code for this rule:

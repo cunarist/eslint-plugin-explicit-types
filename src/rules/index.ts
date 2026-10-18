@@ -13,6 +13,7 @@ import { noInlineObjectTypesRule } from "./no-inline-object-types.ts";
 import { noKeyofRule } from "./no-keyof.ts";
 import { noMappedTypesRule } from "./no-mapped-types.ts";
 import { noOptionalNullRule } from "./no-optional-null.ts";
+import { noSatisfiesRule } from "./no-satisfies.ts";
 import { noTypeAssertionRule } from "./no-type-assertion.ts";
 import { noTypeofTypeRule } from "./no-typeof-type.ts";
 import { noUndefinedTypeRule } from "./no-undefined-type.ts";
@@ -38,6 +39,7 @@ export const rules: Map<string, ExplicitRule> = new Map([
   ["no-keyof", noKeyofRule],
   ["no-mapped-types", noMappedTypesRule],
   ["no-optional-null", noOptionalNullRule],
+  ["no-satisfies", noSatisfiesRule],
   ["no-type-assertion", noTypeAssertionRule],
   ["no-typeof-type", noTypeofTypeRule],
   ["no-undefined-type", noUndefinedTypeRule],

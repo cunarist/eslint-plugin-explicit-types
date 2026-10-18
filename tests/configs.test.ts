@@ -6,7 +6,7 @@ const NAMESPACE = "explicit-types";
 
 /**
  * Every published rule: the 15 original rules, plus
- * `single-capital-type-params`, the first rule added since. A
+ * `single-capital-type-params` and `no-satisfies`, the rules added since. A
  * repo-only rule goes in `scripts/project-lint.ts`, never in the published
  * plugin.
  */
@@ -18,6 +18,7 @@ const PUBLISHED_RULES: string[] = [
   "no-keyof",
   "no-mapped-types",
   "no-optional-null",
+  "no-satisfies",
   "no-type-assertion",
   "no-typeof-type",
   "no-undefined-type",
@@ -30,14 +31,14 @@ const PUBLISHED_RULES: string[] = [
 ];
 
 describe("plugin.rules", () => {
-  it("holds exactly the 16 published rules", () => {
+  it("holds exactly the 17 published rules", () => {
     expect(Object.keys(plugin.rules ?? {}).toSorted()).toEqual(PUBLISHED_RULES);
   });
 });
 
 describe("plugin.configs.all", () => {
   it("turns on every rule in the plugin", () => {
-    expect(Object.keys(plugin.configs.all.rules ?? {})).toHaveLength(16);
+    expect(Object.keys(plugin.configs.all.rules ?? {})).toHaveLength(17);
     const ruleIds = Object.keys(plugin.rules ?? {}).map((id) => `${NAMESPACE}/${id}`);
     expect(Object.keys(plugin.configs.all.rules ?? {}).toSorted()).toEqual(ruleIds.toSorted());
   });

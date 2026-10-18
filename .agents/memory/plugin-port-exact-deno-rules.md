@@ -6,18 +6,18 @@ User decision (2026-10-15): each npm plugin contains **exactly** the rules of
 the original Deno plugin: same rule names, same behavior, none added, none
 removed. `tests/configs.test.ts` pins the rule list.
 
-| npm package                      | Deno source                              | Rules                                      | Configs                                                             |
-| -------------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------- |
-| `eslint-plugin-explicit-types`   | `deno-lint-plugin-explicit-types` 0.5.1  | 15, plus `single-capital-type-params` (16) | `concrete`, `naming`, `absence`, `all`                              |
-| `eslint-plugin-import-structure` | `deno-import-check` 0.9.0, `./lint` only | 11                                         | `modules`, `all`                                                    |
-| `eslint-plugin-lit-robust`       | `deno-lint-plugin-lit` 0.7.1             | 82                                         | `core`, `strict`, `dom-ref`, `reactive-controller`, `naming`, `all` |
+| npm package                      | Deno source                              | Rules                                                         | Configs                                                             |
+| -------------------------------- | ---------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `eslint-plugin-explicit-types`   | `deno-lint-plugin-explicit-types` 0.5.1  | 15, plus `single-capital-type-params` and `no-satisfies` (17) | `concrete`, `naming`, `absence`, `all`                              |
+| `eslint-plugin-import-structure` | `deno-import-check` 0.9.0, `./lint` only | 11                                                            | `modules`, `all`                                                    |
+| `eslint-plugin-lit-robust`       | `deno-lint-plugin-lit` 0.7.1             | 82                                                            | `core`, `strict`, `dom-ref`, `reactive-controller`, `naming`, `all` |
 
 - **A rule this repo needs only for itself** (Deno parity, self-lint) goes in
   `scripts/project-lint.ts`, never in the published plugin
   ([[project-lint-plugin]]).
 - **New rules after the port** are separate, later PRs the user asks for
   (explicit-types PR 2, merged as 21e2b85, added `single-capital-type-params`
-  to `naming`). Never
+  to `naming`; `no-satisfies` joined `concrete` in 0.7.0). Never
   slip a new rule into a port PR.
 - **Differences forced by Node** are allowed and documented: `deno.json`
   `imports` → `package.json` `imports`, `mod.ts` → `index.ts` (the modules
