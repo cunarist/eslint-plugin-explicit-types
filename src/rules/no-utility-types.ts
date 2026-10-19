@@ -83,7 +83,7 @@ function writtenOut(node: TSESTree.TSTypeReference, text: string): string | null
 }
 
 /**
- * `no-utility-types` — rejects the 22 built-in TypeScript utility types.
+ * `no-utility-types` - rejects the 22 built-in TypeScript utility types.
  *
  * A built-in utility type names a transformation, not a shape. The reader has
  * to apply `Partial`/`Omit`/`ReturnType` in their head against a definition

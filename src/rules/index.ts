@@ -31,7 +31,7 @@ import { upperSnakeStringUnionsRule } from "./upper-snake-string-unions.ts";
  * rule id, so the ids belong in value position. This is
  * `no-upper-snake-object-keys` applied to itself.
  */
-export const rules: Map<string, ExplicitRule> = new Map([
+export const rules = new Map<string, ExplicitRule>([
   ["no-conditional-types", noConditionalTypesRule],
   ["no-enum", noEnumRule],
   ["no-index-signatures", noIndexSignaturesRule],

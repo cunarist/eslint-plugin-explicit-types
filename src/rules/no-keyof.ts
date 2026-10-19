@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /**
- * `no-keyof` — rejects the `keyof` type operator in any type position.
+ * `no-keyof` - rejects the `keyof` type operator in any type position.
  *
  * `keyof T` is a union nobody wrote down. Its members change silently whenever
  * `T` gains or loses a field, and every use site changes with it.

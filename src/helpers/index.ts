@@ -7,4 +7,4 @@ export * from "./ast.ts";
 export * from "./docs.ts";
 export * from "./privacy.ts";
 export * from "./rename.ts";
-export * from "./rule.ts";
+export type * from "./rule.ts";

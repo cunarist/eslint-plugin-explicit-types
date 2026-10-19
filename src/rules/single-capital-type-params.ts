@@ -53,7 +53,7 @@ function candidatesFor(name: string): string[] {
 }
 
 /**
- * `single-capital-type-params` — requires every type parameter to be named
+ * `single-capital-type-params` - requires every type parameter to be named
  * with one capital letter, such as `T`, `K`, or `V`.
  *
  * A one-letter capital cannot be mistaken for a declared type: `Item` in

@@ -104,7 +104,7 @@ function suggestions(
 }
 
 /**
- * `no-optional-null` — rejects a binding that is both marked `?` and unioned
+ * `no-optional-null` - rejects a binding that is both marked `?` and unioned
  * with `null`.
  *
  * `?` already means the value can be absent, so adding `| null` gives two ways

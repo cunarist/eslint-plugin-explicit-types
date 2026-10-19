@@ -47,7 +47,7 @@ interface FunctionFrame {
 }
 
 /**
- * Where `: void` would go in `source` — just after the parameter list's `)` —
+ * Where `: void` would go in `source` - just after the parameter list's `)` -
  * if the function returns no value and TypeScript would infer `void` for it.
  */
 function voidAnnotationOffset(source: string, frame: FunctionFrame): number | null {
@@ -135,7 +135,7 @@ function frameVisitors(frames: FunctionFrame[], leave: () => void): RuleVisitor 
 }
 
 /**
- * `require-return-type` — requires a named function to declare its return type.
+ * `require-return-type` - requires a named function to declare its return type.
  *
  * Without one, the only way to learn what a function gives back is to read its
  * body to the end, including every branch. Callbacks are exempt: their type

@@ -16,7 +16,7 @@ function convertibleAlias(node: TSESTree.TSTypeLiteral): TSESTree.TSTypeAliasDec
 }
 
 /**
- * `no-inline-object-types` — rejects an object shape written inline in a type
+ * `no-inline-object-types` - rejects an object shape written inline in a type
  * position, `{ a: string }`.
  *
  * A shape with no name cannot be referenced, documented, or found. Declaring it

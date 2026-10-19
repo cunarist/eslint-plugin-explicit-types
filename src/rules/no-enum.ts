@@ -10,7 +10,7 @@ import {
   type ScopeVariable,
 } from "#helpers";
 
-/** `OPEN`, `IN_PROGRESS` — the casing a string union member must have. */
+/** `OPEN`, `IN_PROGRESS` - the casing a string union member must have. */
 const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
 
 /** A name `pascal-case-types` accepts for a type. */
@@ -67,7 +67,7 @@ function usedOnlyAsType(variable: ScopeVariable): boolean {
 }
 
 /**
- * `no-enum` — rejects every `enum` declaration, including `const enum` and string enums.
+ * `no-enum` - rejects every `enum` declaration, including `const enum` and string enums.
  *
  * An `enum` is the one TypeScript type that emits a runtime value, and its
  * members are opaque at the boundary: a numeric enum serializes as a number

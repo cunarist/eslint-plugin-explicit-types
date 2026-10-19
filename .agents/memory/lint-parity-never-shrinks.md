@@ -28,8 +28,9 @@ Before removing any line from `configs.project`, find what else covers it.
 - **`no-slow-types`:** `isolatedDeclarations`, enforced by `vp pack` (TS9010)
   in packages.
 - **Vacuous:** JSX rules (no `.tsx` exists) and Deno-only rules.
-- **`@hugoalh` rules:** this repo's Deno config used none, so there is
-  nothing to map here.
+- **`@hugoalh` rules:** this repo's Deno config used none, but since
+  2026-10-19 every repo carries import-structure's hugoalh ports as
+  `project/*` rules (see [[lint-config]]).
 - **deno-import-check's CLI cycle check** → `import/no-cycle`.
 
 The template's list in `configs.project` is the baseline to copy: `curly`,
@@ -39,9 +40,9 @@ The template's list in `configs.project` is the baseline to copy: `curly`,
 `typescript/consistent-type-imports`, `typescript/no-empty-interface`,
 `typescript/no-explicit-any`, `typescript/no-namespace`,
 `typescript/no-non-null-assertion`, the two `project/*` rules,
-`unicorn/no-abusive-eslint-disable`, `id-match`, and
-`typescript/switch-exhaustiveness-check` with
-`considerDefaultExhaustiveForUnions`.
+`unicorn/no-abusive-eslint-disable`, and `id-match`. Since 2026-10-19 the
+categories carry these and `typescript/switch-exhaustiveness-check` is off
+(TypeScript's type checking covers it); see [[lint-config]].
 
 Each migration PR states its parity mapping (or links the template's table in
 cunarist/eslint-plugin-explicit-types#1) so the user can check it.

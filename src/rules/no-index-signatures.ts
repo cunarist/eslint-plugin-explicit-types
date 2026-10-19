@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /**
- * `no-index-signatures` — rejects index signatures — `{ [key: string]: T }`.
+ * `no-index-signatures` - rejects index signatures - `{ [key: string]: T }`.
  *
  * An index signature says every key is legal and every read succeeds. Typos
  * type-check, and the object doubles as a dictionary that is not a `Map`.

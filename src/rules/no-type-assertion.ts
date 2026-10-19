@@ -13,7 +13,7 @@ function isConstAssertion(node: TSESTree.TSAsExpression): boolean {
 }
 
 /**
- * `no-type-assertion` — rejects type assertions, `value as T` and `<T>value`.
+ * `no-type-assertion` - rejects type assertions, `value as T` and `<T>value`.
  * `as const` is allowed.
  *
  * An assertion overrides the compiler rather than informing it. `as const` is
