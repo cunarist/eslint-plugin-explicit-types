@@ -50,6 +50,7 @@ const rules: DummyRuleMap = {
   // Limits set to the smallest values the current code passes.
   "max-statements": ["error", { max: 21 }],
   "max-params": ["error", { max: 4 }],
+  "import/max-dependencies": ["error", { max: 18 }],
   // Single capital type parameters (`T`) are the naming preset's rule.
   "id-length": ["error", { exceptionPatterns: ["^[A-Z]$"] }],
 
