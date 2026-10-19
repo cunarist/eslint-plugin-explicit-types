@@ -59,5 +59,5 @@ export default plugin;
   and every repo should look the same.
 
 `scripts/` is tooling, not production code: never packed or published, and
-no tests. Narrow `overrides` for `scripts/**` are allowed when a script truly
-needs one (e.g. `no-console`); see [[lint-overrides-policy]].
+no tests. Node code rules for `scripts/**` and `vite.config.ts` are the first
+entry of `projectOverrides`; see [[lint-config]].

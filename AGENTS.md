@@ -92,10 +92,10 @@ and follow it before reasoning or responding.
 - `vite.config.ts` lists no rule by name: its `rules` spreads
   `configs.all.rules` from `src/plugin/index.ts` and `configs.project.rules`
   from `scripts/project-lint.ts`, which holds the repo's own rule list (Deno
-  parity, extras, opt-outs, built-in ids included). Only `overrides`, being file
-  globs, stays in `vite.config.ts`: the single one turns
-  `import/max-dependencies` off for the rule registry. No other override, and
-  none for size.
+  parity, extras, opt-outs, built-in ids included). `overrides` is exactly
+  `projectOverrides`, also from `scripts/project-lint.ts`: the Node code
+  entry first, then per-file exceptions with a why-comment (none today, none
+  for size). `ignorePatterns` holds only generated output. See `lint-config`.
 - Every file stays under Oxlint's default `max-lines` of 300, `scripts/`
   included; split a file that grows past it.
 - Lint coverage never drops below what Deno enforced. Check

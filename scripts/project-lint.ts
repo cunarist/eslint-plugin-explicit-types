@@ -11,7 +11,7 @@
  * @module
  */
 
-import type { DummyRuleMap } from "vite-plus/lint";
+import type { DummyRuleMap, OxlintOverride } from "vite-plus/lint";
 
 import { noDisableCommentsRule } from "./project-lint-comments.ts";
 import { noAssetImportsRule } from "./project-lint-modules.ts";
@@ -122,7 +122,7 @@ const rules: DummyRuleMap = {
   "import/no-nodejs-modules": "off",
 };
 
-/** Node code (`vite.config.ts` and `scripts/`), spread into `overrides`. */
+/** Node code (`vite.config.ts` and `scripts/`): the first override's rules. */
 const nodeRules: DummyRuleMap = {
   // Vite and the Oxlint plugin host read a default export.
   "import/no-default-export": "off",
@@ -135,9 +135,17 @@ const nodeRules: DummyRuleMap = {
 };
 
 /**
+ * The whole `overrides` array `vite.config.ts` uses as is. The Node code entry
+ * comes first; per-file exceptions follow, each with a comment saying why.
+ * A later entry wins over an earlier one, and every entry wins over `rules`.
+ */
+export const projectOverrides: OxlintOverride[] = [
+  { files: ["vite.config.ts", "scripts/**"], rules: nodeRules },
+];
+
+/**
  * The repo-local plugin, namespace `project`: its own rules, enabled as
- * `project/<rule>`, `configs.project`, the rule list above, and
- * `configs.node`, the Node code override.
+ * `project/<rule>`, and `configs.project`, the rule list above.
  */
 const plugin = {
   meta: { name: "project" },
@@ -145,7 +153,7 @@ const plugin = {
     "no-disable-comments": noDisableCommentsRule,
     "no-asset-imports": noAssetImportsRule,
   },
-  configs: { project: { rules }, node: { rules: nodeRules } },
+  configs: { project: { rules } },
 };
 
 export default plugin;
