@@ -50,7 +50,7 @@ function interfaceText(node: TSESTree.TSMappedType, text: string): string | null
   const aliasText = text.slice(alias.range[0], alias.range[1]);
   const valueText = text.slice(value.range[0], value.range[1]);
   const keyPattern = new RegExp(
-    `(?<![\\w$])${node.key.name.replaceAll("$", "\\$")}(?![\\w$])`,
+    String.raw`(?<![\w$])${node.key.name.replaceAll("$", String.raw`\$`)}(?![\w$])`,
     "u",
   );
   if (aliasText.includes("/") || keyPattern.test(valueText)) {

@@ -7,10 +7,10 @@ import { docsUrl, type ExplicitRule, literalString } from "#helpers";
 const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
 
 /** A lowercase letter or digit followed by an uppercase one: a camelCase word break. */
-const CAMEL_BREAK_PATTERN = /([a-z0-9])([A-Z])/gu;
+const CAMEL_BREAK_PATTERN = /(?<before>[a-z0-9])(?<after>[A-Z])/gu;
 
 /** An acronym followed by a capitalized word, as in `HTTPServer`. */
-const ACRONYM_BREAK_PATTERN = /([A-Z])([A-Z][a-z])/gu;
+const ACRONYM_BREAK_PATTERN = /(?<before>[A-Z])(?<after>[A-Z][a-z])/gu;
 
 /** Runs of anything but ASCII letters and digits. */
 const SEPARATOR_PATTERN = /[^A-Za-z0-9]+/u;
@@ -18,8 +18,8 @@ const SEPARATOR_PATTERN = /[^A-Za-z0-9]+/u;
 /** `in progress`, `inProgress`, `in-progress` -> `IN_PROGRESS`. */
 function toUpperSnakeCase(value: string): string {
   return value
-    .replaceAll(CAMEL_BREAK_PATTERN, "$1_$2")
-    .replaceAll(ACRONYM_BREAK_PATTERN, "$1_$2")
+    .replaceAll(CAMEL_BREAK_PATTERN, "$<before>_$<after>")
+    .replaceAll(ACRONYM_BREAK_PATTERN, "$<before>_$<after>")
     .split(SEPARATOR_PATTERN)
     .filter((word) => word !== "")
     .join("_")
