@@ -121,9 +121,22 @@ const rules: DummyRuleMap = {
   "import/no-nodejs-modules": "off",
 };
 
+/** Node code (`vite.config.ts` and `scripts/`), spread into `overrides`. */
+const nodeRules: DummyRuleMap = {
+  // Vite and the Oxlint plugin host read a default export.
+  "import/no-default-export": "off",
+  // Node code: tooling imports Node's built-ins.
+  "import/no-nodejs-modules": "off",
+  // Node code: a CLI exits with a status.
+  "unicorn/no-process-exit": "off",
+  // Node code: a CLI reports to the console.
+  "no-console": "off",
+};
+
 /**
  * The repo-local plugin, namespace `project`: its own rules, enabled as
- * `project/<rule>`, and `configs.project`, the rule list above.
+ * `project/<rule>`, `configs.project`, the rule list above, and
+ * `configs.node`, the Node code override.
  */
 const plugin = {
   meta: { name: "project" },
@@ -131,7 +144,7 @@ const plugin = {
     "no-disable-comments": noDisableCommentsRule,
     "no-asset-imports": noAssetImportsRule,
   },
-  configs: { project: { rules } },
+  configs: { project: { rules }, node: { rules: nodeRules } },
 };
 
 export default plugin;

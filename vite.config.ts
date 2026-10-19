@@ -19,8 +19,12 @@ export default defineConfig({
       restriction: "error",
     },
     rules: { ...explicitTypes.configs.all.rules, ...projectLint.configs.project.rules },
-    // The rule registry must import every rule, past max-dependencies' 10.
-    overrides: [{ files: ["src/rules/index.ts"], rules: { "import/max-dependencies": "off" } }],
+    // Node code gets `configs.node`; the rule registry must import every
+    // rule, past max-dependencies' 10.
+    overrides: [
+      { files: ["vite.config.ts", "scripts/**"], rules: projectLint.configs.node.rules },
+      { files: ["src/rules/index.ts"], rules: { "import/max-dependencies": "off" } },
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
