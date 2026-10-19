@@ -138,6 +138,9 @@ const rules: DummyRuleMap = {
   "consistent-return": "off",
   // Off: sequential awaits in loops are intentional; workarounds cost more.
   "no-await-in-loop": "off",
+  // Off: TypeScript checks completeness; a forced `default:` hides missing
+  // cases.
+  "default-case": "off",
 
   // Off, too much churn for what it buys.
   "no-magic-numbers": "off",

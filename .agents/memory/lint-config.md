@@ -33,7 +33,9 @@ rule; it only wires these pieces together.
   off (TypeScript's type checking covers it; no
   `considerDefaultExhaustiveForUnions`, no added `default:` branches),
   `consistent-return` off (not type-aware; `noImplicitReturns` covers it),
-  `no-await-in-loop` off (sequential awaits are intentional). On through the
+  `no-await-in-loop` off (sequential awaits are intentional), `default-case`
+  off (TypeScript checks completeness; a forced `default:` hides missing
+  cases). On through the
   categories with defaults: `typescript/promise-function-async` with
   `require-await` and `return-await` (`async f() { const x = await g();
   return x; }`), `init-declarations` (`let x: T | null = null;`),
