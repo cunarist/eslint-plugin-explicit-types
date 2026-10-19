@@ -1,8 +1,11 @@
 /**
- * `project` — lint rules this repository holds its own source to that are not
+ * `project` - lint rules this repository holds its own source to that are not
  * part of the published plugin: the rule list in `configs.project`, and its
- * own rules `no-disable-comments` and `no-asset-imports`, each in a flat
- * `scripts/project-lint-*.ts` file.
+ * own rules, each in a flat `scripts/project-lint-*.ts` file:
+ * `prefer-ascii` and `no-disable-comments` (`project-lint-source.ts`),
+ * `no-asset-imports` (`project-lint-modules.ts`), and ports of the hugoalh
+ * `recommended` rules Oxlint lacks (`project-lint-hugoalh.ts`,
+ * `project-lint-hugoalh-types.ts`).
  *
  * Loaded by `vite.config.ts` as an Oxlint `jsPlugins` entry, never packed:
  * `vp pack` builds `src/plugin/index.ts` alone and the tarball holds only
@@ -13,8 +16,21 @@
 
 import type { DummyRuleMap, OxlintOverride } from "vite-plus/lint";
 
-import { noDisableCommentsRule } from "./project-lint-comments.ts";
+import {
+  noDuplicateInterfacesRule,
+  noDuplicateTypesRule,
+  noModifierPrivateRule,
+  noUselessTypeRule,
+} from "./project-lint-hugoalh-types.ts";
+import {
+  noDuplicateTypeofsRule,
+  noEmptyYieldRule,
+  noNanRule,
+  noUnsafeNumberRule,
+  noUselessContinueRule,
+} from "./project-lint-hugoalh.ts";
 import { noAssetImportsRule } from "./project-lint-modules.ts";
+import { noDisableCommentsRule, preferAsciiRule } from "./project-lint-source.ts";
 
 /**
  * This repository's own rule list, spread by `vite.config.ts` after the
@@ -27,6 +43,20 @@ const rules: DummyRuleMap = {
   // The repo's own rules.
   "project/no-disable-comments": "error",
   "project/no-asset-imports": "error",
+  // Deno's `prefer-ascii`, which also covers hugoalh's
+  // `prefer-ascii-identifier`.
+  "project/prefer-ascii": "error",
+  // Ports of the hugoalh `recommended` rules with no Oxlint built-in, under
+  // their hugoalh names.
+  "project/no-duplicate-interfaces": "error",
+  "project/no-duplicate-typeofs": "error",
+  "project/no-duplicate-types": "error",
+  "project/no-empty-yield": "error",
+  "project/no-modifier-private": "error",
+  "project/no-nan": "error",
+  "project/no-unsafe-number": "error",
+  "project/no-useless-continue": "error",
+  "project/no-useless-type": "error",
 
   // Option tweaks. First, camelCase names: no `_` inside the name once
   // leading and trailing ones are trimmed, unless it has no lowercase ASCII
@@ -152,6 +182,16 @@ const plugin = {
   rules: {
     "no-disable-comments": noDisableCommentsRule,
     "no-asset-imports": noAssetImportsRule,
+    "prefer-ascii": preferAsciiRule,
+    "no-duplicate-interfaces": noDuplicateInterfacesRule,
+    "no-duplicate-typeofs": noDuplicateTypeofsRule,
+    "no-duplicate-types": noDuplicateTypesRule,
+    "no-empty-yield": noEmptyYieldRule,
+    "no-modifier-private": noModifierPrivateRule,
+    "no-nan": noNanRule,
+    "no-unsafe-number": noUnsafeNumberRule,
+    "no-useless-continue": noUselessContinueRule,
+    "no-useless-type": noUselessTypeRule,
   },
   configs: { project: { rules } },
 };

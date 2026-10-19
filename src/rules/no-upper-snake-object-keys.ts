@@ -2,15 +2,15 @@ import type { TSESTree } from "@typescript-eslint/types";
 
 import { docsUrl, type ExplicitRule, keyText } from "#helpers";
 
-/** `OPEN`, `IN_PROGRESS`, `HTTP2_PUSH` — the casing a string union member has. */
+/** `OPEN`, `IN_PROGRESS`, `HTTP2_PUSH` - the casing a string union member has. */
 const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
 
 /**
- * `no-upper-snake-object-keys` — rejects UPPER_SNAKE_CASE object keys and type
+ * `no-upper-snake-object-keys` - rejects UPPER_SNAKE_CASE object keys and type
  * members.
  *
  * That casing is what a string union member looks like, so an object wearing it
- * is a lookup table keyed by the union — and a lookup table stays silent when
+ * is a lookup table keyed by the union - and a lookup table stays silent when
  * the union gains a member. A `switch` does not.
  */
 export const noUpperSnakeObjectKeysRule: ExplicitRule = {

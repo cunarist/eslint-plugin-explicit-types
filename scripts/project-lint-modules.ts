@@ -44,7 +44,7 @@ function isAssetSource(source: string): boolean {
 }
 
 /**
- * `no-asset-imports` — rejects importing anything but a `.ts`, `.js`, `.mts`,
+ * `no-asset-imports` - rejects importing anything but a `.ts`, `.js`, `.mts`,
  * or `.mjs` module: a source path, static or a dynamic `import()` with a
  * string literal, ending in another extension (`.css`, `.json`, `.svg`,
  * `.jsx`, `.tsx`, `.cjs`) or carrying a query string (`?raw`, `?url`), and

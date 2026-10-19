@@ -17,7 +17,7 @@ function toPascalCase(name: string): string {
 }
 
 /**
- * `pascal-case-types` — requires class, interface, type alias, and enum
+ * `pascal-case-types` - requires class, interface, type alias, and enum
  * declaration names to be PascalCase.
  *
  * A type's name is the only part of it most readers ever see. PascalCase is the

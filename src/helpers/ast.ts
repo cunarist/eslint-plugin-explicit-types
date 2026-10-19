@@ -3,7 +3,7 @@
  *
  * Both ESLint (through `@typescript-eslint/parser`) and Oxlint hand rules a
  * TypeScript-ESTree tree, typed here by `TSESTree`. Access fields by name
- * rather than walking `Object.keys(node)` — Oxlint deserializes the tree
+ * rather than walking `Object.keys(node)` - Oxlint deserializes the tree
  * lazily, so generic traversal is slow and not guaranteed to see every field.
  */
 
@@ -51,7 +51,7 @@ export function typeNameTail(node: TypeNameNode): string | null {
 
 /**
  * The written form of an object or type member key, or `null` when it cannot
- * be read from syntax alone — a computed key such as `[token]`.
+ * be read from syntax alone - a computed key such as `[token]`.
  */
 export function keyText(key: TSESTree.Node): string | null {
   if (key.type === "Identifier") {

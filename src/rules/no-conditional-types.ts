@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /**
- * `no-conditional-types` — rejects conditional types and the `infer` keyword.
+ * `no-conditional-types` - rejects conditional types and the `infer` keyword.
  *
  * A conditional type is a branch the reader has to evaluate before they know
  * what a value is, and `infer` names a type nobody wrote. Both move the answer

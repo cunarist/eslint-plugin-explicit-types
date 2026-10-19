@@ -1,10 +1,10 @@
 /**
- * `eslint-plugin-explicit-types` — TypeScript types written out
+ * `eslint-plugin-explicit-types` - TypeScript types written out
  * rather than derived, and names that carry their contract.
  *
  * One plugin, namespace `explicit-types`, so a rule id reads
- * `explicit-types/no-keyof`. The rules come in three presets —
- * `concrete`, `naming`, and `absence` — plus `all`, which turns on every
+ * `explicit-types/no-keyof`. The rules come in three presets -
+ * `concrete`, `naming`, and `absence` - plus `all`, which turns on every
  * rule. The plugin is the only export; its configs are at `plugin.configs`.
  *
  * @module
@@ -18,7 +18,7 @@ import { rules } from "#rules";
 const NAMESPACE = "explicit-types";
 
 /**
- * The `concrete` preset — write the type out instead of deriving it.
+ * The `concrete` preset - write the type out instead of deriving it.
  *
  * Bans every way of leaving a type implicit: utility types, `keyof`, `typeof`,
  * mapped types, index signatures, conditional types, assertions, and
@@ -38,7 +38,7 @@ const CONCRETE: string[] = [
 ];
 
 /**
- * The `naming` preset — names carry the contract.
+ * The `naming` preset - names carry the contract.
  *
  * Requires PascalCase type names, single capital type parameters, and
  * UPPER_SNAKE_CASE string union members, keeps that casing out of object keys,
@@ -53,7 +53,7 @@ const NAMING: string[] = [
 ];
 
 /**
- * The `absence` preset — one spelling for an absent value.
+ * The `absence` preset - one spelling for an absent value.
  *
  * A member or parameter says absence with `?`; a return type or variable, which
  * cannot take `?`, says it with `| null`. Never both, and never the `undefined`

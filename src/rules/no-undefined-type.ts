@@ -222,7 +222,7 @@ function undefinedReport(text: string | null, node: TSESTree.TSUndefinedKeyword)
 }
 
 /**
- * `no-undefined-type` — rejects the `undefined` keyword in any type position.
+ * `no-undefined-type` - rejects the `undefined` keyword in any type position.
  *
  * `undefined` is what the language returns when nobody said anything; `null` is
  * what someone wrote. A member or parameter says absence with `?`, everything

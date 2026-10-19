@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 
 import { docsUrl, type ExplicitRule } from "#helpers";
 
-/** `OPEN`, `IN_PROGRESS` — a member name `no-upper-snake-object-keys` rejects. */
+/** `OPEN`, `IN_PROGRESS` - a member name `no-upper-snake-object-keys` rejects. */
 const UPPER_SNAKE_CASE_PATTERN = /^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/u;
 
 /** A member name that needs no quotes and that `camelcase` accepts as written. */
@@ -73,7 +73,7 @@ function interfaceText(node: TSESTree.TSMappedType, text: string): string | null
 }
 
 /**
- * `no-mapped-types` — rejects mapped types — `{ [K in Keys]: T }`.
+ * `no-mapped-types` - rejects mapped types - `{ [K in Keys]: T }`.
  *
  * A mapped type generates its fields from another type. Nothing in the source
  * lists what the object actually has, so the shape can only be read by

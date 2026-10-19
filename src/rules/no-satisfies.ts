@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /**
- * `no-satisfies` — rejects the `satisfies` operator.
+ * `no-satisfies` - rejects the `satisfies` operator.
  *
  * `value satisfies T` checks the value against `T` but leaves the
  * declaration's own type inferred: the type the variable ends up with is

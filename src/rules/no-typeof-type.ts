@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { docsUrl, type ExplicitRule } from "#helpers";
 
 /**
- * `no-typeof-type` — rejects `typeof value` used in a type position.
+ * `no-typeof-type` - rejects `typeof value` used in a type position.
  *
  * `typeof value` in a type position makes a type depend on an initializer.
  * Editing the value silently rewrites the contract every annotation refers to.
