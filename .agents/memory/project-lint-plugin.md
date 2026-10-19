@@ -7,22 +7,26 @@ Every repo has `scripts/project-lint.ts`, copied from
 Oxlint plugin with `meta.name` `"project"`, loaded through `jsPlugins` in
 `vite.config.ts`. It holds:
 
-- **`configs.project.rules`**: the repo's whole rule list beyond the published
-  plugin configs: Deno parity rules, extras, per-rule options, and opt-outs,
-  built-in Oxlint ids included (`curly`, `id-match`, `import/no-cycle`, ...).
+- **`configs.project.rules`**: the repo's own `project/*` rules, repo-wide
+  offs (each with a one-line why), and option tweaks; never a rule a
+  category already turns on. See [[lint-config]].
 - **Custom rules**, enabled as `project/<rule>`: here
-  `no-disable-comments` and `no-asset-imports` ([[ts-only-files-and-imports]]).
+  `no-disable-comments`, `prefer-ascii`, `no-asset-imports`
+  ([[ts-only-files-and-imports]]), and the hugoalh ports (`no-nan`,
+  `no-modifier-private`, ...) copied from eslint-plugin-import-structure.
 
 Files stay under Oxlint's default `max-lines` of 300 (2026-10-16), so the
 plugin is split into flat themed files sharing the prefix; `scripts/` has no
 subfolders and no `index.ts`:
 
-| File                               | Holds                                   |
-| ---------------------------------- | --------------------------------------- |
-| `scripts/project-lint.ts`          | the plugin object and `configs.project` |
-| `scripts/project-lint-types.ts`    | `ProjectRule` and the shared rule types |
-| `scripts/project-lint-comments.ts` | `no-disable-comments`                   |
-| `scripts/project-lint-modules.ts`  | `no-asset-imports`                      |
+| File                                    | Holds                                   |
+| --------------------------------------- | --------------------------------------- |
+| `scripts/project-lint.ts`               | the plugin object and `configs.project` |
+| `scripts/project-lint-types.ts`         | `ProjectRule` and the shared rule types |
+| `scripts/project-lint-source.ts`        | `no-disable-comments`, `prefer-ascii`   |
+| `scripts/project-lint-hugoalh.ts`       | hugoalh ports on expressions/statements |
+| `scripts/project-lint-hugoalh-types.ts` | hugoalh ports on types and classes      |
+| `scripts/project-lint-modules.ts`       | `no-asset-imports`                      |
 
 ```ts
 import type { DummyRuleMap } from "vite-plus/lint";

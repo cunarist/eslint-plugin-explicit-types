@@ -28,11 +28,13 @@ scripts/project-lint.ts              repo-local lint plugin, never published
   into the object a plugin needs), which keeps naming rules satisfied without
   disable comments.
 - **Registry:** `src/rules/index.ts` must import every rule, past pedantic
-  `import/max-dependencies` (10). This repo sets that limit repo-wide in
-  `configs.project` (18) instead of a per-file override:
+  `import/max-dependencies` (10). That one file gets a `projectOverrides`
+  entry turning the rule off; every other file keeps the default (decided
+  2026-10-19):
 
   ```ts
-  "import/max-dependencies": ["error", { max: 18 }],
+  // The rule registry imports every rule file by design.
+  { files: ["src/rules/index.ts"], rules: { "import/max-dependencies": "off" } },
   ```
 
 - Rules use ESLint's standard `create(context)` API, never Oxlint's
