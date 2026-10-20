@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-explicit-types",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "ESLint and Oxlint rules that keep TypeScript types written out rather than derived, and names carrying their contract.",
   "keywords": [
     "eslint",
