@@ -35,7 +35,7 @@ export interface ScopeVariable {
  */
 export interface ExplicitSourceCode extends TextSourceCode {
   scopeManager: ScopeManager | null;
-  getDeclaredVariables(node: TSESTree.Node): ScopeVariable[];
+  getDeclaredVariables: (node: TSESTree.Node) => ScopeVariable[];
 }
 
 /**

@@ -115,8 +115,8 @@ const rules: DummyRuleMap = {
   "import/no-default-export": "off",
   // Collides with RuleTester cases, whose code strings hold template literals.
   "no-template-curly-in-string": "off",
-  // Collides with the bivariant method signatures the RuleTester types need.
-  "typescript/method-signature-style": "off",
+  // Collides with Oxfmt, which lowercases hex digits.
+  "unicorn/number-literal-case": "off",
   // Collides with ordinary modern TypeScript.
   "no-ternary": "off",
   // Collides with ordinary modern TypeScript.
@@ -136,6 +136,8 @@ const rules: DummyRuleMap = {
   "typescript/switch-exhaustiveness-check": "off",
   // Off: not type-aware; `noImplicitReturns` covers missing returns.
   "consistent-return": "off",
+  // Off: misfires on complete switches, like consistent-return.
+  "typescript/consistent-return": "off",
   // Off: sequential awaits in loops are intentional; workarounds cost more.
   "no-await-in-loop": "off",
   // Off: TypeScript checks completeness; a forced `default:` hides missing
@@ -181,6 +183,9 @@ export const projectOverrides: OxlintOverride[] = [
   { files: ["vite.config.ts", "scripts/**"], rules: nodeRules },
   // The rule registry imports every rule file by design.
   { files: ["src/rules/index.ts"], rules: { "import/max-dependencies": "off" } },
+  // `OxlintRunner.run` is a method signature so its widened `rule: unknown`
+  // parameter stays bivariant against Oxlint's `RuleTester.run`.
+  { files: ["src/testing/index.ts"], rules: { "typescript/method-signature-style": "off" } },
 ];
 
 /**
