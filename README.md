@@ -37,7 +37,7 @@ Requires Node.js 22.18+.
 
 ## Usage
 
-ESLint 9 flat config, with
+ESLint 9+ flat config, with
 [typescript-eslint](https://typescript-eslint.io)'s parser (a `.ts` config
 needs [jiti](https://github.com/unjs/jiti)):
 
