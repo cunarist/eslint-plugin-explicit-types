@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-explicit-types",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "ESLint and Oxlint rules that keep TypeScript types written out, so you can read them without running the compiler in your head.",
   "keywords": [
     "eslint",
