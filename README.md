@@ -1,22 +1,21 @@
 # eslint-plugin-explicit-types
 
-TypeScript style rules for [ESLint](https://eslint.org) and
-[Oxlint](https://oxc.rs/docs/guide/usage/linter): types get written out, not
-derived, names carry their contract, and absence gets one spelling.
+Someone adds one field to `User`, and every `Partial<User>` quietly changes
+shape. The diff shows one line; the review shows nothing.
 
-Types like `Partial<User>`, `keyof T`, or `typeof config` make the reader run
-the compiler in their head, and they change silently when the source type
-changes. These rules ask for the shape itself, so it is readable where it is
-used and a change upstream becomes a compile error where it matters.
+This plugin for [ESLint](https://eslint.org) and
+[Oxlint](https://oxc.rs/docs/guide/usage/linter) asks for types written out,
+not derived. The shape is readable right where it is used, and a change
+upstream turns into a compile error exactly where it matters.
 
 ```ts
-// Incorrect
+// Before: the reader runs the compiler in their head
 type Draft = Partial<Article>;
 function title(article: Article) {
   return article.title ?? null;
 }
 
-// Correct
+// After: the contract is on the page
 interface Draft {
   title?: string;
   body?: string;
@@ -85,9 +84,9 @@ Each config turns its rules on as `"error"`. Mix them freely.
 
 | Config     | Idea                                                           |
 | :--------- | :------------------------------------------------------------- |
-| `concrete` | Write the type out instead of computing it.                    |
+| `concrete` | Shapes you can read, not `Omit<Pick<...>>` puzzles to solve.   |
 | `naming`   | Names carry the contract, e.g. string unions instead of enums. |
-| `absence`  | One spelling for absence, `?` or `\| null`, never both.        |
+| `absence`  | One way to say "missing": `?` or `\| null`, never both.        |
 | `all`      | Every rule, including ones added in later releases.            |
 
 <!-- prettier-ignore-start -->
