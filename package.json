@@ -1,7 +1,7 @@
 {
   "name": "eslint-plugin-explicit-types",
   "version": "0.7.2",
-  "description": "ESLint and Oxlint rules that keep TypeScript types written out rather than derived, and names carrying their contract.",
+  "description": "ESLint and Oxlint rules that keep TypeScript types written out, so you can read them without running the compiler in your head.",
   "keywords": [
     "eslint",
     "eslint-plugin",
@@ -46,6 +46,14 @@
     "eslint-doc-generator": "^3.7.1",
     "vite-plus": "^1.1.0"
   },
+  "peerDependencies": {
+    "eslint": ">=9"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": ">=22.18"
   },
@@ -70,7 +78,9 @@
     "ruleListColumns": [
       "name",
       "description",
-      "configsError"
+      "configsError",
+      "fixable",
+      "hasSuggestions"
     ],
     "ruleDocSectionInclude": [
       "Rule Details",

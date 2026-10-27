@@ -38,7 +38,8 @@ Keep `ts` examples valid at top level; `vp fmt` reformats Markdown.
 - It writes each doc's header (title, description, configs) and the README
   rules list.
 - Settings used: `configEmoji` per config, `ignoreConfig: ["all"]` (it would
-  mark every rule), `ruleListColumns: ["name", "description", "configsError"]`,
+  mark every rule), `ruleListColumns` set to name, description,
+  configsError, fixable, and hasSuggestions,
   `ruleDocSectionInclude: ["Rule Details", "When Not To Use It"]`, and
   `urlConfigs` pointing at the README's configs section.
 - **Gotchas:** wrap the README list in `<!-- prettier-ignore-start -->` /
@@ -51,6 +52,7 @@ Keep `ts` examples valid at top level; `vp fmt` reformats Markdown.
 
 - For library users only (no contributor content).
 - States that it targets both ESLint and Oxlint and needs Node.js 22.18+.
-- Shows install plus ESLint and Oxlint usage, one short paragraph per config,
-  then the generated rules list. It links to the rule docs, never repeats
+- Order: pitch, why (2-3 lines), one incorrect/correct example, install,
+  ESLint and Oxlint usage, a config table, then the generated rules list
+  (configs, fixable, suggestions). It links to the rule docs, never repeats
   them.
