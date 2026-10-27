@@ -1,27 +1,29 @@
 # eslint-plugin-explicit-types
 
-Someone adds one field to `User`, and every `Partial<User>` quietly changes
-shape. The diff shows one line; the review shows nothing.
+You hover over `Omit<Pick<Article, "id" | "title" | "body">, "body">` and still
+have no idea what it is. Someone adds an early `return null`; the diff shows one
+line, and the review shows nothing.
 
 This plugin for [ESLint](https://eslint.org) and
 [Oxlint](https://oxc.rs/docs/guide/usage/linter) asks for types written out,
-not derived. The shape is readable right where it is used, and a change
-upstream turns into a compile error exactly where it matters.
+not derived. The shape is readable right where it is used, and with the return
+type on the page, a new `return null` either shows up in the signature or fails
+to compile at the function itself, not in some caller three files away.
 
 ```ts
 // Before: the reader runs the compiler in their head
-type Draft = Partial<Article>;
-function title(article: Article) {
-  return article.title ?? null;
+type Preview = Omit<Pick<Article, "id" | "title" | "body">, "body">;
+function findArticle(id: string) {
+  return articles.get(id) ?? null;
 }
 
-// After: the contract is on the page
-interface Draft {
-  title?: string;
-  body?: string;
+// After: no compiler required to read this
+interface Preview {
+  id: string;
+  title: string;
 }
-function title(article: Article): string | null {
-  return article.title ?? null;
+function findArticle(id: string): Article | null {
+  return articles.get(id) ?? null;
 }
 ```
 
@@ -48,12 +50,7 @@ npm install --save-dev eslint typescript-eslint jiti eslint-plugin-explicit-type
 import plugin from "eslint-plugin-explicit-types";
 import { parser } from "typescript-eslint";
 
-export default [
-  { files: ["**/*.ts"], languageOptions: { parser } },
-  plugin.configs.concrete,
-  plugin.configs.naming,
-  plugin.configs.absence,
-];
+export default [{ files: ["**/*.ts"], languageOptions: { parser } }, plugin.configs.concrete];
 ```
 
 Oxlint, through [Vite+](https://viteplus.dev):
@@ -66,14 +63,13 @@ import { defineConfig } from "vite-plus";
 export default defineConfig({
   lint: {
     jsPlugins: ["eslint-plugin-explicit-types"],
-    rules: {
-      ...plugin.configs.concrete.rules,
-      ...plugin.configs.naming.rules,
-      ...plugin.configs.absence.rules,
-    },
+    rules: plugin.configs.concrete.rules,
   },
 });
 ```
+
+`concrete` is the core. `naming` and `absence` are stricter house styles; add
+them the same way if you like them.
 
 Rule ids use the `explicit-types/` prefix, e.g. `explicit-types/no-keyof`.
 No rule takes options.
