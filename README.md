@@ -2,7 +2,7 @@
 
 TypeScript style rules for [ESLint](https://eslint.org) and
 [Oxlint](https://oxc.rs/docs/guide/usage/linter): types get written out, not
-derived.
+derived, names carry their contract, and absence gets one spelling.
 
 Types like `Partial<User>`, `keyof T`, or `typeof config` make the reader run
 the compiler in their head, and they change silently when the source type
@@ -18,8 +18,8 @@ function title(article: Article) {
 
 // Correct
 interface Draft {
-  title: string | null;
-  body: string | null;
+  title?: string;
+  body?: string;
 }
 function title(article: Article): string | null {
   return article.title ?? null;
@@ -32,14 +32,17 @@ function title(article: Article): string | null {
 npm install --save-dev eslint-plugin-explicit-types
 ```
 
-Requires Node.js 22.18+. The package's only export is the plugin (default
-export); configs live at `plugin.configs`.
+Requires Node.js 22.18+.
 
 ## Usage
 
 ESLint 9 flat config, with
 [typescript-eslint](https://typescript-eslint.io)'s parser (a `.ts` config
 needs [jiti](https://github.com/unjs/jiti)):
+
+```sh
+npm install --save-dev eslint typescript-eslint jiti eslint-plugin-explicit-types
+```
 
 ```ts
 // eslint.config.ts
@@ -64,7 +67,11 @@ import { defineConfig } from "vite-plus";
 export default defineConfig({
   lint: {
     jsPlugins: ["eslint-plugin-explicit-types"],
-    rules: { ...plugin.configs.concrete.rules },
+    rules: {
+      ...plugin.configs.concrete.rules,
+      ...plugin.configs.naming.rules,
+      ...plugin.configs.absence.rules,
+    },
   },
 });
 ```

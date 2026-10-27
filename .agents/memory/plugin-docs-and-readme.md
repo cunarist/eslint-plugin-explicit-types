@@ -38,7 +38,8 @@ Keep `ts` examples valid at top level; `vp fmt` reformats Markdown.
 - It writes each doc's header (title, description, configs) and the README
   rules list.
 - Settings used: `configEmoji` per config, `ignoreConfig: ["all"]` (it would
-  mark every rule), `ruleListColumns: ["name", "description", "configsError", "fixable", "hasSuggestions"]`,
+  mark every rule), `ruleListColumns` set to name, description,
+  configsError, fixable, and hasSuggestions,
   `ruleDocSectionInclude: ["Rule Details", "When Not To Use It"]`, and
   `urlConfigs` pointing at the README's configs section.
 - **Gotchas:** wrap the README list in `<!-- prettier-ignore-start -->` /
